@@ -39,3 +39,30 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agent metadata
+.agent/
+.agents/
+skills-lock.json
+
+# logs and diagnostic scripts
+*.log
+*-log.txt
+*.txt
+!README.md
+!CLAUDE.md
+!TESTING_SUMMARY.md
+!prd.md
+diag_*.js
+auth-*.json
+document_*.txt
+proposal_*.txt
+test_out_*.txt
+test_output.txt
+tsc-errors*.txt
+jest-out.txt
+lint-results*.txt
+doc_err.txt
+proposal_err.txt
+document_result.json
+proposal_result.json

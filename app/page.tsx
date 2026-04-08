@@ -88,10 +88,10 @@ export default function HomePage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
           <Link className="flex items-center gap-3" href="/">
-            <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold">
+            <div className="h-8 w-8 bg-blue-600 rounded-md flex items-center justify-center text-white font-bold">
               V
             </div>
-            <span className="font-heading font-bold text-2xl tracking-widest hidden sm:block uppercase">
+            <span className="font-heading font-bold text-xl tracking-tight hidden sm:block text-slate-900">
               VendorPortal
             </span>
           </Link>
@@ -123,40 +123,46 @@ export default function HomePage() {
 
       <main className="flex-1 pt-16">
         {/* Hero Section */}
-        <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden bg-white">
-          {/* Subtle background container */}
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-100 via-white to-white" />
-          
+        <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-50">
           <div className="container mx-auto px-6 relative">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge variant="outline" className="mb-8 font-sans font-medium px-4 py-1.5 text-sm uppercase tracking-widest bg-white">
+              <Badge variant="outline" className="mb-6 font-sans font-medium px-4 py-1.5 text-sm tracking-wide bg-blue-50 text-blue-700 border-blue-200">
                 <Globe className="h-4 w-4 mr-2" />
-                Enterprise-Ready Platform
+                #1 Enterprise Vendor Management Software
               </Badge>
               
-              <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-heading font-black tracking-tight mb-8 uppercase text-zinc-950 leading-[0.9]">
-                VENDOR MANAGEMENT
-                <br />
-                <span className="text-zinc-400">SIMPLIFIED</span>
+              <h1 className="text-5xl sm:text-6xl md:text-7xl font-heading font-bold tracking-tight mb-6 text-slate-900 leading-[1.1]">
+                Take Control of Your <br className="hidden sm:block" />
+                <span className="text-blue-600">Vendor Ecosystem</span>
               </h1>
               
-              <p className="text-xl md:text-2xl font-sans text-zinc-600 max-w-2xl mx-auto mb-12 leading-relaxed tracking-wide">
-                Streamline your vendor lifecycle from onboarding to compliance monitoring. 
-                Built for enterprises that demand security, speed, and control.
+              <p className="text-lg md:text-xl font-sans text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Streamline compliance, automate onboarding, and mitigate risk with the platform built for modern enterprise security and scale.
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/register">
-                  <Button size="lg" className="h-14 px-10 font-sans font-bold text-lg uppercase tracking-wider rounded-none">
-                    Start Free Trial
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                  <Button size="lg" className="h-12 px-8 font-sans font-semibold text-base bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-md transition-all hover:-translate-y-0.5">
+                    Contact Sales
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href="/login">
-                  <Button variant="outline" size="lg" className="h-14 px-10 font-sans font-bold text-lg uppercase tracking-wider rounded-none border-zinc-950 text-zinc-950 hover:bg-zinc-100">
-                    View Demo
+                  <Button variant="outline" size="lg" className="h-12 px-8 font-sans font-semibold text-base rounded-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-all">
+                    Login to Portal
                   </Button>
                 </Link>
+              </div>
+
+              {/* Client Logos (Social Proof) */}
+              <div className="mt-20 pt-10 border-t border-slate-200">
+                <p className="text-sm font-medium text-slate-500 mb-6 uppercase tracking-wider">Trusted by innovative enterprises</p>
+                <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
+                  <div className="text-xl font-bold font-heading text-slate-800">AcmeCorp</div>
+                  <div className="text-xl font-bold font-heading text-slate-800">GlobalTech</div>
+                  <div className="text-xl font-bold font-heading text-slate-800">NexusHealth</div>
+                  <div className="text-xl font-bold font-heading text-slate-800">FinServe</div>
+                </div>
               </div>
             </div>
           </div>
@@ -366,26 +372,29 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 md:py-32 border-t border-border/50">
+        <section className="py-24 md:py-32 border-t border-slate-200 bg-white">
           <div className="container mx-auto px-6">
-            <Card className="bg-primary text-primary-foreground border-0">
-              <CardContent className="p-12 md:p-16 text-center">
+            <Card className="bg-blue-600 text-white border-0 shadow-xl overflow-hidden relative">
+              <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-blue-500 opacity-50 blur-3xl" />
+              <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-blue-700 opacity-50 blur-3xl" />
+              
+              <CardContent className="p-12 md:p-16 text-center relative z-10">
                 <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-                  Ready to transform your vendor management?
+                  Ready to transform your vendor ecosystem?
                 </h2>
-                <p className="text-primary-foreground/70 max-w-xl mx-auto mb-8">
-                  Join 500+ enterprises using VendorPortal to streamline compliance, 
-                  onboarding, and vendor relationships.
+                <p className="text-blue-100 max-w-xl mx-auto mb-8 text-lg">
+                  Join hundreds of enterprises using VendorPortal to streamline compliance, 
+                  automate onboarding, and secure their supply chain.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link href="/register">
-                    <Button size="lg" variant="secondary" className="h-12 px-8 font-medium">
-                      Get Started Free
+                    <Button size="lg" className="h-12 px-8 font-medium bg-orange-500 hover:bg-orange-600 text-white border-0">
+                      Contact Sales
                     </Button>
                   </Link>
                   <Link href="/login">
-                    <Button size="lg" variant="ghost" className="h-12 px-8 font-medium text-primary-foreground hover:bg-primary-foreground/10">
-                      Contact Sales
+                    <Button size="lg" variant="outline" className="h-12 px-8 font-medium border-blue-300 text-white hover:bg-blue-700 hover:text-white">
+                      Login to Portal
                     </Button>
                   </Link>
                 </div>

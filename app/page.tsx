@@ -82,6 +82,8 @@ const stats = [
 ];
 
 export default function HomePage() {
+  const registrationEnabled = process.env.NEXT_PUBLIC_ENABLE_REGISTRATION !== 'false' && process.env.ENABLE_REGISTRATION !== 'false';
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Navigation */}
@@ -143,12 +145,15 @@ export default function HomePage() {
                 </p>
                 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <Link href="/register" className="w-full sm:w-auto">
-                    <Button size="lg" className="w-full sm:w-auto h-14 px-8 font-heading font-bold text-lg bg-indigo-600 hover:bg-indigo-700 text-white rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
-                      Initialize Platform
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
+                  {registrationEnabled && (
+                    <Link href="/register" className="w-full sm:w-auto">
+                      <Button size="lg" className="w-full sm:w-auto h-14 px-8 font-heading font-bold text-lg bg-indigo-600 hover:bg-indigo-700 text-white rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                        Initialize Platform
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
+                  )}
+
                   <Link href="/login" className="w-full sm:w-auto">
                     <Button variant="outline" size="lg" className="w-full sm:w-auto h-14 px-8 font-heading font-bold text-lg rounded-none border-2 border-zinc-950 text-zinc-950 hover:bg-zinc-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
                       Access Terminal
@@ -387,11 +392,19 @@ export default function HomePage() {
                   The OS for the modern enterprise. Stop managing vendors. Start engineering relationships.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full sm:w-auto">
-                  <Link href="/register" className="w-full sm:w-auto">
-                    <Button size="lg" className="w-full sm:w-auto h-16 px-12 font-heading font-black text-xl bg-white hover:bg-zinc-100 text-zinc-950 border-4 border-zinc-950 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all rounded-none uppercase tracking-widest">
-                      Initialize Trial
-                    </Button>
-                  </Link>
+                  {registrationEnabled ? (
+                    <Link href="/register" className="w-full sm:w-auto">
+                      <Button size="lg" className="w-full sm:w-auto h-16 px-12 font-heading font-black text-xl bg-white hover:bg-zinc-100 text-zinc-950 border-4 border-zinc-950 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all rounded-none uppercase tracking-widest">
+                        Initialize Trial
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link href="/login" className="w-full sm:w-auto">
+                      <Button size="lg" className="w-full sm:w-auto h-16 px-12 font-heading font-black text-xl bg-zinc-950 hover:bg-zinc-800 text-white border-4 border-zinc-950 shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] transition-all rounded-none uppercase tracking-widest">
+                        Access Terminal
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </CardContent>
             </Card>

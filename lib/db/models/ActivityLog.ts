@@ -11,7 +11,7 @@ const ActivityLogSchema = new Schema<IActivityLogDocument>(
     vendorId: {
       type: Schema.Types.ObjectId,
       ref: 'Vendor',
-      required: true,
+      required: false,
       index: true,
     },
     performedBy: {
@@ -35,6 +35,9 @@ const ActivityLogSchema = new Schema<IActivityLogDocument>(
         'REVISION_REQUESTED',
         'PROFILE_UPDATED',
         'LOGIN',
+        'PROPOSAL_CREATE',
+        'SUBMISSION_RANKING_UPDATE',
+        'DOCUMENT_TYPE_CREATE',
       ] as const,
       required: true,
     },

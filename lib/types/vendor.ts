@@ -19,7 +19,10 @@ export type ActivityType =
   | 'FINAL_REJECTION'
   | 'REVISION_REQUESTED'
   | 'PROFILE_UPDATED'
-  | 'LOGIN';
+  | 'LOGIN'
+  | 'PROPOSAL_CREATE'
+  | 'SUBMISSION_RANKING_UPDATE'
+  | 'DOCUMENT_TYPE_CREATE';
 
 export interface IAddress {
   street?: string;
@@ -49,7 +52,7 @@ export interface IVendor {
 
 export interface IActivityLog {
   _id: string;
-  vendorId: string;
+  vendorId?: string;
   performedBy: string;
   activityType: ActivityType;
   description: string;

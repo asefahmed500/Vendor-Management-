@@ -70,13 +70,10 @@ export async function POST(request: NextRequest) {
 
     // Enterprise Audit Log
     await ActivityLog.create({
-      userId: user.id,
-      userEmail: user.email,
-      action: 'DOCUMENT_TYPE_CREATE',
-      resourceType: 'DOCUMENT_TYPE',
-      resourceId: documentType._id.toString(),
+      performedBy: user.id,
+      activityType: 'DOCUMENT_TYPE_CREATE',
       description: `Created new document type: ${documentType.name}`,
-      metadata: { name: documentType.name, category: documentType.category }
+      metadata: { documentTypeId: documentType._id.toString(), name: documentType.name, category: documentType.category }
     });
 
     return NextResponse.json<ApiResponse>(

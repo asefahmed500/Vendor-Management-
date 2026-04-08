@@ -111,13 +111,11 @@ export async function PUT(
 
       // Enterprise Audit Log
       await ActivityLog.create({
-        userId: user.id,
-        userEmail: user.email,
-        action: 'SUBMISSION_RANKING_UPDATE',
-        resourceType: 'SUBMISSION',
-        resourceId: submission._id.toString(),
-        description: `Ranked submission for proposal ${submission.proposalId} at position #${ranking.rank}`,
-        metadata: { rank: ranking.rank, score: ranking.score }
+        performedBy: user.id,
+        vendorId: submission.vendorId,
+        activityType: 'SUBMISSION_RANKING_UPDATE',
+        description: `Ranked submission for proposal ${submission.proposalId} at position #${validatedData.rank}`,
+        metadata: { submissionId: submission._id.toString(), rank: validatedData.rank, score: validatedData.score }
       });
 
       // Notify Vendor about the ranking/status change

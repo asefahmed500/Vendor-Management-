@@ -17,6 +17,9 @@ import {
   Lock,
   ArrowUpRight,
   TrendingUp,
+  FilePlus,
+  Trophy,
+  Settings,
 } from 'lucide-react';
 import { ApiResponse } from '@/lib/types/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -56,6 +59,9 @@ const activityIcons: Record<string, React.ElementType> = {
   REVISION_REQUESTED: FileText,
   PROFILE_UPDATED: User,
   LOGIN: Lock,
+  PROPOSAL_CREATE: FilePlus,
+  SUBMISSION_RANKING_UPDATE: Trophy,
+  DOCUMENT_TYPE_CREATE: Settings,
 };
 
 const activityColors: Record<string, 'default' | 'success' | 'warning' | 'danger' | 'secondary'> = {
@@ -72,6 +78,9 @@ const activityColors: Record<string, 'default' | 'success' | 'warning' | 'danger
   REVISION_REQUESTED: 'warning',
   PROFILE_UPDATED: 'secondary',
   LOGIN: 'secondary',
+  PROPOSAL_CREATE: 'default',
+  SUBMISSION_RANKING_UPDATE: 'success',
+  DOCUMENT_TYPE_CREATE: 'secondary',
 };
 
 export default function AdminAuditLogsPage() {
@@ -195,6 +204,9 @@ export default function AdminAuditLogsPage() {
                 <SelectItem value="DOCUMENT_REJECTED">Document Rejected</SelectItem>
                 <SelectItem value="FINAL_APPROVAL">Final Approval</SelectItem>
                 <SelectItem value="LOGIN">Login</SelectItem>
+                <SelectItem value="PROPOSAL_CREATE">Proposal Created</SelectItem>
+                <SelectItem value="SUBMISSION_RANKING_UPDATE">Ranking Updated</SelectItem>
+                <SelectItem value="DOCUMENT_TYPE_CREATE">Doc Type Created</SelectItem>
               </SelectContent>
             </Select>
             <div className="flex items-center gap-2">

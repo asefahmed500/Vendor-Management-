@@ -106,13 +106,10 @@ export async function POST(request: NextRequest) {
 
     // Enterprise Audit Log
     await ActivityLog.create({
-      userId: user.id,
-      userEmail: user.email,
-      action: 'PROPOSAL_CREATE',
-      resourceType: 'PROPOSAL',
-      resourceId: proposal._id.toString(),
+      performedBy: user.id,
+      activityType: 'PROPOSAL_CREATE',
       description: `Created new RFP: ${proposal.title}`,
-      metadata: { title: proposal.title }
+      metadata: { proposalId: proposal._id.toString(), title: proposal.title }
     });
 
     // Notify all vendors about the new RFP

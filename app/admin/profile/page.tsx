@@ -22,30 +22,30 @@ export default function AdminProfilePage() {
         </div>
       </div>
 
-      <Card className="max-w-2xl border-border">
-        <CardHeader>
-          <CardTitle>Personal Details</CardTitle>
-          <CardDescription>Your basic account information configured via your provider.</CardDescription>
+      <Card className="max-w-2xl border-zinc-200 bg-white shadow-sm">
+        <CardHeader className="border-b border-zinc-100 bg-zinc-50/50">
+          <CardTitle className="font-heading tracking-wide uppercase text-xl">Personal Details</CardTitle>
+          <CardDescription className="font-sans text-base">Your basic account information configured via your provider.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4 border-b pb-4">
+        <CardContent className="space-y-6 pt-6">
+          <div className="grid grid-cols-2 gap-6 border-b border-zinc-100 pb-6">
             <div>
-              <p className="text-sm text-zinc-500">Full Name</p>
-              <p className="font-medium mt-1">{user?.name || 'VMS Administrator'}</p>
+              <p className="text-sm font-semibold tracking-wider uppercase text-zinc-500">Full Name</p>
+              <p className="font-sans text-lg font-medium text-zinc-950 mt-1">{user?.name || 'VMS Administrator'}</p>
             </div>
             <div>
-              <p className="text-sm text-zinc-500">Email Address</p>
-              <p className="font-medium mt-1">{user?.email || 'admin@vms-system.com'}</p>
+              <p className="text-sm font-semibold tracking-wider uppercase text-zinc-500">Email Address</p>
+              <p className="font-sans text-lg font-medium text-zinc-950 mt-1">{user?.email || 'admin@vms-system.com'}</p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6">
             <div>
-              <p className="text-sm text-zinc-500">System Role</p>
-              <Badge className="mt-2" variant="default">Global Admin</Badge>
+              <p className="text-sm font-semibold tracking-wider uppercase text-zinc-500">System Role</p>
+              <Badge className="mt-2 font-sans font-medium px-3 py-1 shadow-sm" variant="default">Global Admin</Badge>
             </div>
             <div>
-              <p className="text-sm text-zinc-500">Account Status</p>
-              <Badge className="mt-2" variant="success">Active</Badge>
+              <p className="text-sm font-semibold tracking-wider uppercase text-zinc-500">Account Status</p>
+              <Badge className="mt-2 font-sans font-medium px-3 py-1 bg-emerald-100 text-emerald-800 shadow-sm hover:bg-emerald-200 border-emerald-200" variant="outline">Active</Badge>
             </div>
           </div>
         </CardContent>

@@ -194,7 +194,7 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80">
+              <DropdownMenuContent align="end" className="w-80 bg-white shadow-lg border-zinc-200 z-50">
                 <DropdownMenuLabel className="flex items-center justify-between">
                   <span>Notifications</span>
                   {unreadCount > 0 && (
@@ -222,7 +222,6 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
             <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9">
               <HelpCircle className="h-4 w-4" />
             </Button>
-            <ThemeToggle />
 
             <div className="h-6 w-px bg-zinc-200 dark:bg-zinc-800 mx-1 hidden sm:block" />
 
@@ -242,8 +241,8 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
                     <ChevronDown className="h-4 w-4 text-zinc-500 hidden sm:block" />
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel className="font-normal">
+                <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg border-zinc-200 z-50">
+                  <DropdownMenuLabel className="font-normal font-sans">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium">{vendor?.companyName || user.name}</p>
                       <p className="text-xs text-muted-foreground">{user.email}</p>

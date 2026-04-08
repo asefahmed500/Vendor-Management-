@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@200..700&display=swap');
 
 @theme {
   /* ============================================================
@@ -7,9 +8,9 @@
      ============================================================ */
 
   /* Font Families */
-  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
-  --font-heading: var(--font-syne), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), monospace;
+  --font-sans: 'Oswald', system-ui, sans-serif;
+  --font-heading: 'Bebas Neue', system-ui, sans-serif;
+  --font-mono: monospace;
 
   /* Corporate Minimal Brand Colors */
   --primary: 240 10% 10%;        /* zinc-950 */
@@ -83,30 +84,6 @@
     --destructive-foreground: 0 0% 100%;
     --border: 240 5% 80%;
     --input: 240 5% 90%;
-    --ring: 217 91% 60%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    /* Dark Mode - Professional Desaturated Zinc */
-    --background: 240 10% 3.9%;   /* zinc-950 */
-    --foreground: 0 0% 98%;      /* warm white */
-    --card: 240 10% 5%;          /* slightly lighter than bg */
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 5%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 10% 3.9%;
-    --secondary: 240 10% 12%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 10% 12%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62% 45%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 240 10% 16%;
-    --input: 240 10% 16%;
     --ring: 217 91% 60%;
     --radius: 0.5rem;
   }

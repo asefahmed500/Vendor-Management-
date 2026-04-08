@@ -91,7 +91,7 @@ export default function HomePage() {
             <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold">
               V
             </div>
-            <span className="font-heading font-semibold text-lg tracking-tight hidden sm:block">
+            <span className="font-heading font-bold text-2xl tracking-widest hidden sm:block uppercase">
               VendorPortal
             </span>
           </Link>
@@ -123,38 +123,37 @@ export default function HomePage() {
 
       <main className="flex-1 pt-16">
         {/* Hero Section */}
-        <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden">
-          {/* Subtle background mesh */}
-          <div className="absolute inset-0 -z-10">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-b from-accent/5 to-transparent rounded-full blur-3xl opacity-60" />
-          </div>
+        <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden bg-white">
+          {/* Subtle background container */}
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-100 via-white to-white" />
           
-          <div className="container mx-auto px-6">
-            <div className="max-w-3xl mx-auto text-center">
-              <Badge variant="secondary" className="mb-6 font-medium">
-                <Globe className="h-3 w-3 mr-1.5" />
+          <div className="container mx-auto px-6 relative">
+            <div className="max-w-4xl mx-auto text-center">
+              <Badge variant="outline" className="mb-8 font-sans font-medium px-4 py-1.5 text-sm uppercase tracking-widest bg-white">
+                <Globe className="h-4 w-4 mr-2" />
                 Enterprise-Ready Platform
               </Badge>
               
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold tracking-tight mb-6">
-                Vendor management,{" "}
-                <span className="text-accent">simplified</span>.
+              <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-heading font-black tracking-tight mb-8 uppercase text-zinc-950 leading-[0.9]">
+                VENDOR MANAGEMENT
+                <br />
+                <span className="text-zinc-400">SIMPLIFIED</span>
               </h1>
               
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+              <p className="text-xl md:text-2xl font-sans text-zinc-600 max-w-2xl mx-auto mb-12 leading-relaxed tracking-wide">
                 Streamline your vendor lifecycle from onboarding to compliance monitoring. 
                 Built for enterprises that demand security, speed, and control.
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                 <Link href="/register">
-                  <Button size="lg" className="h-12 px-8 font-medium">
+                  <Button size="lg" className="h-14 px-10 font-sans font-bold text-lg uppercase tracking-wider rounded-none">
                     Start Free Trial
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
                 <Link href="/login">
-                  <Button variant="outline" size="lg" className="h-12 px-8 font-medium">
+                  <Button variant="outline" size="lg" className="h-14 px-10 font-sans font-bold text-lg uppercase tracking-wider rounded-none border-zinc-950 text-zinc-950 hover:bg-zinc-100">
                     View Demo
                   </Button>
                 </Link>

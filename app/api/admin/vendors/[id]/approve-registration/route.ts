@@ -48,7 +48,7 @@ export async function PUT(
     const ActivityLog = (await import('@/lib/db/models/ActivityLog')).default;
     await ActivityLog.create({
       vendorId: vendor._id,
-      performedBy: user.userId,
+      performedBy: user.id,
       activityType: 'REGISTRATION_APPROVED',
       description: 'Vendor registration approved',
       metadata: { comments: body.comments },

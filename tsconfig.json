@@ -23,7 +23,9 @@
       }
     ],
     "types": [
-      "jest"
+      "node",
+      "jest",
+      "@testing-library/jest-dom"
     ],
     "paths": {
       "@/*": [
@@ -36,11 +38,15 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
-    "scripts"
+    ".next",
+    "out",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/__tests__/**",
+    "e2e/**"
   ]
 }

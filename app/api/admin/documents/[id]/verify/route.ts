@@ -51,13 +51,13 @@ export async function PUT(
     if (existingVerification) {
       existingVerification.status = validatedData.status;
       existingVerification.comments = validatedData.comments;
-      existingVerification.verifiedBy = new mongoose.Types.ObjectId(user.userId);
+      existingVerification.verifiedBy = new mongoose.Types.ObjectId(user.id);
       existingVerification.verifiedAt = new Date();
       await existingVerification.save();
     } else {
       await DocumentVerification.create({
         documentId: id,
-        verifiedBy: new mongoose.Types.ObjectId(user.userId),
+        verifiedBy: new mongoose.Types.ObjectId(user.id),
         status: validatedData.status,
         comments: validatedData.comments,
       });
@@ -66,7 +66,7 @@ export async function PUT(
     const ActivityLog = (await import('@/lib/db/models/ActivityLog')).default;
     await ActivityLog.create({
       vendorId: document.vendorId,
-      performedBy: user.userId,
+      performedBy: user.id,
       activityType: validatedData.status === 'VERIFIED' ? 'DOCUMENT_VERIFIED' : 'DOCUMENT_REJECTED',
       description: `Document ${validatedData.status.toLowerCase()}`,
       metadata: {

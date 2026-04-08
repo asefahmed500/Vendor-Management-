@@ -3,6 +3,7 @@ import connectDB from '@/lib/db/connect';
 import ActivityLog from '@/lib/db/models/ActivityLog';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
+import { handleApiError } from '@/lib/middleware/errorHandler';
 
 interface AggregatedStats {
   totalActivities: number;
@@ -19,6 +20,15 @@ interface AggregatedStats {
     performedBy: string;
     createdAt: Date;
   }>;
+}
+
+interface PopulatedActivity {
+  _id: { toString(): string };
+  activityType: string;
+  description: string;
+  createdAt: Date;
+  performedBy?: { _id: { toString(): string }; email?: string };
+  vendorId?: { companyName: string };
 }
 
 export async function GET(request: NextRequest) {
@@ -60,7 +70,7 @@ export async function GET(request: NextRequest) {
       .populate('performedBy', 'email')
       .sort({ createdAt: -1 })
       .limit(1000)
-      .lean();
+      .lean() as unknown as PopulatedActivity[];
 
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -80,27 +90,27 @@ export async function GET(request: NextRequest) {
     const activitiesByUser: Array<{ userId: string; count: number; email?: string }> = [];
     const userCounts = new Map<string, number>();
     allActivities.forEach((activity) => {
-      const userId = (activity as any).performedBy?._id?.toString() || 'system';
+      const userId = activity.performedBy?._id?.toString() || 'system';
       userCounts.set(userId, (userCounts.get(userId) || 0) + 1);
     });
 
     userCounts.forEach((count, userId) => {
-      const activity = allActivities.find((a) => (a as any).performedBy?._id?.toString() === userId);
+      const activity = allActivities.find((a) => a.performedBy?._id?.toString() === userId);
       activitiesByUser.push({
         userId,
         count,
-        email: (activity as any)?.performedBy?.email,
+        email: activity?.performedBy?.email,
       });
     });
 
     activitiesByUser.sort((a, b) => b.count - a.count);
 
     const recentActivities = allActivities.slice(0, 50).map((activity) => ({
-      _id: (activity as any)._id?.toString(),
+      _id: activity._id.toString(),
       activityType: activity.activityType,
       description: activity.description,
-      vendorId: (activity as any).vendorId ? { companyName: (activity as any).vendorId.companyName } : undefined,
-      performedBy: (activity as any).performedBy?.email || 'System',
+      vendorId: activity.vendorId ? { companyName: activity.vendorId.companyName } : undefined,
+      performedBy: activity.performedBy?.email || 'System',
       createdAt: activity.createdAt,
     }));
 
@@ -120,11 +130,6 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get audit logs error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetAuditLogs');
   }
 }

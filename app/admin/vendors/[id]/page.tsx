@@ -15,6 +15,8 @@ import {
   ArrowLeft,
   Award,
   Loader2,
+  Clock,
+  User,
 } from 'lucide-react';
 import { IVendor, VendorStatus } from '@/lib/types/vendor';
 import { IDocument } from '@/lib/types/document';
@@ -24,6 +26,16 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
+interface IActivityLog {
+  _id: string;
+  vendorId: string;
+  performedBy: string;
+  activityType: string;
+  description: string;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+}
+
 export default function AdminVendorDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -32,6 +44,7 @@ export default function AdminVendorDetailPage() {
   const [vendor, setVendor] = useState<IVendor | null>(null);
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [submissions, setSubmissions] = useState<IProposalSubmission[]>([]);
+  const [activities, setActivities] = useState<IActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -41,15 +54,17 @@ export default function AdminVendorDetailPage() {
   const fetchVendorData = useCallback(async () => {
     try {
       setIsLoading(true);
-      const [vendorRes, docsRes, submissionsRes] = await Promise.all([
+      const [vendorRes, docsRes, submissionsRes, activityRes] = await Promise.all([
         fetch(`/api/admin/vendors/${vendorId}`),
-        fetch(`/api/vendor/documents`),
-        fetch(`/api/vendor/proposals/submissions`),
+        fetch(`/api/admin/vendors/${vendorId}/documents`),
+        fetch(`/api/admin/vendors/${vendorId}/submissions`),
+        fetch(`/api/admin/vendors/${vendorId}/activity`),
       ]);
 
       const vendorData = await vendorRes.json();
       const docsData = await docsRes.json();
       const submissionsData = await submissionsRes.json();
+      const activityData = await activityRes.json();
 
       if (vendorData.success) {
         setVendor(vendorData.data.vendor);
@@ -59,6 +74,9 @@ export default function AdminVendorDetailPage() {
       }
       if (submissionsData.success) {
         setSubmissions(submissionsData.data.submissions || []);
+      }
+      if (activityData.success) {
+        setActivities(activityData.data.activities || []);
       }
     } catch (error) {
       console.error('Fetch vendor error:', error);
@@ -482,8 +500,32 @@ export default function AdminVendorDetailPage() {
               )}
 
               {activeTab === 'activity' && (
-                <div className="py-8 text-center text-muted-foreground">
-                  <p>Activity log will be displayed here</p>
+                <div className="space-y-4">
+                  {activities.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Clock className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+                      <p className="text-muted-foreground font-medium">No activity recorded yet</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {activities.map((activity) => (
+                        <div key={activity._id} className="flex items-start gap-4 p-4 bg-muted/30 border rounded-xl">
+                          <div className="p-2 bg-background rounded-lg shadow-sm border">
+                            <User className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm">{activity.description}</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {activity.activityType.replace(/_/g, ' ')}
+                            </p>
+                          </div>
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
+                            {new Date(activity.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>

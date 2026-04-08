@@ -57,6 +57,13 @@ const UserSchema = new Schema<IUserDocument>(
     lockUntil: {
       type: Date,
     },
+    mustChangePassword: {
+      type: Boolean,
+      default: false,
+    },
+    passwordChangedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -72,7 +79,6 @@ const UserSchema = new Schema<IUserDocument>(
   }
 );
 
-UserSchema.index({ email: 1 });
 UserSchema.index({ role: 1 });
 
 UserSchema.pre('save', async function (this: any, next) {

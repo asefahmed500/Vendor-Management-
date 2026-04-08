@@ -49,7 +49,7 @@ export async function PUT(
       vendorUser.isActive = false;
       await ActivityLog.create({
         vendorId: vendor._id,
-        performedBy: user.userId,
+        performedBy: user.id,
         activityType: 'PROFILE_UPDATED',
         description: `Vendor blocked by admin. Reason: ${reason || 'No reason provided'}`,
       });
@@ -59,7 +59,7 @@ export async function PUT(
       vendorUser.lockUntil = undefined;
       await ActivityLog.create({
         vendorId: vendor._id,
-        performedBy: user.userId,
+        performedBy: user.id,
         activityType: 'PROFILE_UPDATED',
         description: 'Vendor unblocked by admin',
       });

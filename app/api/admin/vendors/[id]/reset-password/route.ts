@@ -66,7 +66,7 @@ export async function PUT(
     // Log the activity
     await ActivityLog.create({
       vendorId: vendor._id,
-      performedBy: user.userId,
+      performedBy: user.id,
       activityType: 'PROFILE_UPDATED',
       description: 'Password reset by admin',
     });

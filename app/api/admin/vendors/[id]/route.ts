@@ -83,15 +83,53 @@ export async function PUT(
       );
     }
 
+    const oldStatus = vendor.status;
     safeVendorAdminUpdate(vendor, validatedData);
     await vendor.save();
+
+    // Trigger notifications and emails if status changed
+    if (oldStatus !== vendor.status) {
+      const { notifyVendorStatusChanged } = await import('@/lib/notifications/service');
+      const { sendEmail, RegistrationApprovedEmail, RegistrationRejectedEmail } = await import('@/lib/email');
+      
+      await notifyVendorStatusChanged(
+        vendor.userId.toString(),
+        vendor.status,
+        vendor.status === 'REJECTED' ? vendor.rejectionReason : undefined
+      );
+
+      // Send email
+      if (vendor.status === 'APPROVED') {
+        const template = RegistrationApprovedEmail({
+          contactPerson: vendor.contactPerson,
+          companyName: vendor.companyName,
+          loginUrl: `${process.env.NEXT_PUBLIC_APP_URL || ''}/login`,
+        });
+        await sendEmail({
+          to: (vendor as any).userId.email || '', // Assuming email is populated or available
+          subject: template.subject,
+          html: template.html,
+        });
+      } else if (vendor.status === 'REJECTED') {
+        const template = RegistrationRejectedEmail({
+          contactPerson: vendor.contactPerson,
+          companyName: vendor.companyName,
+          rejectionReason: vendor.rejectionReason || 'Does not meet current requirements',
+        });
+        await sendEmail({
+          to: (vendor as any).userId.email || '',
+          subject: template.subject,
+          html: template.html,
+        });
+      }
+    }
 
     const ActivityLog = (await import('@/lib/db/models/ActivityLog')).default;
     await ActivityLog.create({
       vendorId: vendor._id,
-      performedBy: user.userId,
+      performedBy: user.id,
       activityType: 'PROFILE_UPDATED',
-      description: 'Vendor profile updated by admin',
+      description: `Vendor profile status updated to ${vendor.status}`,
     });
 
     return NextResponse.json<ApiResponse<{ vendor: IVendor }>>(

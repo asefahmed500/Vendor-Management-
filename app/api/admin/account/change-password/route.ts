@@ -3,7 +3,7 @@ import connectDB from '@/lib/db/connect';
 import User from '@/lib/db/models/User';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
-import { ZodError } from 'zod';
+import { handleApiError } from '@/lib/middleware/errorHandler';
 import { z } from 'zod';
 
 // Validation schema for password change
@@ -33,7 +33,7 @@ export async function PUT(request: NextRequest) {
 
     await connectDB();
 
-    const userData = await User.findById(user.userId).select('+password');
+    const userData = await User.findById(user.id).select('+password');
 
     if (!userData) {
       return NextResponse.json<ApiResponse>(
@@ -66,29 +66,6 @@ export async function PUT(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Change password error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'ChangePassword');
   }
 }

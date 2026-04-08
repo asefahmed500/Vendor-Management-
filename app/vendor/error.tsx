@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCcw, Home } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function Error({
     error,
@@ -16,33 +17,37 @@ export default function Error({
     }, [error]);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 text-center animate-in fade-in duration-500">
-            <div className="h-20 w-20 rounded-3xl bg-rose-500/10 text-rose-500 flex items-center justify-center shadow-lg">
-                <AlertCircle className="h-10 w-10" />
-            </div>
-            <div className="space-y-2">
-                <h2 className="text-3xl font-black tracking-tighter uppercase text-foreground">Operational Interrupt</h2>
-                <p className="text-muted-foreground max-w-md font-medium">
-                    We've encountered a disruption in the partner workspace. Our technical team has been notified of the instance.
-                </p>
-            </div>
-            <div className="flex gap-4">
-                <Button
-                    onClick={() => reset()}
-                    className="bg-indigo-600 hover:bg-indigo-700 h-12 px-8 font-bold rounded-xl shadow-md transition-all"
-                >
-                    <RefreshCcw className="mr-2 h-4 w-4" />
-                    Retry Connection
-                </Button>
-                <Button
-                    variant="outline"
-                    onClick={() => window.location.href = '/vendor/dashboard'}
-                    className="h-12 px-8 font-bold rounded-xl border-2 hover:bg-muted/50 transition-all"
-                >
-                    <Home className="mr-2 h-4 w-4" />
-                    Portal Home
-                </Button>
-            </div>
+        <div className="flex items-center justify-center min-h-[60vh]">
+            <Card className="max-w-md w-full">
+                <CardContent className="p-8 text-center space-y-6">
+                    <div className="h-16 w-16 rounded-full bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto">
+                        <AlertCircle className="h-8 w-8" />
+                    </div>
+                    <div className="space-y-2">
+                        <h2 className="text-2xl font-bold">Something went wrong</h2>
+                        <p className="text-muted-foreground">
+                            An unexpected error occurred. Please try again or return to the dashboard.
+                        </p>
+                    </div>
+                    <div className="flex gap-3 justify-center">
+                        <Button
+                            onClick={() => reset()}
+                            className="gap-2"
+                        >
+                            <RefreshCcw className="h-4 w-4" />
+                            Try again
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => window.location.href = '/vendor/dashboard'}
+                            className="gap-2"
+                        >
+                            <Home className="h-4 w-4" />
+                            Dashboard
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     );
 }

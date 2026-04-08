@@ -1,0 +1,64 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e485] [cursor=pointer]:
+    - generic [ref=e488]:
+      - text: Compiling
+      - generic [ref=e489]:
+        - generic [ref=e490]: .
+        - generic [ref=e491]: .
+        - generic [ref=e492]: .
+  - alert [ref=e440]
+  - generic [ref=e451]:
+    - link "Back to homepage" [ref=e452] [cursor=pointer]:
+      - /url: /
+      - img [ref=e453]
+      - text: Back to homepage
+    - generic [ref=e455]:
+      - generic [ref=e456]: V
+      - generic [ref=e457]:
+        - heading "Welcome back" [level=1] [ref=e458]
+        - paragraph [ref=e459]: Access your enterprise vendor portal
+    - generic [ref=e460]:
+      - generic [ref=e461]:
+        - generic:
+          - heading "Sign In" [level=3] [ref=e462]
+          - generic [ref=e463]: Secure
+        - paragraph: Enter your corporate credentials to continue
+      - generic [ref=e464]:
+        - generic:
+          - generic:
+            - generic:
+              - text: Email Address
+              - textbox "Email Address" [disabled] [ref=e465]:
+                - /placeholder: work@company.com
+                - text: admin@vms.com
+            - generic:
+              - generic:
+                - generic [ref=e466]: Password
+                - link "Forgot password?" [ref=e467] [cursor=pointer]:
+                  - /url: /forgot-password
+              - textbox "Password" [disabled] [ref=e468]:
+                - /placeholder: ••••••••
+                - text: Admin@123
+          - button "Authenticating..." [disabled]:
+            - img
+            - text: Authenticating...
+      - generic [ref=e470]:
+        - generic [ref=e471]: Partner Access
+        - link "Create New Enterprise Account":
+          - /url: /register
+          - button "Create New Enterprise Account" [ref=e472] [cursor=pointer]
+    - generic [ref=e473]:
+      - generic [ref=e474]:
+        - img [ref=e475]
+        - text: SOC2 COMPLIANT
+      - generic [ref=e478]:
+        - img [ref=e479]
+        - text: AES-256 ENCRYPTION
+    - paragraph [ref=e482]:
+      - text: By continuing, you agree to our
+      - link "Terms of Service" [ref=e483] [cursor=pointer]:
+        - /url: "#"
+      - text: and
+      - link "Privacy Policy" [ref=e484] [cursor=pointer]:
+        - /url: "#"
+      - text: . For security reasons, we log all access attempts.

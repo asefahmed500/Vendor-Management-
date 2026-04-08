@@ -54,7 +54,7 @@ export async function PUT(
     const ActivityLog = (await import('@/lib/db/models/ActivityLog')).default;
     await ActivityLog.create({
       vendorId: vendor._id,
-      performedBy: user.userId,
+      performedBy: user.id,
       activityType: 'REVISION_REQUESTED',
       description: 'Document revisions requested',
       metadata: {

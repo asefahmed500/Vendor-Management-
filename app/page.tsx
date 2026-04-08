@@ -1,288 +1,314 @@
-import Link from "next/link"
-import { ArrowRight, Shield, CheckCircle2, Activity, Users, Building2, Zap, Lock, FileText, Star, Globe, ShieldCheck, BarChart3 } from "lucide-react"
+import Link from "next/link";
+import { 
+  Shield, 
+  CheckCircle2, 
+  Users, 
+  Building2, 
+  FileText, 
+  TrendingUp,
+  ArrowRight,
+  Zap,
+  Globe,
+  Lock,
+  DollarSign,
+  Briefcase,
+  ClipboardList,
+  Clock,
+  AlertCircle,
+  Eye
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { AdminDashboardPreview, VendorDashboardPreview } from "@/components/landing"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+const demoStats = [
+  { label: "Total Vendors", value: "247", change: "+12%", icon: Users, color: "text-blue-500" },
+  { label: "Active RFPs", value: "18", change: "+3", icon: Briefcase, color: "text-emerald-500" },
+  { label: "Pending Reviews", value: "34", change: "-5", icon: Clock, color: "text-amber-500" },
+  { label: "Total Value", value: "$2.4M", change: "+18%", icon: DollarSign, color: "text-purple-500" },
+];
+
+const demoVendors = [
+  { name: "Acme Corp", status: "Approved", type: "Technology" },
+  { name: "Global Solutions", status: "Under Review", type: "Consulting" },
+  { name: "TechStart Inc", status: "Pending", type: "SaaS" },
+];
+
+const demoProposals = [
+  { vendor: "Acme Corp", score: 92, status: "Selected" },
+  { vendor: "Global Solutions", score: 87, status: "Reviewing" },
+  { vendor: "TechStart Inc", score: 78, status: "Pending" },
+];
+
+const features = [
+  {
+    icon: Shield,
+    title: "Compliance Automation",
+    description: "SOC 2, HIPAA, and custom compliance workflows automated end-to-end."
+  },
+  {
+    icon: Users,
+    title: "Vendor Registry",
+    description: "Centralized directory with verified credentials and real-time status tracking."
+  },
+  {
+    icon: FileText,
+    title: "Document Management",
+    description: "Secure uploads, e-signatures, and automated expiration alerts."
+  },
+  {
+    icon: TrendingUp,
+    title: "Performance Analytics",
+    description: "Comprehensive metrics and insights for data-driven decisions."
+  },
+  {
+    icon: Zap,
+    title: "Rapid Onboarding",
+    description: "Self-service registration with instant verification checks."
+  },
+  {
+    icon: Building2,
+    title: "RFP Management",
+    description: "Streamlined proposal collection and evaluation workflows."
+  }
+];
+
+const stats = [
+  { value: "500+", label: "Enterprise Vendors" },
+  { value: "99.9%", label: "Compliance Rate" },
+  { value: "24/7", label: "Support" },
+  { value: "< 2hr", label: "Avg. Onboarding" }
+];
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background selection:bg-primary/20">
+    <div className="flex flex-col min-h-screen bg-background">
       {/* Navigation */}
-      <header className="px-6 lg:px-10 h-18 flex items-center border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
-        <Link className="flex items-center gap-2.5 group" href="/">
-          <div className="h-9 w-9 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold text-xl shadow-lg group-hover:scale-105 transition-transform">
-            V
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
+        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
+          <Link className="flex items-center gap-3" href="/">
+            <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold">
+              V
+            </div>
+            <span className="font-heading font-semibold text-lg tracking-tight hidden sm:block">
+              VendorPortal
+            </span>
+          </Link>
+          
+          <nav className="hidden md:flex items-center gap-8">
+            <Link className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" href="#features">
+              Features
+            </Link>
+            <Link className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors" href="#demo">
+              Demo
+            </Link>
+          </nav>
+          
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="hidden sm:block">
+              <Button variant="ghost" size="sm" className="font-medium">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button size="sm" className="font-medium">
+                Get Started
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
-          <span className="font-bold text-xl tracking-tight hidden md:block text-foreground/90">VendorPortal</span>
-        </Link>
-        <nav className="ml-12 hidden lg:flex items-center gap-8">
-          <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors" href="#features">
-            Features
-          </Link>
-          <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors" href="#demo">
-            Demo
-          </Link>
-          <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors" href="#pricing">
-            Pricing
-          </Link>
-        </nav>
-        <div className="ml-auto flex items-center gap-3">
-          <Link href="/login">
-            <Button variant="ghost" className="font-medium">
-              Member Sign In
-            </Button>
-          </Link>
-          <Link href="#contact">
-            <Button className="px-6 bg-accent text-accent-foreground shadow-sm hover:shadow-md transition-all font-semibold">
-              Contact Sales
-            </Button>
-          </Link>
         </div>
       </header>
 
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         {/* Hero Section */}
-        <section className="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-28 lg:pt-48 lg:pb-36 bg-gradient-to-b from-muted/50 to-background">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -mr-48 -mt-24 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/20 rounded-full blur-[120px] -ml-48 -mb-24 pointer-events-none" />
+        <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden">
+          {/* Subtle background mesh */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-b from-accent/5 to-transparent rounded-full blur-3xl opacity-60" />
           </div>
-
-          <div className="container relative px-4 md:px-6 mx-auto">
-            <div className="flex flex-col items-center text-center max-w-5xl mx-auto space-y-10">
-              <Badge variant="secondary" className="px-4 py-1.5 rounded-full text-sm font-medium border-primary/10 animate-fade-in">
-                <Globe className="h-3.5 w-3.5 mr-2 text-primary" />
-                Trusted by Fortune 500 Enterprises
+          
+          <div className="container mx-auto px-6">
+            <div className="max-w-3xl mx-auto text-center">
+              <Badge variant="secondary" className="mb-6 font-medium">
+                <Globe className="h-3 w-3 mr-1.5" />
+                Enterprise-Ready Platform
               </Badge>
-
-              <div className="space-y-6 max-w-4xl">
-                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1] text-foreground">
-                  Streamline Vendor <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">Operations</span>
-                </h1>
-                <p className="mx-auto max-w-2xl text-xl md:text-2xl text-muted-foreground leading-relaxed font-medium">
-                  The mission-critical platform for automated onboarding, compliance monitoring, and secure vendor ecosystem management.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                <Link href="#contact" className="w-full sm:w-auto">
-                  <Button size="lg" className="h-14 px-10 text-lg w-full sm:w-auto bg-accent text-accent-foreground shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all font-bold rounded-2xl">
-                    Experience the Full Suite <ArrowRight className="ml-2 h-5 w-5" />
+              
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold tracking-tight mb-6">
+                Vendor management,{" "}
+                <span className="text-accent">simplified</span>.
+              </h1>
+              
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+                Streamline your vendor lifecycle from onboarding to compliance monitoring. 
+                Built for enterprises that demand security, speed, and control.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link href="/register">
+                  <Button size="lg" className="h-12 px-8 font-medium">
+                    Start Free Trial
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="/login" className="w-full sm:w-auto">
-                  <Button variant="outline" size="lg" className="h-14 px-10 text-lg w-full sm:w-auto rounded-2xl font-semibold hover:bg-muted/50 transition-all border-2">
-                    Partner Login
+                <Link href="/login">
+                  <Button variant="outline" size="lg" className="h-12 px-8 font-medium">
+                    View Demo
                   </Button>
                 </Link>
-              </div>
-
-              <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 pt-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
-                  <ShieldCheck className="h-6 w-6 text-primary" /> SECURECORP
-                </div>
-                <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
-                  <Globe className="h-6 w-6 text-primary" /> GLOBALTECH
-                </div>
-                <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
-                  <Building2 className="h-6 w-6 text-primary" /> APEXINDUSTRY
-                </div>
-                <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
-                  <BarChart3 className="h-6 w-6 text-primary" /> DATAPRO
-                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Value Proposition Grid */}
-        <section id="features" className="py-24 md:py-32 bg-background border-t">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <Card className="p-8 bg-muted/30 border-none shadow-none rounded-3xl group hover:bg-muted/50 transition-colors">
-                <div className="h-14 w-14 rounded-2xl bg-background shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <ShieldCheck className="h-7 w-7 text-primary" />
-                </div>
-                <h3 className="text-2xl font-bold mb-3 tracking-tight">Enterprise Security</h3>
-                <p className="text-muted-foreground text-lg leading-relaxed">
-                  SOC 2 Type II compliant platform with end-to-end encryption and multi-factor authentication for every vendor interaction.
-                </p>
-              </Card>
-              <Card className="p-8 bg-muted/30 border-none shadow-none rounded-3xl group hover:bg-muted/50 transition-colors">
-                <div className="h-14 w-14 rounded-2xl bg-background shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Zap className="h-7 w-7 text-primary" />
-                </div>
-                <h3 className="text-2xl font-bold mb-3 tracking-tight">Rapid Onboarding</h3>
-                <p className="text-muted-foreground text-lg leading-relaxed">
-                  Reduce vendor cycle times from weeks to hours with self-service registration and automated document verification.
-                </p>
-              </Card>
-              <Card className="p-8 bg-muted/30 border-none shadow-none rounded-3xl group hover:bg-muted/50 transition-colors">
-                <div className="h-14 w-14 rounded-2xl bg-background shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <BarChart3 className="h-7 w-7 text-primary" />
-                </div>
-                <h3 className="text-2xl font-bold mb-3 tracking-tight">Deep Insights</h3>
-                <p className="text-muted-foreground text-lg leading-relaxed">
-                  Real-time visibility into vendor health, risk factors, and performance metrics through powerful enterprise BI tools.
-                </p>
-              </Card>
+        {/* Demo Dashboard Section */}
+        <section id="demo" className="py-32 md:py-40 bg-muted/20">
+          <div className="container mx-auto px-6">
+            <div className="max-w-2xl mb-12">
+              <Badge variant="secondary" className="mb-4 font-medium">
+                <Eye className="h-3 w-3 mr-1.5" />
+                Live Dashboard Preview
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
+                Enterprise-grade vendor management
+              </h2>
+              <p className="text-muted-foreground mt-4 text-lg">
+                Real-time visibility into vendor compliance, performance metrics, and procurement workflows.
+              </p>
             </div>
-          </div>
-        </section>
 
-        {/* Features Tabs Section */}
-        <section className="py-24 md:py-32 bg-background overflow-hidden">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col lg:flex-row gap-16 items-center">
-              <div className="flex-1 space-y-8">
-                <div className="space-y-4">
-                  <Badge className="bg-primary/10 text-primary border-none text-xs font-bold uppercase tracking-widest px-3 py-1">Advanced Capabilities</Badge>
-                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-none">
-                    One Unified Hub for <br className="hidden md:block" />
-                    All Vendor Data
-                  </h2>
-                  <p className="text-xl text-muted-foreground leading-relaxed max-w-xl">
-                    Replace fragmented spreadsheets and email chains with a centralized system of record designed for modern procurement teams.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
-                      <CheckCircle2 className="h-4 w-4 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg tracking-tight">Automated Verification</h4>
-                      <p className="text-muted-foreground">Instantly validate EIN, insurance certificates, and tax documents.</p>
-                    </div>
+            {/* Demo Dashboard Preview - Larger & More Detailed */}
+            <div className="bg-background rounded-xl border border-border shadow-2xl overflow-hidden max-w-5xl mx-auto">
+              {/* Dashboard Header */}
+              <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 bg-primary-foreground/20 rounded-lg flex items-center justify-center font-bold text-lg">
+                    V
                   </div>
-                  <div className="flex items-start gap-4">
-                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
-                      <CheckCircle2 className="h-4 w-4 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg tracking-tight">Compliance Monitoring</h4>
-                      <p className="text-muted-foreground">Continuous background checks and watch-list monitoring in real-time.</p>
-                    </div>
+                  <div>
+                    <span className="font-heading font-bold text-xl">Admin Dashboard</span>
+                    <p className="text-primary-foreground/70 text-sm">Vendor Management System</p>
                   </div>
                 </div>
-
-                <Button size="lg" variant="secondary" className="font-bold rounded-xl px-8 py-6 h-auto">
-                  Explore Full Feature Set <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-sm font-medium">Admin User</p>
+                    <p className="text-xs text-primary-foreground/70">admin@vms.com</p>
+                  </div>
+                  <div className="h-10 w-10 bg-primary-foreground/20 rounded-full flex items-center justify-center">
+                    <Users className="h-5 w-5" />
+                  </div>
+                </div>
               </div>
 
-              <div className="flex-1 relative">
-                <div className="absolute inset-0 bg-primary/30 blur-[80px] rounded-full pointer-events-none opacity-50 translate-x-12 translate-y-12" />
-                <Card className="relative overflow-hidden border-2 shadow-2xl rounded-3xl bg-background/50 backdrop-blur-sm">
-                  <header className="px-6 py-4 border-b bg-muted/50 flex items-center justify-between">
-                    <div className="flex gap-1.5">
-                      <div className="h-3 w-3 rounded-full bg-destructive/50" />
-                      <div className="h-3 w-3 rounded-full bg-orange-500/50" />
-                      <div className="h-3 w-3 rounded-full bg-emerald-500/50" />
-                    </div>
-                    <div className="text-xs font-medium text-muted-foreground">Compliance Dashboard</div>
-                  </header>
-                  <CardContent className="p-10 space-y-8">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <div className="text-3xl font-bold">94.2%</div>
-                        <div className="text-xs text-muted-foreground font-semibold uppercase tracking-tighter">Overall Compliance</div>
+              {/* Dashboard Content */}
+              <div className="p-8">
+                {/* Stats Cards - Larger */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                  {demoStats.map((stat) => (
+                    <div key={stat.label} className="p-6 rounded-xl border bg-card hover:shadow-lg transition-shadow">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className={`p-2 rounded-lg ${stat.color.replace('text', 'bg')}/10`}>
+                          <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                        </div>
+                        <span className="text-xs font-semibold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">{stat.change}</span>
                       </div>
-                      <div className="h-10 w-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                        <Activity className="h-6 w-6 text-emerald-500" />
-                      </div>
+                      <div className="text-3xl font-bold mb-1">{stat.value}</div>
+                      <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
                     </div>
-                    <div className="space-y-4">
-                      {[75, 92, 60].map((progress, i) => (
-                        <div key={i} className="space-y-1.5">
-                          <div className="flex justify-between text-xs font-bold">
-                            <span>{['Insurance', 'Tax Docs', 'Background Checks'][i]}</span>
-                            <span>{progress}%</span>
+                  ))}
+                </div>
+
+                {/* Two Column Layout */}
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Recent Vendors */}
+                  <div className="rounded-xl border bg-card">
+                    <div className="p-5 border-b flex items-center justify-between bg-muted/30">
+                      <h3 className="font-heading font-bold text-lg">Recent Vendors</h3>
+                      <Button variant="ghost" size="sm">View All →</Button>
+                    </div>
+                    <div className="p-5 space-y-4">
+                      {demoVendors.map((vendor) => (
+                        <div key={vendor.name} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 bg-accent/10 rounded-full flex items-center justify-center font-bold text-accent">
+                              {vendor.name.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="font-semibold">{vendor.name}</p>
+                              <p className="text-xs text-muted-foreground">{vendor.type}</p>
+                            </div>
                           </div>
-                          <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                            <div className="h-full bg-primary" style={{ width: `${progress}%` }} />
+                          <Badge 
+                            variant={
+                              vendor.status === "Approved" ? "default" :
+                              vendor.status === "Under Review" ? "secondary" :
+                              "outline"
+                            }
+                            className="font-medium"
+                          >
+                            {vendor.status}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Proposal Evaluations */}
+                  <div className="rounded-xl border bg-card">
+                    <div className="p-5 border-b flex items-center justify-between bg-muted/30">
+                      <h3 className="font-heading font-bold text-lg">Active Proposals</h3>
+                      <Button variant="ghost" size="sm">View All →</Button>
+                    </div>
+                    <div className="p-5 space-y-4">
+                      {demoProposals.map((proposal) => (
+                        <div key={proposal.vendor} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                          <div>
+                            <p className="font-semibold">{proposal.vendor}</p>
+                            <p className="text-xs text-muted-foreground">Score: {proposal.score}/100</p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+                              <div 
+                                className="h-full bg-primary rounded-full" 
+                                style={{ width: `${proposal.score}%` }}
+                              />
+                            </div>
+                            <Badge 
+                              variant={
+                                proposal.status === "Selected" ? "default" :
+                                proposal.status === "Reviewing" ? "secondary" :
+                                "outline"
+                              }
+                              className="font-medium"
+                            >
+                              {proposal.status}
+                            </Badge>
                           </div>
                         </div>
                       ))}
                     </div>
-                    <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
-                      <div className="flex gap-3 text-sm font-medium">
-                        <Star className="h-5 w-5 text-primary fill-primary" />
-                        Smart Recommendation: Update 12 pending contracts.
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Dashboard Previews Section */}
-        <section id="demo" className="py-24 md:py-32 bg-muted/30">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="text-center space-y-4 mb-16">
-              <Badge className="bg-indigo-500/10 text-indigo-600 border-none text-xs font-bold uppercase tracking-widest px-3 py-1">
-                Interactive Preview
-              </Badge>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight">
-                Experience Both Dashboards
-              </h2>
-              <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                Explore our powerful admin controls and vendor-friendly interface — no sign-up required.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-              {/* Admin Dashboard Preview */}
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-bold flex items-center gap-2">
-                    <ShieldCheck className="h-6 w-6 text-primary" />
-                    Admin Dashboard
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Complete control over your vendor ecosystem with analytics, compliance tracking, and automated workflows.
-                  </p>
-                </div>
-                <div className="transform hover:scale-[1.02] transition-transform duration-300">
-                  <AdminDashboardPreview />
-                </div>
-              </div>
-
-              {/* Vendor Dashboard Preview */}
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-bold flex items-center gap-2">
-                    <Building2 className="h-6 w-6 text-indigo-600" />
-                    Vendor Portal
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Self-service onboarding, document management, and opportunity bidding in one intuitive interface.
-                  </p>
-                </div>
-                <div className="transform hover:scale-[1.02] transition-transform duration-300">
-                  <VendorDashboardPreview />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-16 text-center">
-              <p className="text-muted-foreground text-sm mb-4">
-                Interactive demo with mock data • No authentication required
+            <div className="mt-12 text-center">
+              <p className="text-sm text-muted-foreground mb-4">
+                This is a preview. Sign in to see your actual data.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href="/register">
-                  <Button size="lg" className="h-14 px-10 text-lg shadow-xl hover:shadow-2xl transition-all font-bold rounded-2xl">
-                    Start Your Free Trial <ArrowRight className="ml-2 h-5 w-5" />
+                <Link href="/login">
+                  <Button size="lg" className="h-11 px-8 font-medium">
+                    Sign In
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href="/login">
-                  <Button variant="outline" size="lg" className="h-14 px-10 text-lg rounded-2xl font-semibold hover:bg-muted/50 transition-all border-2">
-                    Sign In to Live Demo
+                  <Button variant="outline" size="lg" className="h-11 px-8 font-medium">
+                    Request Demo
                   </Button>
                 </Link>
               </div>
@@ -291,113 +317,117 @@ export default function HomePage() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-24 bg-primary text-primary-foreground overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-white/5 rounded-full -mr-96 -mt-96 blur-3xl pointer-events-none" />
-          <div className="container relative px-4 md:px-6 mx-auto">
+        <section id="stats" className="py-16 border-y border-border/50">
+          <div className="container mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <div className="space-y-2 text-center">
-                <div className="text-5xl md:text-6xl font-black italic tracking-tighter">$12B+</div>
-                <div className="text-sm font-bold uppercase tracking-widest opacity-80">Managed Spend</div>
-              </div>
-              <div className="space-y-2 text-center">
-                <div className="text-5xl md:text-6xl font-black italic tracking-tighter">80%</div>
-                <div className="text-sm font-bold uppercase tracking-widest opacity-80">Cycle Time Reduction</div>
-              </div>
-              <div className="space-y-2 text-center">
-                <div className="text-5xl md:text-6xl font-black italic tracking-tighter">0</div>
-                <div className="text-sm font-bold uppercase tracking-widest opacity-80">Security Breaches</div>
-              </div>
-              <div className="space-y-2 text-center">
-                <div className="text-5xl md:text-6xl font-black italic tracking-tighter">24/7</div>
-                <div className="text-sm font-bold uppercase tracking-widest opacity-80">Expert Support</div>
-              </div>
+              {stats.map((stat, index) => (
+                <div key={stat.label} className="text-center">
+                  <div className="text-3xl md:text-4xl font-heading font-bold text-accent mb-1">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-muted-foreground font-medium">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* CTA Final */}
-        <section className="py-32 md:py-48 bg-background relative border-b">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]" />
-          <div className="container relative px-4 md:px-6 mx-auto">
-            <div className="max-w-4xl mx-auto text-center space-y-10">
-              <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none">
-                Ready to rethink vendor management?
+        {/* Features Section */}
+        <section id="features" className="py-24 md:py-32">
+          <div className="container mx-auto px-6">
+            <div className="max-w-2xl mb-16">
+              <Badge variant="outline" className="mb-4 font-medium">
+                Capabilities
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
+                Everything you need to manage vendors at scale
               </h2>
-              <p className="text-2xl text-muted-foreground leading-relaxed max-w-2xl mx-auto font-medium">
-                Join 500+ global enterprises transforming their procurement operations with VendorPortal.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                <Link href="/register" className="w-full sm:w-auto">
-                  <Button size="lg" className="h-16 px-12 text-xl w-full sm:w-auto shadow-2xl hover:scale-105 transition-all font-bold rounded-2xl">
-                    Get Started Now
-                  </Button>
-                </Link>
-                <Link href="#" className="w-full sm:w-auto">
-                  <Button variant="ghost" size="lg" className="h-16 px-12 text-xl w-full sm:w-auto font-bold rounded-2xl border-2 border-transparent hover:border-muted hover:bg-muted/50">
-                    Contact Sales
-                  </Button>
-                </Link>
-              </div>
-              <div className="pt-10 flex items-center justify-center gap-2 text-muted-foreground font-semibold">
-                <CheckCircle2 className="h-5 w-5 text-primary" /> No credit card required. Cancel anytime.
-              </div>
             </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {features.map((feature, index) => (
+                <Card key={feature.title} className="border-border/50 hover:border-accent/20 transition-colors">
+                  <CardContent className="p-6">
+                    <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
+                      <feature.icon className="h-5 w-5 text-accent" />
+                    </div>
+                    <h3 className="font-heading font-semibold text-lg mb-2">
+                      {feature.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-24 md:py-32 border-t border-border/50">
+          <div className="container mx-auto px-6">
+            <Card className="bg-primary text-primary-foreground border-0">
+              <CardContent className="p-12 md:p-16 text-center">
+                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+                  Ready to transform your vendor management?
+                </h2>
+                <p className="text-primary-foreground/70 max-w-xl mx-auto mb-8">
+                  Join 500+ enterprises using VendorPortal to streamline compliance, 
+                  onboarding, and vendor relationships.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Link href="/register">
+                    <Button size="lg" variant="secondary" className="h-12 px-8 font-medium">
+                      Get Started Free
+                    </Button>
+                  </Link>
+                  <Link href="/login">
+                    <Button size="lg" variant="ghost" className="h-12 px-8 font-medium text-primary-foreground hover:bg-primary-foreground/10">
+                      Contact Sales
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-background border-t py-16 px-6 sm:px-12">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-12">
-            <div className="col-span-2 space-y-6">
-              <Link className="flex items-center gap-2.5 group" href="/">
-                <div className="h-9 w-9 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold text-xl">
-                  V
-                </div>
-                <span className="font-extrabold text-2xl tracking-tighter">VendorPortal</span>
+      <footer className="py-12 border-t border-border/50">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold">
+                V
+              </div>
+              <span className="font-heading font-semibold text-sm">
+                VendorPortal
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <Link href="/privacy" className="hover:text-foreground transition-colors">
+                Privacy
               </Link>
-              <p className="text-muted-foreground max-w-xs leading-relaxed font-medium">
-                The world's most trusted vendor ecosystem platform for modern enterprises. Built for security, speed, and scale.
-              </p>
+              <Link href="/terms" className="hover:text-foreground transition-colors">
+                Terms
+              </Link>
+              <div className="flex items-center gap-1.5">
+                <Lock className="h-3.5 w-3.5" />
+                <span> SOC 2 Compliant</span>
+              </div>
             </div>
-            <div className="space-y-4">
-              <h4 className="font-black text-xs uppercase tracking-widest text-foreground/50">Product</h4>
-              <nav className="flex flex-col gap-2.5">
-                {['Features', 'Security', 'Compliance', 'Solutions'].map((item) => (
-                  <Link key={item} href="#" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors">{item}</Link>
-                ))}
-              </nav>
-            </div>
-            <div className="space-y-4">
-              <h4 className="font-black text-xs uppercase tracking-widest text-foreground/50">Company</h4>
-              <nav className="flex flex-col gap-2.5">
-                {['About Us', 'Success Stories', 'Partners', 'Careers'].map((item) => (
-                  <Link key={item} href="#" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors">{item}</Link>
-                ))}
-              </nav>
-            </div>
-            <div className="space-y-4">
-              <h4 className="font-black text-xs uppercase tracking-widest text-foreground/50">Legal</h4>
-              <nav className="flex flex-col gap-2.5">
-                {['Privacy', 'Terms', 'GDPR', 'Cookies'].map((item) => (
-                  <Link key={item} href="#" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors">{item}</Link>
-                ))}
-              </nav>
-            </div>
-          </div>
-          <div className="mt-16 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-sm font-bold text-muted-foreground/60 tracking-tight">
-              © 2024 VendorPortal Inc. All rights reserved. Designed for Enterprise Scale.
-            </p>
-            <div className="flex gap-8">
-              {['Twitter', 'LinkedIn', 'Github'].map((social) => (
-                <Link key={social} href="#" className="text-sm font-black uppercase tracking-tighter text-muted-foreground/40 hover:text-primary transition-colors">{social}</Link>
-              ))}
+            
+            <div className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} VendorPortal. All rights reserved.
             </div>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }

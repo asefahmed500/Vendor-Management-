@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/connect';
 import Proposal from '@/lib/db/models/Proposal';
+import User from '@/lib/db/models/User';
+import ActivityLog from '@/lib/db/models/ActivityLog';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse, PaginatedResponse } from '@/lib/types/api';
 import type { IProposal } from '@/lib/types/proposal';
-import { ZodError } from 'zod';
+import { handleApiError } from '@/lib/middleware/errorHandler';
 import { createProposalSchema, proposalFiltersSchema } from '@/lib/validation/schemas/proposal';
+import { createBulkNotifications } from '@/lib/notifications/service';
 
 export async function GET(request: NextRequest) {
   try {
@@ -61,7 +64,7 @@ export async function GET(request: NextRequest) {
       {
         success: true,
         data: {
-          items: proposals as any[],
+          items: proposals as unknown as IProposal[],
           pagination: {
             total,
             page: filters.page,
@@ -75,30 +78,7 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get proposals error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors: errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetProposals');
   }
 }
 
@@ -124,37 +104,46 @@ export async function POST(request: NextRequest) {
       createdBy: user.id,
     });
 
+    // Enterprise Audit Log
+    await ActivityLog.create({
+      userId: user.id,
+      userEmail: user.email,
+      action: 'PROPOSAL_CREATE',
+      resourceType: 'PROPOSAL',
+      resourceId: proposal._id.toString(),
+      description: `Created new RFP: ${proposal.title}`,
+      metadata: { title: proposal.title }
+    });
+
+    // Notify all vendors about the new RFP
+    try {
+      const vendors = await User.find({ role: 'VENDOR', isActive: true }, '_id').lean();
+      
+      if (vendors.length > 0) {
+        const notifications = vendors.map(v => ({
+          userId: v._id.toString(),
+          type: 'PROPOSAL_UPDATE' as const,
+          title: 'New Request for Proposal',
+          message: `A new RFP "${proposal.title}" has been published.`,
+          link: '/vendor/proposals',
+          metadata: { proposalId: proposal._id.toString() }
+        }));
+        
+        await createBulkNotifications(notifications);
+      }
+    } catch (notifError) {
+      console.error('Failed to send bulk notifications:', notifError);
+    }
+
     return NextResponse.json<ApiResponse<{ proposal: IProposal }>>(
       {
         success: true,
-        data: { proposal: proposal.toJSON() as any },
+        data: { proposal: proposal.toJSON() as unknown as IProposal },
         message: 'Proposal created successfully',
       },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error('Create proposal error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors: errors,
-        },
-        { status: 400 }
-      );
-    }
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: `Internal server error: ${error.message || 'Unknown error'}` },
-      { status: 500 }
-    );
+  } catch (error) {
+    return handleApiError(error, 'CreateProposal');
   }
 }

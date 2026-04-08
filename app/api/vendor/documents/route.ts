@@ -11,6 +11,7 @@ import { submitDocumentsSchema } from '@/lib/validation/schemas/document';
 import { uploadBuffer, validateFileType, deleteFile } from '@/lib/cloudinary/config';
 import { sanitizeUserInput } from '@/lib/utils/sanitize';
 import { sendEmail, DocumentsConfirmationEmail, DocumentsReceivedEmail, getAdminEmail } from '@/lib/email';
+import { createBulkNotifications } from '@/lib/notifications/service';
 
 export async function GET(request: NextRequest) {
   try {
@@ -250,6 +251,26 @@ export async function PUT(request: NextRequest) {
       subject: adminEmailContent.subject,
       html: adminEmailContent.html,
     });
+
+    // Notify all admins via system notification
+    try {
+      const admins = await User.find({ role: 'ADMIN', isActive: true }, '_id').lean();
+      
+      if (admins.length > 0) {
+        const notifications = admins.map(a => ({
+          userId: a._id.toString(),
+          type: 'DOCUMENT_VERIFIED' as const, // generic type for document updates
+          title: 'Vendor Documents Submitted',
+          message: `${vendor.companyName} has submitted ${documentCount} document(s) for review.`,
+          link: '/admin/documents',
+          metadata: { vendorId: vendor._id.toString() }
+        }));
+        
+        await createBulkNotifications(notifications);
+      }
+    } catch (notifError) {
+      console.error('Failed to send bulk admin notifications:', notifError);
+    }
 
     return NextResponse.json<ApiResponse>(
       {

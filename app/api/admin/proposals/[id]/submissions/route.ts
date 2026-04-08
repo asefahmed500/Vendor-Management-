@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/connect';
 import ProposalSubmission from '@/lib/db/models/ProposalSubmission';
 import ProposalRanking from '@/lib/db/models/ProposalRanking';
+import ActivityLog from '@/lib/db/models/ActivityLog';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
 import { IProposalSubmission, IProposalRanking } from '@/lib/types/proposal';
@@ -100,13 +101,46 @@ export async function PUT(
         ranking = await ProposalRanking.create({
           proposalId: id,
           submissionId: body.submissionId,
-          rankedBy: user.userId,
+          rankedBy: user.id,
           ...validatedData,
         });
       }
 
       submission.status = validatedData.rank === 1 ? 'ACCEPTED' : 'UNDER_REVIEW';
       await submission.save();
+
+      // Enterprise Audit Log
+      await ActivityLog.create({
+        userId: user.id,
+        userEmail: user.email,
+        action: 'SUBMISSION_RANKING_UPDATE',
+        resourceType: 'SUBMISSION',
+        resourceId: submission._id.toString(),
+        description: `Ranked submission for proposal ${submission.proposalId} at position #${ranking.rank}`,
+        metadata: { rank: ranking.rank, score: ranking.score }
+      });
+
+      // Notify Vendor about the ranking/status change
+      try {
+        const { notifyProposalUpdate } = await import('@/lib/notifications/service');
+        const Vendor = (await import('@/lib/db/models/Vendor')).default;
+        const Proposal = (await import('@/lib/db/models/Proposal')).default;
+        
+        const [vendor, proposal] = await Promise.all([
+          Vendor.findById(submission.vendorId),
+          Proposal.findById(submission.proposalId)
+        ]);
+        
+        if (vendor && proposal) {
+          await notifyProposalUpdate(
+            vendor.userId.toString(),
+            proposal.title,
+            submission.status
+          );
+        }
+      } catch (notifError) {
+        console.error('Failed to notify vendor of ranking:', notifError);
+      }
 
       return NextResponse.json<ApiResponse<{ ranking: IProposalRanking }>>(
         {
@@ -118,7 +152,7 @@ export async function PUT(
       );
     }
 
-    if (body.action === 'updateStatus') {
+    if (body.action === 'status') {
       const { submissionId, status, comments } = body;
 
       const submission = await ProposalSubmission.findById(submissionId);

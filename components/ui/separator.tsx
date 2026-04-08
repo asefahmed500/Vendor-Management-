@@ -3,7 +3,7 @@
 import { HTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
-interface SeparatorProps extends HTMLAttributes<HTMLDivElement> {
+export interface SeparatorProps extends HTMLAttributes<HTMLDivElement> {
   orientation?: 'horizontal' | 'vertical';
   decorative?: boolean;
 }

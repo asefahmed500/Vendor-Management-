@@ -1,13 +1,14 @@
 'use client';
 
 import { HTMLAttributes, forwardRef } from 'react';
+import { cn } from '@/lib/utils';
 import { Badge } from './badge';
 
 type VendorStatus = 'PENDING' | 'APPROVED_LOGIN' | 'DOCUMENTS_SUBMITTED' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
 
-interface StatusBadgeProps extends HTMLAttributes<HTMLSpanElement> {
+interface StatusBadgeProps extends HTMLAttributes<HTMLDivElement> {
   status: VendorStatus;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const statusConfig: Record<VendorStatus, { label: string; variant: 'default' | 'success' | 'warning' | 'danger' | 'info'; icon: string }> = {
@@ -43,7 +44,7 @@ const statusConfig: Record<VendorStatus, { label: string; variant: 'default' | '
   },
 };
 
-export const StatusBadge = forwardRef<HTMLSpanElement, StatusBadgeProps>(
+export const StatusBadge = forwardRef<HTMLDivElement, StatusBadgeProps>(
   ({ className, status, size = 'md', ...props }, ref) => {
     const config = statusConfig[status];
 
@@ -52,10 +53,10 @@ export const StatusBadge = forwardRef<HTMLSpanElement, StatusBadgeProps>(
         ref={ref}
         variant={config.variant}
         size={size}
-        className={className}
+        className={cn("flex items-center gap-1.5", className)}
         {...props}
       >
-        <span className="text-base">{config.icon}</span>
+        <span className="opacity-70">{config.icon}</span>
         <span>{config.label}</span>
       </Badge>
     );

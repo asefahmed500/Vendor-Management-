@@ -1,13 +1,22 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Loader2, CheckCircle2, Mail, Building2, User, Phone, FileCheck, ArrowRight, ArrowLeft } from 'lucide-react';
+import { 
+  Loader2, 
+  CheckCircle2, 
+  ArrowLeft,
+  Mail,
+  Phone,
+  Lock,
+  User,
+  Building2
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -27,11 +36,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
 import { AlertCircle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { authClient } from '@/lib/auth/auth-client';
 
 const COMPANY_TYPES = ['LLC', 'Corporation', 'Partnership', 'Sole Proprietorship', 'Other'] as const;
 
@@ -46,18 +55,16 @@ const registerSchema = z.object({
     .min(1, 'Email is required')
     .email('Invalid email address'),
   phone: z.string()
-    .min(1, 'Phone number is required')
-    .regex(/^[+]?[\d\s\-()]+$/, 'Invalid phone number format'),
+    .min(1, 'Phone number is required'),
   companyType: z.string().optional(),
   taxId: z.string().optional(),
-  address: z.string().optional(),
   password: z.string()
     .min(1, 'Password is required')
     .min(8, 'Password must be at least 8 characters')
     .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/\d/, 'Password must contain at least one number')
-    .regex(/[@$!%*?&]/, 'Password must contain at least one special character (@$!%*&)'),
+    .regex(/[@$!%*?&]/, 'Password must contain at least one special character'),
   confirmPassword: z.string()
     .min(1, 'Please confirm your password'),
   terms: z.boolean()
@@ -69,7 +76,7 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-const getPasswordStrength = (password: string) => {
+const getPasswordStrength = (password: string): number => {
   if (!password) return 0;
   let strength = 0;
   if (password.length >= 8) strength++;
@@ -81,7 +88,7 @@ const getPasswordStrength = (password: string) => {
   return Math.min(5, strength);
 };
 
-const getStrengthLabel = (strength: number) => {
+const getStrengthLabel = (strength: number): string => {
   if (strength <= 1) return 'Weak';
   if (strength <= 2) return 'Fair';
   if (strength <= 3) return 'Good';
@@ -89,14 +96,17 @@ const getStrengthLabel = (strength: number) => {
   return 'Excellent';
 };
 
-import { authClient } from '@/lib/auth/auth-client';
-
 function RegisterForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [registeredCompany, setRegisteredCompany] = useState('');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -107,7 +117,6 @@ function RegisterForm() {
       phone: '',
       companyType: '',
       taxId: '',
-      address: '',
       password: '',
       confirmPassword: '',
       terms: false,
@@ -122,70 +131,66 @@ function RegisterForm() {
     setIsLoading(true);
     setSubmitError(null);
 
-    await (authClient.signUp.email as any)({
-      email: values.email,
-      password: values.password,
-      name: values.contactPerson,
-      // Additional fields configured in auth.ts
-      companyName: values.companyName,
-      contactPerson: values.contactPerson,
-      phone: values.phone,
-      role: 'VENDOR',
-    }, {
-      onRequest: () => {
-        setIsLoading(true);
-      },
-      onSuccess: () => {
-        setShowSuccess(true);
-        setRegisteredCompany(values.companyName);
-        toast.success('Registration submitted successfully!');
-
-        // For security vendors, we wait for approval, but Better Auth might have logged them in. 
-        // We'll redirect to login after a delay as per original logic.
-        setTimeout(() => {
-          router.push('/login');
-        }, 4000);
-        setIsLoading(false);
-      },
-      onError: (ctx: any) => {
-        const errorMessage = ctx.error.message || 'Registration failed';
-        setSubmitError(errorMessage);
-        toast.error(errorMessage);
-        setIsLoading(false);
-      }
-    });
+    try {
+      await (authClient.signUp.email as any)({
+        email: values.email,
+        password: values.password,
+        name: values.contactPerson,
+        companyName: values.companyName,
+        phone: values.phone,
+        role: 'VENDOR',
+      }, {
+        onRequest: () => {
+          setIsLoading(true);
+        },
+        onSuccess: () => {
+          setShowSuccess(true);
+          setRegisteredCompany(values.companyName);
+          toast.success('Account created! Check your email to verify.');
+          
+          setTimeout(() => {
+            router.push('/login');
+          }, 4000);
+        },
+        onError: (ctx: any) => {
+          const errorMessage = ctx.error.message || 'Registration failed';
+          setSubmitError(errorMessage);
+          toast.error(errorMessage);
+          setIsLoading(false);
+        }
+      });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Registration failed';
+      setSubmitError(message);
+      toast.error(message);
+      setIsLoading(false);
+    }
   };
 
   if (showSuccess) {
     return (
-      <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[100px] -mr-48 -mt-24 pointer-events-none" />
-        <Card className="w-full max-w-md border-2 shadow-2xl rounded-3xl overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700 bg-background/80 backdrop-blur-sm">
+      <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-md border-border/50">
           <CardContent className="pt-12 pb-12">
-            <div className="flex flex-col items-center text-center space-y-8">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center animate-in zoom-in duration-500 border-2 border-emerald-500/20">
-                <CheckCircle2 className="w-12 h-12 text-emerald-600" />
+            <div className="flex flex-col items-center text-center space-y-6">
+              <div className="h-16 w-16 rounded-full bg-success/10 flex items-center justify-center">
+                <CheckCircle2 className="h-8 w-8 text-success" />
               </div>
-              <div className="space-y-4">
-                <h1 className="text-3xl font-black tracking-tighter">Registration Submitted!</h1>
-                <p className="text-muted-foreground font-medium px-6 leading-relaxed">
-                  Thank you for registering <span className="font-bold text-foreground">{registeredCompany}</span>. Your application is now in our secure review queue.
+              <div className="space-y-2">
+                <h1 className="text-2xl font-heading font-bold">Welcome aboard!</h1>
+                <p className="text-muted-foreground">
+                  Your account for <span className="font-semibold text-foreground">{registeredCompany}</span> has been created.
                 </p>
-                <div className="p-4 bg-muted/50 rounded-2xl border-2 text-sm text-muted-foreground">
-                  Expect an approval email within 24-48 business hours.
-                </div>
               </div>
               <div className="w-full space-y-4">
-                <div className="w-full bg-muted rounded-full h-2 overflow-hidden border">
-                  <div className="h-full bg-primary animate-progress-bar" style={{
-                    animation: 'progress 3.5s linear forwards',
-                    width: '100%',
-                    transformOrigin: 'left'
-                  }} />
+                <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-success transition-all duration-[3000ms]" 
+                    style={{ width: '100%' }}
+                  />
                 </div>
-                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground/60 flex items-center justify-center gap-2">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  Finalizing redirection...
+                <p className="text-xs font-medium text-muted-foreground text-center">
+                  Redirecting to login…
                 </p>
               </div>
             </div>
@@ -195,80 +200,72 @@ function RegisterForm() {
     );
   }
 
-  return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Decorative Orbs */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -mr-48 -mt-24 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/10 rounded-full blur-[120px] -ml-48 -mb-24 pointer-events-none" />
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="h-8 w-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
-      <div className="mx-auto w-full max-w-2xl relative z-10">
-        {/* Back to Home */}
-        <Link href="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary mb-8 transition-colors group">
-          <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to homepage
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-xl">
+        <Link 
+          href="/" 
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to home
         </Link>
 
-        {/* Logo and Brand */}
-        <div className="flex flex-col items-center space-y-3 text-center mb-10">
-          <div className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center text-primary-foreground font-black text-3xl shadow-xl mb-2">
-            V
-          </div>
-          <div className="space-y-1">
-            <h1 className="text-4xl font-black tracking-tighter text-foreground">Vendor Registration</h1>
-            <p className="text-muted-foreground font-medium text-lg">
-              Join our global enterprise ecosystem
-            </p>
-          </div>
-        </div>
-
-        {/* Registration Card */}
-        <Card className="border-2 shadow-2xl rounded-[2.5rem] overflow-hidden bg-background/80 backdrop-blur-md">
-          <CardHeader className="space-y-2 pb-8 border-b bg-muted/30 px-10 pt-10">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-2xl font-black tracking-tight">Create Enterprise Account</CardTitle>
-              <Badge variant="outline" className="font-bold uppercase tracking-widest text-xs bg-background py-1">Official</Badge>
+        <Card className="border-border/50">
+          <CardHeader className="text-center pb-4">
+            <div className="mx-auto h-10 w-10 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xl">
+              V
             </div>
-            <CardDescription className="text-base font-medium">
-              Complete the corporate onboarding to start managing your vendor profile
-            </CardDescription>
+            <div>
+              <CardTitle className="text-xl font-heading">Create your account</CardTitle>
+              <CardDescription className="text-muted-foreground text-sm">
+                Start managing your vendors enterprise-wide
+              </CardDescription>
+            </div>
           </CardHeader>
-          <CardContent className="px-10 py-10">
+          
+          <CardContent className="pt-2">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                 {submitError && (
-                  <Alert variant="destructive" className="animate-in fade-in slide-in-from-top-2 duration-300 rounded-2xl">
-                    <AlertCircle className="h-5 w-5" />
-                    <AlertDescription className="font-bold">{submitError}</AlertDescription>
+                  <Alert variant="destructive" className="rounded-lg">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription className="font-medium">{submitError}</AlertDescription>
                   </Alert>
                 )}
 
-                {/* Company Information Section */}
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 pb-3 border-b-2">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Building2 className="h-5 w-5 text-primary" />
-                    </div>
-                    <h3 className="text-lg font-black tracking-tight uppercase">Corporate Identity</h3>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                    Company Information
+                  </h3>
+                  
+                  <div className="grid sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="companyName"
                       render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-bold text-foreground/70">
-                            Legal Entity Name <span className="text-destructive font-black">*</span>
-                          </FormLabel>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm font-medium">Company Name <span className="text-destructive">*</span></FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="Acme Corporation"
-                              disabled={isLoading}
-                              className="h-12 rounded-xl border-2 focus-visible:ring-primary/20 transition-all font-medium"
-                              {...field}
-                            />
+                            <div className="relative">
+                              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                placeholder="Acme Corporation"
+                                className="pl-10"
+                                disabled={isLoading}
+                                {...field}
+                              />
+                            </div>
                           </FormControl>
-                          <FormMessage className="font-bold text-xs" />
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )}
                     />
@@ -277,46 +274,45 @@ function RegisterForm() {
                       control={form.control}
                       name="contactPerson"
                       render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-bold text-foreground/70">
-                            Authorized Representative <span className="text-destructive font-black">*</span>
-                          </FormLabel>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm font-medium">Contact Person <span className="text-destructive">*</span></FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="John Smith"
-                              disabled={isLoading}
-                              className="h-12 rounded-xl border-2 focus-visible:ring-primary/20 transition-all font-medium"
-                              {...field}
-                            />
+                            <div className="relative">
+                              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                placeholder="John Smith"
+                                className="pl-10"
+                                disabled={isLoading}
+                                {...field}
+                              />
+                            </div>
                           </FormControl>
-                          <FormMessage className="font-bold text-xs" />
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )}
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="email"
                       render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-bold text-foreground/70">
-                            Corporate Email <span className="text-destructive font-black">*</span>
-                          </FormLabel>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm font-medium">Email <span className="text-destructive">*</span></FormLabel>
                           <FormControl>
-                            <div className="relative group">
-                              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                               <Input
-                                placeholder="representative@company.com"
+                                placeholder="you@company.com"
                                 type="email"
+                                className="pl-10"
                                 disabled={isLoading}
-                                className="h-12 pl-12 rounded-xl border-2 focus-visible:ring-primary/20 transition-all font-medium"
                                 {...field}
                               />
                             </div>
                           </FormControl>
-                          <FormMessage className="font-bold text-xs" />
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )}
                     />
@@ -325,44 +321,42 @@ function RegisterForm() {
                       control={form.control}
                       name="phone"
                       render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-bold text-foreground/70">
-                            Direct Phone <span className="text-destructive font-black">*</span>
-                          </FormLabel>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm font-medium">Phone <span className="text-destructive">*</span></FormLabel>
                           <FormControl>
-                            <div className="relative group">
-                              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                            <div className="relative">
+                              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                               <Input
                                 placeholder="+1 (555) 000-0000"
                                 type="tel"
+                                className="pl-10"
                                 disabled={isLoading}
-                                className="h-12 pl-12 rounded-xl border-2 focus-visible:ring-primary/20 transition-all font-medium"
                                 {...field}
                               />
                             </div>
                           </FormControl>
-                          <FormMessage className="font-bold text-xs" />
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )}
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="companyType"
                       render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-bold text-foreground/70">Legal Structure</FormLabel>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm font-medium">Company Type</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
                             <FormControl>
-                              <SelectTrigger className="h-12 rounded-xl border-2 font-medium">
+                              <SelectTrigger>
                                 <SelectValue placeholder="Select type" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent className="rounded-xl">
+                            <SelectContent>
                               {COMPANY_TYPES.map((type) => (
-                                <SelectItem key={type} value={type} className="rounded-lg">
+                                <SelectItem key={type} value={type}>
                                   {type}
                                 </SelectItem>
                               ))}
@@ -377,13 +371,12 @@ function RegisterForm() {
                       control={form.control}
                       name="taxId"
                       render={({ field }) => (
-                        <FormItem className="space-y-2 md:col-span-2">
-                          <FormLabel className="text-sm font-bold text-foreground/70">Tax ID / Registration Number</FormLabel>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm font-medium">Tax ID (Optional)</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Optional: Federal tax identification"
+                              placeholder="XX-XXXXXXX"
                               disabled={isLoading}
-                              className="h-12 rounded-xl border-2 focus-visible:ring-primary/20 transition-all font-medium"
                               {...field}
                             />
                           </FormControl>
@@ -394,41 +387,38 @@ function RegisterForm() {
                   </div>
                 </div>
 
-                {/* Password Section */}
-                <div className="space-y-6 pt-4 border-t-2">
-                  <div className="flex items-center gap-3 pb-3 border-b-2">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <FileCheck className="h-5 w-5 text-primary" />
-                    </div>
-                    <h3 className="text-lg font-black tracking-tight uppercase">Security Setup</h3>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4 pt-2 border-t border-border">
+                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                    Security
+                  </h3>
+                  
+                  <div className="grid sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="password"
                       render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="text-sm font-bold text-foreground/70">
-                            Establish Password <span className="text-destructive font-black">*</span>
-                          </FormLabel>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm font-medium">Password <span className="text-destructive">*</span></FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="••••••••••••"
-                              type="password"
-                              disabled={isLoading}
-                              className="h-12 rounded-xl border-2 focus-visible:ring-primary/20 transition-all"
-                              {...field}
-                            />
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                placeholder="••••••••"
+                                type="password"
+                                className="pl-10"
+                                disabled={isLoading}
+                                {...field}
+                              />
+                            </div>
                           </FormControl>
-                          <FormMessage className="font-bold text-xs" />
+                          <FormMessage className="text-xs" />
                           {password && (
-                            <div className="space-y-2.5 px-1">
-                              <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Level: {getStrengthLabel(passwordStrength)}</span>
-                                <span className="text-[10px] font-black">{Math.round((passwordStrength / 5) * 100)}%</span>
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-muted-foreground">Strength: {getStrengthLabel(passwordStrength)}</span>
+                                <span className="font-medium">{Math.round((passwordStrength / 5) * 100)}%</span>
                               </div>
-                              <Progress value={(passwordStrength / 5) * 100} className="h-1.5 rounded-full" />
+                              <Progress value={(passwordStrength / 5) * 100} className="h-1" />
                             </div>
                           )}
                         </FormItem>
@@ -439,52 +429,51 @@ function RegisterForm() {
                       control={form.control}
                       name="confirmPassword"
                       render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="text-sm font-bold text-foreground/70">
-                            Confirm Password <span className="text-destructive font-black">*</span>
-                          </FormLabel>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-sm font-medium">Confirm Password <span className="text-destructive">*</span></FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="••••••••••••"
-                              type="password"
-                              disabled={isLoading}
-                              className="h-12 rounded-xl border-2 focus-visible:ring-primary/20 transition-all"
-                              {...field}
-                            />
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                placeholder="••••••••"
+                                type="password"
+                                className="pl-10"
+                                disabled={isLoading}
+                                {...field}
+                              />
+                            </div>
                           </FormControl>
-                          <FormMessage className="font-bold text-xs" />
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )}
                     />
                   </div>
                 </div>
 
-                {/* Terms Agreement */}
                 <FormField
                   control={form.control}
                   name="terms"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center gap-4 space-y-0 pt-4 px-6 py-4 bg-muted/30 rounded-2xl border-2">
+                    <FormItem className="flex flex-row items-start gap-3 space-y-0">
                       <FormControl>
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                           disabled={isLoading}
-                          className="h-5 w-5 rounded-md"
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
                         <label
                           htmlFor="terms"
-                          className="text-sm font-bold text-muted-foreground cursor-pointer select-none"
+                          className="text-sm text-muted-foreground cursor-pointer"
                         >
-                          I certify that I am an authorized representative of my company and agree to the{' '}
-                          <Link href="#" className="text-primary hover:text-primary/80 underline font-black">
-                            MSA
+                          I agree to the{' '}
+                          <Link href="#" className="text-primary hover:underline">
+                            Terms of Service
                           </Link>{' '}
                           and{' '}
-                          <Link href="#" className="text-primary hover:text-primary/80 underline font-black">
-                            Security Policy
+                          <Link href="#" className="text-primary hover:underline">
+                            Privacy Policy
                           </Link>
                         </label>
                       </div>
@@ -494,50 +483,34 @@ function RegisterForm() {
 
                 <Button
                   type="submit"
-                  className="w-full h-16 text-xl font-black shadow-2xl hover:shadow-primary/20 hover:scale-[1.01] transition-all group rounded-2xl"
+                  className="w-full h-10 font-medium"
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-3 h-6 w-6 animate-spin" />
-                      SUBMITTING...
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating account…
                     </>
                   ) : (
                     <>
-                      JOIN ECOSYSTEM
-                      <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                      Create Account
                     </>
                   )}
                 </Button>
               </form>
             </Form>
-
-            <div className="mt-10 text-center">
-              <p className="text-base font-medium text-muted-foreground">
-                Corporate partner already?{' '}
-                <Link href="/login" className="font-black text-primary hover:text-primary/80 transition-colors uppercase tracking-tight">
-                  Sign In
-                </Link>
-              </p>
-            </div>
           </CardContent>
+          
+          <CardFooter className="justify-center pb-6">
+            <p className="text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link href="/login" className="text-primary font-medium hover:underline">
+                Sign in
+              </Link>
+            </p>
+          </CardFooter>
         </Card>
-
-        {/* Footer Text */}
-        <p className="mt-10 text-center text-[11px] text-muted-foreground font-bold tracking-tight px-10 leading-relaxed uppercase opacity-60">
-          This system is restricted to authorized vendors only. All registration attempts are audited for compliance with global KYC regulations.
-        </p>
       </div>
-
-      <style jsx>{`
-        @keyframes progress {
-          from { transform: translateX(-100%); }
-          to { transform: translateX(0); }
-        }
-        .animate-progress-bar {
-          animation: progress 3.5s linear forwards;
-        }
-      `}</style>
     </div>
   );
 }
@@ -546,9 +519,7 @@ export default function RegisterPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center text-primary-foreground font-black text-2xl animate-pulse shadow-2xl">
-          V
-        </div>
+        <div className="h-8 w-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <RegisterForm />

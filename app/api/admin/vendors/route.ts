@@ -5,7 +5,7 @@ import User from '@/lib/db/models/User';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse, PaginatedResponse } from '@/lib/types/api';
 import { IVendor } from '@/lib/types/vendor';
-import { ZodError } from 'zod';
+import { ZodError, z } from 'zod';
 import { createVendorSchema } from '@/lib/validation/schemas/auth';
 import { vendorListFiltersSchema } from '@/lib/validation/schemas/vendor';
 import { sanitizeSearchQuery } from '@/lib/utils/sanitize';
@@ -61,26 +61,7 @@ export async function GET(request: NextRequest) {
       {
         success: true,
         data: {
-          items: vendors.map((v: unknown) => {
-            const vendor = v as Record<string, unknown>;
-            return {
-              _id: vendor._id as string,
-              userId: vendor.userId as string,
-              companyName: vendor.companyName as string,
-              contactPerson: vendor.contactPerson as string,
-              phone: vendor.phone as string,
-              address: vendor.address as IVendor['address'],
-              companyType: vendor.companyType as string | undefined,
-              taxId: vendor.taxId as string | undefined,
-              status: vendor.status as IVendor['status'],
-              rejectionReason: vendor.rejectionReason as string | undefined,
-              approvalDate: vendor.approvalDate as Date | undefined,
-              certificateNumber: vendor.certificateNumber as string | undefined,
-              registrationDate: vendor.createdAt as Date,
-              createdAt: vendor.createdAt as Date,
-              updatedAt: vendor.updatedAt as Date,
-            };
-          }),
+          items: vendors.map((v) => v as unknown as IVendor),
           pagination: {
             total,
             page: filters.page,
@@ -133,7 +114,19 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const validatedData = createVendorSchema.parse(body);
+    const generatePassword = body.generatePassword === true;
+    
+    const createSchema = z.object({
+      email: z.string().min(1, 'Email is required').email('Invalid email'),
+      companyName: z.string().min(2, 'Company name required'),
+      contactPerson: z.string().min(2, 'Contact person required'),
+      phone: z.string().min(1, 'Phone required'),
+      companyType: z.string().optional(),
+      taxId: z.string().optional(),
+      address: z.string().optional(),
+    });
+    
+    const validatedData = createSchema.parse(body);
 
     await connectDB();
 
@@ -145,10 +138,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let password: string;
+    let tempPassword: string | undefined;
+    
+    if (generatePassword) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
+      let generated = '';
+      for (let i = 0; i < 12; i++) {
+        generated += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      tempPassword = generated;
+      password = generated;
+    } else {
+      password = body.password || '';
+      if (!password || password.length < 8) {
+        return NextResponse.json<ApiResponse>(
+          { success: false, error: 'Password must be at least 8 characters' },
+          { status: 400 }
+        );
+      }
+    }
+
     const userDoc = await User.create({
+      name: validatedData.contactPerson || validatedData.companyName,
       email: validatedData.email.toLowerCase(),
-      password: validatedData.password,
+      password: password,
       role: 'VENDOR',
+      mustChangePassword: generatePassword,
     });
 
     const vendor = await Vendor.create({
@@ -168,15 +184,20 @@ export async function POST(request: NextRequest) {
     const ActivityLog = (await import('@/lib/db/models/ActivityLog')).default;
     await ActivityLog.create({
       vendorId: vendor._id,
-      performedBy: user.userId,
+      performedBy: user.id,
       activityType: 'VENDOR_CREATED',
       description: `Vendor account created for ${validatedData.companyName}`,
     });
 
-    return NextResponse.json<ApiResponse<{ vendor: IVendor }>>(
+    const responseData: any = { vendor: vendor.toJSON() as unknown as IVendor };
+    if (tempPassword) {
+      responseData.tempPassword = tempPassword;
+    }
+
+    return NextResponse.json<ApiResponse<any>>(
       {
         success: true,
-        data: { vendor: vendor.toJSON() as unknown as IVendor },
+        data: responseData,
         message: 'Vendor created successfully',
       },
       { status: 201 }

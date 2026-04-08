@@ -46,10 +46,10 @@ const statusVariants: Record<string, 'default' | 'info' | 'warning' | 'success' 
 };
 
 const statusLabels: Record<string, string> = {
-  SUBMITTED: 'Received',
-  UNDER_REVIEW: 'Auditing',
-  ACCEPTED: 'Nexus Won',
-  REJECTED: 'Offline',
+  SUBMITTED: 'Submitted',
+  UNDER_REVIEW: 'Under Review',
+  ACCEPTED: 'Accepted',
+  REJECTED: 'Rejected',
 };
 
 interface RankingFormData {
@@ -123,7 +123,7 @@ export default function ProposalSubmissionsPage() {
       }
     } catch (error) {
       console.error('Error fetching submissions:', error);
-      toast.error('Nexus connection refused');
+              toast.error('Failed to save ranking');
     } finally {
       setIsLoading(false);
     }
@@ -273,27 +273,27 @@ export default function ProposalSubmissionsPage() {
   return (
     <div className="space-y-10 animate-in fade-in duration-700 pb-20">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-100 dark:border-zinc-900 pb-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-10">
         <div className="flex items-start gap-5">
-          <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl border-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 shrink-0" onClick={() => router.back()}>
+          <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl border-2 hover:bg-muted shrink-0" onClick={() => router.back()}>
             <ChevronLeft className="h-6 w-6" />
           </Button>
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <Badge variant="secondary" className="font-black uppercase tracking-widest text-[10px] px-3">
-                Audit Flow
+                <Badge variant="secondary" className="font-black uppercase tracking-widest text-[10px] px-3">
+                Proposal
               </Badge>
               {proposal && (
-                <Badge variant="outline" className="font-bold text-[10px] uppercase tracking-tighter h-7 border-zinc-200 dark:border-zinc-800">
-                  NODE: {proposal._id.slice(-6).toUpperCase()}
+                <Badge variant="outline" className="font-bold text-[10px] uppercase tracking-tighter h-7 border-border">
+                  ID: {proposal._id.slice(-6).toUpperCase()}
                 </Badge>
               )}
             </div>
             <h1 className="text-4xl lg:text-5xl font-black tracking-tighter uppercase mb-2">
               Submission Audit
             </h1>
-            <p className="text-zinc-500 max-w-xl font-medium">
-              Reviewing <span className="text-zinc-800 dark:text-zinc-200 font-bold">{submissions.length} transmissions</span> for the active RFP stream.
+            <p className="text-muted-foreground max-w-xl font-medium">
+              Reviewing <span className="text-foreground font-bold">{submissions.length} submissions</span> for this RFP.
             </p>
           </div>
         </div>
@@ -304,10 +304,10 @@ export default function ProposalSubmissionsPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center border-2">
-                <Layers className="h-5 w-5 text-zinc-400" />
+              <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center border-2">
+                <Layers className="h-5 w-5 text-zinc-600" />
               </div>
-              <h2 className="text-xl font-black uppercase tracking-tighter">Transmission Feed</h2>
+              <h2 className="text-xl font-black uppercase tracking-tighter">Submissions</h2>
             </div>
           </div>
 
@@ -321,14 +321,14 @@ export default function ProposalSubmissionsPage() {
                 <Card
                   key={submission._id}
                   onClick={() => setSelectedSubmission(submission._id)}
-                  className={`group rounded-[2rem] border-2 cursor-pointer transition-all overflow-hidden ${isSelected ? 'border-primary shadow-xl shadow-primary/10' : 'border-zinc-100 dark:border-zinc-900 hover:border-zinc-200'
+                  className={`group rounded-[2rem] border-2 cursor-pointer transition-all overflow-hidden ${isSelected ? 'border-primary shadow-xl shadow-primary/10' : 'border-border hover:border-muted-foreground/30'
                     }`}
                 >
                   <CardContent className="p-6 space-y-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
                         {hasRanking && (
-                          <div className="h-8 w-8 rounded-lg bg-black text-white flex items-center justify-center text-xs font-black">
+                          <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center text-xs font-black">
                             #{currentRanking.rank}
                           </div>
                         )}
@@ -336,17 +336,17 @@ export default function ProposalSubmissionsPage() {
                           <p className="font-black uppercase tracking-tight text-sm truncate max-w-[150px]">
                             {submission.vendor?.companyName || 'Unknown Entity'}
                           </p>
-                          <p className="text-[10px] font-bold text-zinc-400 uppercase">{submission.vendor?.contactPerson || 'Anonymous'}</p>
+                          <p className="text-[10px] font-bold text-zinc-600 uppercase">{submission.vendor?.contactPerson || 'Anonymous'}</p>
                         </div>
                       </div>
-                      <Badge variant={statusVariants[submission.status]} className="font-black uppercase tracking-widest text-[8px] px-2 h-6 border-2">
+                      <Badge variant={statusVariants[submission.status]} className="font-black uppercase tracking-widest text-[10px] px-2 h-6 border-2">
                         {statusLabels[submission.status]}
                       </Badge>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <DollarSign className="h-3 w-3 text-zinc-400" />
+                        <DollarSign className="h-3 w-3 text-muted-foreground" />
                         <span className="text-xs font-black">${submission.proposedAmount.toLocaleString()}</span>
                       </div>
                       {hasRanking && (
@@ -377,17 +377,17 @@ export default function ProposalSubmissionsPage() {
                 return (
                   <>
                     {/* Vendor & Submission Info Card */}
-                    <Card className="rounded-[2.5rem] border-2 border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 shadow-xl overflow-hidden">
+                    <Card className="rounded-[2.5rem] border-2 border-border bg-card shadow-xl overflow-hidden">
                       <CardContent className="p-8 md:p-12 space-y-10">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-2 border-zinc-50 dark:border-zinc-900 pb-8">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-2 border-border pb-8">
                           <div className="flex items-center gap-6">
                             <div className="h-16 w-16 rounded-[1.5rem] bg-indigo-500/10 text-indigo-600 flex items-center justify-center border-2 border-indigo-500/10">
                               <Briefcase className="h-8 w-8" />
                             </div>
                             <div>
-                              <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-1">Entity Signature</p>
+                              <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-1">Vendor</p>
                               <h2 className="text-3xl font-black uppercase tracking-tighter">{submission.vendor?.companyName}</h2>
-                              <p className="text-sm font-bold text-zinc-500 uppercase flex items-center gap-2 mt-1">
+                              <p className="text-sm font-bold text-zinc-600 uppercase flex items-center gap-2 mt-1">
                                 {submission.vendor?.contactPerson} <span className="h-1 w-1 rounded-full bg-zinc-300" /> {submission.vendor?.email}
                               </p>
                             </div>
@@ -417,47 +417,47 @@ export default function ProposalSubmissionsPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                           <div className="space-y-4">
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                              <DollarSign className="h-3 w-3" /> Bid Allocation
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+                              <DollarSign className="h-3 w-3" /> Proposed Amount
                             </div>
                             <p className="text-3xl font-black tracking-tighter uppercase">${submission.proposedAmount.toLocaleString()}</p>
                           </div>
                           <div className="space-y-4">
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                              <Users className="h-3 w-3" /> Team Unit
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+                              <Users className="h-3 w-3" /> Team Size
                             </div>
                             <p className="text-3xl font-black tracking-tighter uppercase">{submission.teamSize || '1'} UNITS</p>
                           </div>
                           <div className="space-y-4">
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
                               <Clock className="h-3 w-3" /> Duration
                             </div>
                             <p className="text-lg font-bold tracking-tight uppercase leading-none">{submission.timeline}</p>
                           </div>
                         </div>
 
-                        <Separator className="bg-zinc-50 dark:bg-zinc-900" />
+                        <Separator className="bg-border" />
 
                         <div className="space-y-8">
                           <div className="space-y-4">
                             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-500">
-                              <Target className="h-3 w-3" /> Mission approach
+                              <Target className="h-3 w-3" /> Approach
                             </div>
-                            <p className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">{submission.approach}</p>
+                            <p className="text-zinc-600 dark:text-zinc-600 font-medium leading-relaxed">{submission.approach}</p>
                           </div>
                           <div className="space-y-4">
                             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-500">
-                              <FileText className="h-3 w-3" /> Technical descriptor
+                              <FileText className="h-3 w-3" /> Description
                             </div>
-                            <p className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">{submission.description}</p>
+                            <p className="text-zinc-600 dark:text-zinc-600 font-medium leading-relaxed">{submission.description}</p>
                           </div>
                         </div>
 
                         {submission.attachments && submission.attachments.length > 0 && (
                           <div className="space-y-6">
                             <div className="flex items-center gap-3 border-b-2 border-zinc-50 dark:border-zinc-900 pb-4">
-                              <Layers className="h-5 w-5 text-zinc-400" />
-                              <h2 className="text-sm font-black uppercase tracking-widest">Resource Vault</h2>
+                              <Layers className="h-5 w-5 text-zinc-600" />
+                              <h2 className="text-sm font-black uppercase tracking-widest">Documents</h2>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               {submission.attachments.map((url, idx) => (
@@ -466,14 +466,14 @@ export default function ProposalSubmissionsPage() {
                                   href={url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex items-center gap-4 p-5 bg-zinc-50 dark:bg-zinc-900 rounded-2xl hover:bg-white hover:shadow-xl hover:border-zinc-100 transition-all border-2 border-transparent group"
+                                  className="flex items-center gap-4 p-5 bg-muted/50 rounded-2xl hover:bg-muted hover:shadow-xl hover:border-border transition-all border-2 border-transparent group"
                                 >
-                                  <FileText className="h-6 w-6 text-zinc-400 group-hover:text-primary" />
+                                  <FileText className="h-6 w-6 text-zinc-600 group-hover:text-primary" />
                                   <div className="flex-1 overflow-hidden">
-                                    <p className="text-[10px] font-black uppercase text-zinc-400 mb-1">External Resource</p>
-                                    <p className="font-bold text-sm truncate">Link Node {idx + 1}</p>
+                                    <p className="text-[10px] font-black uppercase text-zinc-600 mb-1">External Resource</p>
+                                    <p className="font-bold text-sm truncate">Document {idx + 1}</p>
                                   </div>
-                                  <ArrowUpRight className="h-4 w-4 text-zinc-300 group-hover:text-primary" />
+                                  <ArrowUpRight className="h-4 w-4 text-zinc-500 group-hover:text-primary" />
                                 </a>
                               ))}
                             </div>
@@ -483,21 +483,21 @@ export default function ProposalSubmissionsPage() {
                     </Card>
 
                     {/* Ranking & Calibration Panel */}
-                    <Card className="rounded-[2.5rem] border-2 border-zinc-950 bg-black text-white shadow-2xl overflow-hidden">
+                    <Card className="rounded-[2.5rem] border-2 border-border bg-card shadow-2xl overflow-hidden">
                       <CardContent className="p-8 md:p-12 space-y-10">
-                        <div className="flex items-center justify-between border-b border-white/10 pb-6">
+                        <div className="flex items-center justify-between border-b border-border pb-6">
                           <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center">
                               <Award className="h-6 w-6" />
                             </div>
-                            <h2 className="text-2xl font-black uppercase tracking-tighter">Evaluation Calibration</h2>
+                            <h2 className="text-2xl font-black uppercase tracking-tighter">Evaluation</h2>
                           </div>
-                          <Badge variant="outline" className="border-white/20 text-white/40 font-black uppercase text-[10px] px-3">Protocol Active</Badge>
+                          <Badge variant="outline" className="border-white/20 text-white/40 font-black uppercase text-[10px] px-3">In Progress</Badge>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                           <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Rank Position</Label>
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600 ml-1">Rank Position</Label>
                             <Input
                               type="number"
                               min="1"
@@ -507,7 +507,7 @@ export default function ProposalSubmissionsPage() {
                             />
                           </div>
                           <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Overall Nexus Score</Label>
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600 ml-1">Overall Score</Label>
                             <Input
                               type="number"
                               min="0"
@@ -521,7 +521,7 @@ export default function ProposalSubmissionsPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                           <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Technical Matrix</Label>
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600 ml-1">Technical Score</Label>
                             <Input
                               type="number"
                               value={ranking.technicalScore || ''}
@@ -530,7 +530,7 @@ export default function ProposalSubmissionsPage() {
                             />
                           </div>
                           <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Financial Index</Label>
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600 ml-1">Financial Score</Label>
                             <Input
                               type="number"
                               value={ranking.financialScore || ''}
@@ -539,7 +539,7 @@ export default function ProposalSubmissionsPage() {
                             />
                           </div>
                           <div className="space-y-4">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Experience Layer</Label>
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600 ml-1">Experience Score</Label>
                             <Input
                               type="number"
                               value={ranking.experienceScore || ''}
@@ -550,7 +550,7 @@ export default function ProposalSubmissionsPage() {
                         </div>
 
                         <div className="space-y-4">
-                          <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Audit Synthesis</Label>
+                          <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-600 ml-1">Evaluation Notes</Label>
                           <Textarea
                             value={ranking.comments}
                             onChange={(e) => handleRankingChange(selectedSubmission, 'comments', e.target.value)}
@@ -616,7 +616,7 @@ export default function ProposalSubmissionsPage() {
                           <Button
                             onClick={() => saveRanking(selectedSubmission)}
                             disabled={isSaving}
-                            className="w-full h-16 rounded-2xl font-black uppercase tracking-tight shadow-xl shadow-primary/20 bg-white text-black hover:bg-zinc-200"
+                            className="w-full h-16 rounded-2xl font-black uppercase tracking-tight shadow-xl shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90"
                           >
                             {isSaving ? <Loader2 className="h-6 w-6 animate-spin" /> : (
                               <>
@@ -635,10 +635,10 @@ export default function ProposalSubmissionsPage() {
           ) : (
             <Card className="h-full min-h-[600px] rounded-[3rem] border-2 border-dashed border-zinc-100 dark:border-zinc-900 bg-transparent flex flex-col items-center justify-center text-center p-12">
               <div className="h-20 w-20 bg-zinc-50 dark:bg-zinc-900 rounded-[2rem] flex items-center justify-center border-2 mb-6">
-                <ShieldCheck className="h-10 w-10 text-zinc-300" />
+                <ShieldCheck className="h-10 w-10 text-zinc-500" />
               </div>
               <p className="text-xl font-black uppercase tracking-tighter">Diagnostic Standby</p>
-              <p className="text-zinc-500 font-medium mt-2 max-w-xs">Select a transmission from the registry to initiate a high-fidelity audit.</p>
+              <p className="text-zinc-600 font-medium mt-2 max-w-xs">Select a transmission from the registry to initiate a high-fidelity audit.</p>
             </Card>
           )}
         </div>

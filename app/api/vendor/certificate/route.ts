@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
 
-    const vendor = await Vendor.findOne({ userId: user.userId });
+    const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor) {
       return NextResponse.json(

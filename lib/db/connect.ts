@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI!;
+const MONGODB_URI = process.env.MONGODB_URI || '';
 
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+const isBuilding = process.env.NEXT_PHASE === 'phase-production-build';
+
+if (isBuilding && (!MONGODB_URI || MONGODB_URI.trim() === '')) {
+  console.warn('⚠️ MONGODB_URI not set - skipping DB connection during build');
 }
 
 interface MongooseCache {
@@ -23,6 +25,13 @@ if (!global.mongoose) {
 }
 
 async function connectDB(): Promise<typeof mongoose> {
+  const uri = process.env.MONGODB_URI;
+  
+  if (!uri || uri.trim() === '' || uri === 'mongodb://localhost:27017/vms') {
+    console.warn('⚠️ MONGODB_URI not configured - skipping DB connection');
+    return null as unknown as typeof mongoose;
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
@@ -37,7 +46,7 @@ async function connectDB(): Promise<typeof mongoose> {
     };
 
     cached.promise = mongoose
-      .connect(MONGODB_URI, opts)
+      .connect(uri, opts)
       .then((mongoose) => {
         console.log('✅ MongoDB connected successfully');
         return mongoose;

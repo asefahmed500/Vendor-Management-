@@ -35,6 +35,10 @@ async function debugAdmin() {
     console.log('   isLocked:', (user as any).isLocked);
 
     console.log('\n🔐 Testing password...');
+    if (!user.password) {
+      console.log('❌ Password not found in user record!');
+      return;
+    }
     const isMatch = await bcrypt.compare(ADMIN_PASSWORD, user.password);
     console.log('   Password match:', isMatch);
 

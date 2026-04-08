@@ -36,7 +36,7 @@ export async function GET(
       );
     }
 
-    const vendor = await Vendor.findOne({ userId: user.userId });
+    const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor || vendor.status !== 'APPROVED') {
       return NextResponse.json<ApiResponse>(
@@ -114,7 +114,7 @@ export async function POST(
       );
     }
 
-    const vendor = await Vendor.findOne({ userId: user.userId });
+    const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor || vendor.status !== 'APPROVED') {
       return NextResponse.json<ApiResponse>(
@@ -146,6 +146,29 @@ export async function POST(
         vendorId: vendor._id,
         ...submissionData,
       });
+    }
+
+    // Notify Admin about new submission
+    if (!existingSubmission) {
+      try {
+        const { createNotification } = await import('@/lib/notifications/service');
+        const { getAdminEmail } = await import('@/lib/email');
+        const User = (await import('@/lib/db/models/User')).default;
+        
+        const admin = await User.findOne({ role: 'ADMIN' });
+        if (admin) {
+          await createNotification({
+            userId: admin._id.toString(),
+            type: 'PROPOSAL_UPDATE',
+            title: 'New Proposal Submission',
+            message: `Vendor "${vendor.companyName}" has submitted a proposal for "${proposal.title}".`,
+            link: `/admin/proposals/${proposal._id}/submissions`,
+            metadata: { submissionId: submission._id.toString(), vendorId: vendor._id.toString() }
+          });
+        }
+      } catch (notifError) {
+        console.error('Failed to notify admin of submission:', notifError);
+      }
     }
 
     return NextResponse.json<ApiResponse<{ submission: IProposalSubmission }>>(

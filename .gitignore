@@ -66,3 +66,6 @@ doc_err.txt
 proposal_err.txt
 document_result.json
 proposal_result.json
+
+.vercel
+.env*.local

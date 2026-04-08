@@ -1,0 +1,214 @@
+/**
+ * VMS PRO - Updated Global Styles
+ * Professional Enterprise Design System
+ * 
+ * This file contains the updated CSS tokens for transforming
+ * the application from "AI slop" to professional design.
+ */
+
+@import "tailwindcss";
+
+@theme {
+  /* ============================================================
+     VMS PRO DESIGN TOKENS - Tailwind v4
+     Updated: 2026-04-02
+     ============================================================ */
+
+  /* Font Families - Enterprise Typography */
+  --font-heading: 'Space Grotesk', var(--font-sans);
+  --font-body: 'Inter', var(--font-sans);
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Semantic Colors - VMS PRO Spec */
+  --background: 250 100% 98%;    /* #FAF5FF */
+  --foreground: 263 100% 25%;    /* #4C1D95 */
+  --card: 0 0% 100%;             /* #FFFFFF */
+  --card-foreground: 263 100% 25%; /* #4C1D95 */
+  --popover: 0 0% 100%;          /* #FFFFFF */
+  --popover-foreground: 263 100% 25%; /* #4C1D95 */
+  
+  /* Primary - Deep Purple */
+  --primary: 263 83% 58%;        /* #7C3AED */
+  --primary-foreground: 0 0% 98%; /* #FAFAFA */
+  
+  /* Secondary */
+  --secondary: 240 4.8% 95.9%;   /* #F3F4F6 */
+  --secondary-foreground: 240 5.9% 10%; /* #1F2937 */
+  
+  /* Muted */
+  --muted: 250 80% 95%;          /* #F3E8FF */
+  --muted-foreground: 263 50% 40%; /* #7C3AED with opacity */
+  
+  /* CTA/Accent - Orange */
+  --accent: 24 95% 53%;          /* #F97316 */
+  --accent-foreground: 0 0% 98%; /* #FAFAFA */
+  
+  /* Destructive */
+  --destructive: 0 84.2% 60.2%;  /* #EF4444 */
+  --destructive-foreground: 0 0% 98%; /* #FAFAFA */
+  
+  /* Border & Input */
+  --border: 263 30% 90%;         /* #E9D5FF */
+  --input: 263 30% 90%;          /* #E9D5FF */
+  
+  /* Focus Ring */
+  --ring: 263 83% 58%;           /* #7C3AED */
+  
+  /* Border Radius - Professional Scale */
+  --radius-sm: 0.25rem;          /* 4px - Small elements */
+  --radius-md: 0.5rem;           /* 8px - Buttons, inputs (default) */
+  --radius-lg: 0.75rem;          /* 12px - Cards, panels */
+  --radius-xl: 1rem;             /* 16px - Large cards, modals */
+  --radius-2xl: 1.25rem;         /* 20px - Hero elements only */
+}
+
+@layer base {
+  :root {
+    --background: 250 100% 98%;
+    --foreground: 263 100% 25%;
+    --card: 0 0% 100%;
+    --card-foreground: 263 100% 25%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 263 100% 25%;
+    --primary: 263 83% 58%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 250 80% 95%;
+    --muted-foreground: 263 50% 40%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 263 30% 90%;
+    --input: 263 30% 90%;
+    --ring: 263 83% 58%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 263 20% 8%;
+    --foreground: 250 100% 98%;
+    --card: 263 20% 10%;
+    --card-foreground: 250 100% 98%;
+    --popover: 263 20% 10%;
+    --popover-foreground: 250 100% 98%;
+    --primary: 263 70% 65%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 263 15% 15%;
+    --secondary-foreground: 250 100% 98%;
+    --muted: 263 15% 15%;
+    --muted-foreground: 263 30% 70%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 263 30% 20%;
+    --input: 263 30% 20%;
+    --ring: 263 70% 65%;
+  }
+}
+
+@layer base {
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-body);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Typography Scale - Professional Hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+  }
+
+  p {
+    line-height: 1.6;
+    color: hsl(var(--foreground) / 0.8);
+  }
+
+  /* Focus Visible - Professional Focus States */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Selection - Subtle Highlight */
+  ::selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--foreground));
+  }
+}
+
+@layer utilities {
+  /* Text Balance - Better Typography */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Professional Transitions */
+  .transition-base {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+
+  /* Subtle Hover Lift */
+  .hover-lift {
+    transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Smooth Fade In Animation */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 300ms ease-out;
+  }
+
+  /* Respect Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

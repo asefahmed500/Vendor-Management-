@@ -1,38 +1,57 @@
-'use client';
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 
-import { HTMLAttributes, forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils"
 
-interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  variant?: 'default' | 'success' | 'warning' | 'danger' | 'info' | 'outline' | 'secondary';
-  size?: 'sm' | 'md';
-}
-
-export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ className, variant = 'default', size = 'md', children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center gap-1.5 font-semibold rounded-full transition-colors duration-150 ease-out';
-
-    const variants = {
-      default: 'bg-secondary text-secondary-foreground border border-border',
-      success: 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400',
-      warning: 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-900/20 dark:text-amber-400',
-      danger: 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-900/20 dark:text-rose-400',
-      info: 'bg-sky-50 text-sky-700 border border-sky-200 dark:bg-sky-900/20 dark:text-sky-400',
-      outline: 'bg-background text-foreground border-2 border-border',
-      secondary: 'bg-primary/10 text-primary border border-primary/20',
-    };
-
-    const sizes = {
-      sm: 'px-2.5 py-1 text-xs',
-      md: 'px-3 py-1.5 text-sm',
-    };
-
-    return (
-      <span ref={ref} className={cn(baseStyles, variants[variant], sizes[size], className)} {...props}>
-        {children}
-      </span>
-    );
+const badgeVariants = cva(
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default:
+          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+        secondary:
+          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive:
+          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+        success:
+          "border-transparent bg-emerald-500 text-white hover:bg-emerald-500/80 dark:bg-emerald-600 dark:text-emerald-50",
+        warning:
+          "border-transparent bg-amber-500 text-white hover:bg-amber-500/80 dark:bg-amber-600 dark:text-amber-50",
+        info:
+          "border-transparent bg-indigo-500 text-white hover:bg-indigo-500/80 dark:bg-indigo-600 dark:text-indigo-50",
+        danger:
+          "border-transparent bg-rose-500 text-white hover:bg-rose-500/80 dark:bg-rose-600 dark:text-rose-50",
+        outline: "text-zinc-500 border-zinc-200 dark:text-zinc-400 dark:border-zinc-800",
+      },
+      size: {
+        sm: "px-1.5 py-0 text-[10px]",
+        md: "px-2.5 py-0.5 text-xs",
+        lg: "px-3 py-1 text-sm font-bold",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "md",
+    },
   }
-);
+)
 
-Badge.displayName = 'Badge';
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeVariants> {}
+
+const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
+  ({ className, variant, size, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(badgeVariants({ variant, size }), className)}
+        {...props}
+      />
+    )
+  }
+)
+Badge.displayName = "Badge"
+
+export { Badge, badgeVariants }

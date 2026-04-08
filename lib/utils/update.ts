@@ -1,132 +1,164 @@
-/**
- * Safe update utilities to prevent mass assignment vulnerabilities
- */
-
-import { IVendor } from '@/lib/types/vendor';
-import { IProposal } from '@/lib/types/proposal';
-import { IProposalSubmission } from '@/lib/types/proposal';
+import { IVendorDocument } from '@/lib/db/models/Vendor';
+import { UpdateVendorInput } from '@/lib/validation/schemas/vendor';
 
 /**
- * Allowed fields for vendor profile updates by the vendor themselves
+ * Allowed fields for vendor self-update
+ * Vendors can only update their basic company information
  */
-const VENDOR_SELF_UPDATE_FIELDS = new Set([
-  'phone',
-  'address',
-  'companyType',
-  'taxId',
-]);
-
-/**
- * Allowed fields for vendor profile updates by admin
- */
-const VENDOR_ADMIN_UPDATE_FIELDS = new Set([
+const VENDOR_SELF_UPDATE_FIELDS: (keyof UpdateVendorInput)[] = [
   'companyName',
   'contactPerson',
   'phone',
   'address',
   'companyType',
   'taxId',
+];
+
+/**
+ * Protected fields that only admins can modify
+ */
+const ADMIN_ONLY_FIELDS = [
   'status',
   'rejectionReason',
-]);
+  'approvalDate',
+  'certificateNumber',
+  'registrationDate',
+  'userId',
+];
 
 /**
- * Allowed fields for proposal updates by admin
- */
-const PROPOSAL_UPDATE_FIELDS = new Set([
-  'title',
-  'description',
-  'category',
-  'budgetMin',
-  'budgetMax',
-  'deadline',
-  'requirements',
-  'status',
-]);
-
-/**
- * Allowed fields for proposal submission updates by vendor
- */
-const SUBMISSION_UPDATE_FIELDS = new Set([
-  'proposedAmount',
-  'timeline',
-  'description',
-  'approach',
-  'status',
-]);
-
-/**
- * Safely updates an object with only allowed fields
+ * Safely updates a vendor profile with self-update restrictions
  *
- * @param target - The target object to update
- * @param source - The source data to apply
- * @param allowedFields - Set of allowed field names
- * @returns The updated target object
- */
-export function safeUpdate<T extends object>(
-  target: T,
-  source: Partial<Record<string, unknown>>,
-  allowedFields: Set<string>
-): T {
-  for (const key of Object.keys(source)) {
-    if (allowedFields.has(key)) {
-      (target as Record<string, unknown>)[key] = source[key];
-    }
-  }
-  return target;
-}
-
-/**
- * Safely updates vendor profile (vendor self-update)
+ * Vendors can only update specific fields (company info, contact details).
+ * Protected fields like status, certificate, approval date are ignored.
+ *
+ * @param vendor - The vendor Mongoose document to update
+ * @param data - Validated update data from updateVendorSchema
  */
 export function safeVendorSelfUpdate(
-  vendor: object,
-  data: Record<string, unknown>
-): object {
-  return safeUpdate(vendor, data, VENDOR_SELF_UPDATE_FIELDS);
+  vendor: IVendorDocument,
+  data: UpdateVendorInput
+): void {
+  for (const field of VENDOR_SELF_UPDATE_FIELDS) {
+    if (data[field] !== undefined) {
+      // Handle nested address object
+      if (field === 'address' && data.address) {
+        vendor.address = {
+          ...vendor.address,
+          ...data.address,
+        };
+      } else {
+        // For direct fields, use type assertion to satisfy TypeScript
+        (vendor as any)[field] = data[field];
+      }
+    }
+  }
 }
 
 /**
- * Safely updates vendor profile (admin update)
+ * Safely updates a vendor profile with admin privileges
+ *
+ * Admins can update all vendor fields except protected system fields.
+ *
+ * @param vendor - The vendor Mongoose document to update
+ * @param data - Validated update data from updateVendorSchema
  */
 export function safeVendorAdminUpdate(
-  vendor: object,
-  data: Record<string, unknown>
-): object {
-  return safeUpdate(vendor, data, VENDOR_ADMIN_UPDATE_FIELDS);
+  vendor: IVendorDocument,
+  data: UpdateVendorInput
+): void {
+  // Combine allowed fields and admin-only fields for administrative updates
+  const allFields = [...VENDOR_SELF_UPDATE_FIELDS, ...ADMIN_ONLY_FIELDS] as (keyof UpdateVendorInput)[];
+
+  for (const field of allFields) {
+    if (data[field] !== undefined) {
+      // Handle nested address object
+      if (field === 'address' && data.address) {
+        vendor.address = {
+          ...vendor.address,
+          ...data.address,
+        };
+      } else {
+        // For direct fields, use type assertion to satisfy TypeScript
+        (vendor as any)[field] = data[field];
+      }
+    }
+  }
 }
 
 /**
- * Safely updates proposal
- */
-export function safeProposalUpdate(
-  proposal: object,
-  data: Record<string, unknown>
-): object {
-  return safeUpdate(proposal, data, PROPOSAL_UPDATE_FIELDS);
-}
-
-/**
- * Safely updates proposal submission
- */
-export function safeSubmissionUpdate(
-  submission: object,
-  data: Record<string, unknown>
-): object {
-  return safeUpdate(submission, data, SUBMISSION_UPDATE_FIELDS);
-}
-
-/**
- * Creates a whitelist update helper
+ * Merges partial update data with existing vendor data
+ * Useful for handling partial updates from forms
  *
- * @param allowedFields - Array of allowed field names
- * @returns A function that safely updates objects
+ * @param existing - Current vendor data
+ * @param updates - Partial update data
+ * @returns Merged data with undefined fields filtered out
  */
-export function createWhitelistedUpdate<T extends object>(
+export function mergeVendorUpdates<T extends Record<string, any>>(
+  existing: T,
+  updates: Partial<T>
+): Partial<T> {
+  const merged: Partial<T> = {};
+
+  for (const [key, value] of Object.entries(updates)) {
+    // Only include fields that are defined in updates
+    if (value !== undefined) {
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        // Recursively merge nested objects
+        merged[key as keyof T] = {
+          ...(existing[key as keyof T] as any),
+          ...value,
+        } as T[keyof T];
+      } else {
+        merged[key as keyof T] = value;
+      }
+    }
+  }
+
+  return merged;
+}
+
+/**
+ * Validates that only allowed fields are being updated
+ * Throws an error if a protected field is being modified
+ *
+ * @param data - Update data to validate
+ * @param allowedFields - List of field names that are allowed to be updated
+ * @throws Error if a protected field is being modified
+ */
+export function validateAllowedFields(
+  data: Record<string, any>,
   allowedFields: string[]
-): (target: T, source: Partial<Record<string, unknown>>) => T {
-  const fieldSet = new Set(allowedFields);
-  return (target: T, source: Partial<Record<string, unknown>>) => {
-    return safeUpdate(target, source, fieldSet);
-  };
+): void {
+  const providedFields = Object.keys(data);
+  const protectedFields = providedFields.filter(
+    field => !allowedFields.includes(field)
+  );
+
+  if (protectedFields.length > 0) {
+    throw new Error(
+      `Cannot modify protected fields: ${protectedFields.join(', ')}`
+    );
+  }
+}
+
+/**
+ * Sanitizes update data by removing undefined values
+ * This prevents accidentally setting fields to undefined
+ *
+ * @param data - Raw update data
+ * @returns Sanitized data with undefined values removed
+ */
+export function sanitizeUpdateData<T extends Record<string, any>>(
+  data: T
+): Partial<T> {
+  const sanitized: Partial<T> = {};
+
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== undefined) {
+      sanitized[key as keyof T] = value;
+    }
+  }
+
+  return sanitized;
 }

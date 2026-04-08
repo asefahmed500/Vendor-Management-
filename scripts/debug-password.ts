@@ -18,26 +18,27 @@ async function debugPassword() {
     console.log('Testing password comparison:');
     console.log('  Input password: Admin@123');
 
-    // Test using User model's comparePassword method
-    const result1 = await admin.comparePassword('Admin@123');
-    console.log('  comparePassword method:', result1);
+    const storedPassword = admin.password;
+    if (!storedPassword) {
+      console.log('  No password stored!');
+    } else {
+      // Test using User model's comparePassword method
+      const result1 = await admin.comparePassword('Admin@123');
+      console.log('  comparePassword method:', result1);
 
-    // Test using bcrypt directly
-    const result2 = await bcrypt.compare('Admin@123', admin.password);
-    console.log('  bcrypt.compare direct:', result2);
+      // Test using bcrypt directly
+      const result2 = await bcrypt.compare('Admin@123', storedPassword);
+      console.log('  bcrypt.compare direct:', result2);
 
-    // Also test with the plain password in case
-    const result3 = admin.password === 'Admin@123';
-    console.log('  Plain string compare:', result3);
+      // Hash a new password to see the format
+      const newHash = await bcrypt.hash('Admin@123', 12);
+      console.log('  New hash length:', newHash.length);
+      console.log('  Stored hash length:', storedPassword.length);
 
-    // Hash a new password to see the format
-    const newHash = await bcrypt.hash('Admin@123', 12);
-    console.log('  New hash length:', newHash.length);
-    console.log('  Stored hash length:', admin.password.length);
-
-    // Compare new hash with stored password
-    const result4 = await bcrypt.compare('Admin@123', newHash);
-    console.log('  New hash compare:', result4);
+      // Compare new hash with stored password
+      const result4 = await bcrypt.compare('Admin@123', newHash);
+      console.log('  New hash compare:', result4);
+    }
   }
 
   await mongoose.disconnect();

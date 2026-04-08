@@ -77,9 +77,25 @@ export const auth = betterAuth({
                                 },
                             });
 
-                            // Note: Better Auth manages the user record.
-                            // We can't easily update the user record here to link vendorProfile
-                            // without another DB call or if the adapter allows it.
+                            // Notify Admin about new registration
+                            try {
+                                const { createNotification } = await import('@/lib/notifications/service');
+                                const User = (await import('@/lib/db/models/User')).default;
+                                const admin = await User.findOne({ role: 'ADMIN' });
+                                
+                                if (admin) {
+                                    await createNotification({
+                                        userId: admin._id.toString(),
+                                        type: 'STATUS_CHANGED', // or a more specific type if added
+                                        title: 'New Vendor Registration',
+                                        message: `A new vendor "${user.companyName}" has registered and is awaiting approval.`,
+                                        link: `/admin/vendors`,
+                                        metadata: { vendorId: vendor._id.toString() }
+                                    });
+                                }
+                            } catch (notifError) {
+                                console.error('Failed to notify admin of registration:', notifError);
+                            }
                         } catch (error) {
                             console.error('Failed to create vendor profile in hook:', error);
                         }

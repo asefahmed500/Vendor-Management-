@@ -24,7 +24,7 @@ export async function DELETE(
 
     await connectDB();
 
-    const vendor = await Vendor.findOne({ userId: user.userId });
+    const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor) {
       return NextResponse.json<ApiResponse>(
@@ -72,7 +72,7 @@ export async function DELETE(
     const ActivityLog = (await import('@/lib/db/models/ActivityLog')).default;
     await ActivityLog.create({
       vendorId: vendor._id,
-      performedBy: user.userId,
+      performedBy: user.id,
       activityType: 'DOCUMENT_DELETED',
       description: `Document deleted${cloudinaryDeleted ? '' : ' (Cloudinary cleanup failed)'}`,
       metadata: { documentId: id, fileName: document.originalName, cloudinaryDeleted },

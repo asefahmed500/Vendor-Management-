@@ -4,6 +4,7 @@ import Document from '@/lib/db/models/Document';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
 import { IDocument } from '@/lib/types/document';
+import { handleApiError } from '@/lib/middleware/errorHandler';
 
 interface DocumentWithVendor {
   _id: string;
@@ -32,6 +33,14 @@ interface DocumentWithVendor {
   };
   createdAt: Date;
   updatedAt: Date;
+}
+
+interface PopulatedDocument extends Omit<IDocument, 'vendorId' | 'documentTypeId'> {
+  vendorId: {
+    companyName?: string;
+    userId?: { email?: string };
+  };
+  documentTypeId?: { name: string };
 }
 
 export async function GET(request: NextRequest) {
@@ -72,13 +81,13 @@ export async function GET(request: NextRequest) {
         populate: { path: 'userId', select: 'email' },
       })
       .sort({ createdAt: -1 })
-      .lean();
+      .lean() as unknown as PopulatedDocument[];
 
     const documentsWithVendorInfo = documents.map((doc) => ({
-      ...(doc as unknown as IDocument),
-      vendorName: (doc as any).vendorId?.companyName || 'Unknown',
-      vendorEmail: (doc as any).vendorId?.userId?.email || 'Unknown',
-      documentType: (doc as any).documentTypeId,
+      ...doc,
+      vendorName: doc.vendorId?.companyName || 'Unknown',
+      vendorEmail: doc.vendorId?.userId?.email || 'Unknown',
+      documentType: doc.documentTypeId,
     }));
 
     return NextResponse.json<ApiResponse<{ documents: typeof documentsWithVendorInfo }>>(
@@ -89,11 +98,6 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get admin documents error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetAdminDocuments');
   }
 }

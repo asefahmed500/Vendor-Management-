@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     // Upload to Cloudinary
     const result = await uploadBuffer(buffer, file.name, {
-      folder: folder || `vms-documents/${user.userId}`,
+      folder: folder || `vms-documents/${user.id}`,
       resource_type: 'auto',
     });
 

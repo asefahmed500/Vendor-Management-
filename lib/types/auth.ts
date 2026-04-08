@@ -13,11 +13,35 @@ export interface IUser {
   lastLogin?: Date;
   loginAttempts: number;
   lockUntil?: Date;
+  mustChangePassword?: boolean;
+  passwordChangedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export type IUserWithoutPassword = Omit<IUser, 'password'>;
+
+/**
+ * User object returned by Better Auth session
+ * This matches the structure from Better Auth with additional fields
+ */
+export interface SessionUser {
+  id: string;
+  email: string;
+  name: string;
+  emailVerified: boolean;
+  image?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  // Additional fields from our Better Auth config
+  role: UserRole;
+  vendorProfile?: string;
+  isActive: boolean;
+  // Registration fields (temporary, stored on user for hooks)
+  companyName?: string;
+  contactPerson?: string;
+  phone?: string;
+}
 
 export interface IJwtPayload {
   userId: string;

@@ -21,9 +21,9 @@ export default function Error({
                 <AlertCircle className="h-10 w-10" />
             </div>
             <div className="space-y-2">
-                <h2 className="text-3xl font-black tracking-tighter uppercase text-foreground">Subsystem Failure</h2>
+                <h2 className="text-3xl font-black tracking-tighter uppercase text-foreground">Something went wrong</h2>
                 <p className="text-muted-foreground max-w-md font-medium">
-                    An unexpected interruption occurred within the Admin Portal. The error has been logged for investigative review.
+                    An unexpected error occurred in the admin dashboard. The error has been logged.
                 </p>
             </div>
             <div className="flex gap-4">
@@ -32,14 +32,14 @@ export default function Error({
                     className="h-12 px-8 font-bold rounded-xl shadow-md hover:shadow-lg transition-all"
                 >
                     <RefreshCcw className="mr-2 h-4 w-4" />
-                    Attempt Recovery
+                    Try Again
                 </Button>
                 <Button
                     variant="outline"
                     onClick={() => window.location.href = '/admin'}
                     className="h-12 px-8 font-bold rounded-xl border-2 hover:bg-muted/50 transition-all"
                 >
-                    Return to Nexus
+                    Return to Dashboard
                 </Button>
             </div>
         </div>

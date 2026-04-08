@@ -96,12 +96,12 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-background text-foreground">
-      <div className="h-16 flex items-center px-6 border-b border-border">
+      <div className="h-16 flex items-center px-6 border-b-2 border-zinc-950">
         <Link href="/vendor/dashboard" className="flex items-center gap-3">
-          <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+          <div className="h-8 w-8 border-2 border-zinc-950 bg-indigo-600 flex items-center justify-center text-white">
             <Building2 className="h-4 w-4" />
           </div>
-          <span className="font-semibold text-zinc-900 dark:text-white text-sm">Vendor Portal</span>
+          <span className="font-heading font-black text-zinc-950 uppercase tracking-tight text-sm">VMS_VENDOR</span>
         </Link>
       </div>
 
@@ -124,10 +124,10 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-none text-sm font-bold transition-all border-2 border-transparent ${
                   isActive
-                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground transition-colors'
+                    ? 'bg-zinc-950 text-white border-zinc-950 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
+                    : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 hover:border-zinc-200'
                 }`}
               >
                 <Icon className="h-5 w-5 shrink-0" />
@@ -138,14 +138,14 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
         </nav>
       </ScrollArea>
 
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t-2 border-zinc-950 bg-zinc-50">
         <Button
           variant="ghost"
           onClick={handleLogout}
-          className="w-full justify-start text-zinc-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors h-10 text-sm font-medium"
+          className="w-full justify-start text-zinc-950 hover:text-white hover:bg-red-600 border-2 border-transparent hover:border-red-700 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all rounded-none h-10 text-sm font-bold uppercase tracking-wider"
         >
           <LogOut className="h-4 w-4 mr-2" />
-          Sign Out
+          Terminate Session
         </Button>
       </div>
     </div>
@@ -153,7 +153,7 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden text-foreground">
-      <aside className="w-64 border-r border-border flex flex-col hidden lg:flex shrink-0 bg-background">
+      <aside className="w-64 border-r-2 border-zinc-950 flex flex-col hidden lg:flex shrink-0 bg-white">
         <SidebarContent />
       </aside>
 
@@ -169,14 +169,14 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
       </Sheet>
 
       <div className="flex-1 flex flex-col min-w-0 h-full">
-        <header className="h-16 bg-background border-b border-border flex items-center justify-between px-6 lg:px-8 sticky top-0 z-30">
+        <header className="h-16 bg-white border-b-2 border-zinc-950 flex items-center justify-between px-6 lg:px-8 sticky top-0 z-30">
           <div className="flex items-center gap-4">
-            <div className="hidden lg:flex items-center gap-2 text-sm text-zinc-600">
-              <span>Vendor</span>
+            <div className="hidden lg:flex items-center gap-2 text-sm text-zinc-500 font-mono">
+              <span>VENDOR_ROOT</span>
               <ChevronRight className="h-3 w-3" />
-              <span className="text-zinc-900 dark:text-white font-medium">{currentTitle}</span>
+              <span className="text-zinc-950 font-bold uppercase tracking-widest">{currentTitle}</span>
             </div>
-            <h1 className="text-lg font-semibold lg:hidden">{currentTitle}</h1>
+            <h1 className="text-lg font-black font-heading lg:hidden uppercase">{currentTitle}</h1>
           </div>
 
           <div className="flex items-center gap-3">
@@ -187,14 +187,14 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative rounded-lg h-9 w-9">
-                  <Bell className="h-4 w-4" />
+                <Button variant="outline" size="icon" className="relative rounded-none h-10 w-10 border-2 border-zinc-950 bg-white hover:bg-zinc-100 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                  <Bell className="h-4 w-4 text-zinc-950" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-600 rounded-full" />
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-indigo-600 border-2 border-white rounded-none" />
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80 bg-white shadow-lg border-zinc-200 z-50">
+              <DropdownMenuContent align="end" className="w-80 bg-white border-2 border-zinc-950 rounded-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-50">
                 <DropdownMenuLabel className="flex items-center justify-between">
                   <span>Notifications</span>
                   {unreadCount > 0 && (
@@ -228,20 +228,20 @@ export default function VendorLayout({ children }: { children: ReactNode }) {
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <div className="flex items-center gap-3 pl-2 cursor-pointer">
+                  <div className="flex items-center gap-3 pl-2 cursor-pointer hover:bg-zinc-100 p-1 pr-2 rounded-none transition-all border-2 border-transparent hover:border-zinc-950 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                     <div className="hidden sm:block text-right">
-                      <p className="text-sm font-medium text-zinc-900 dark:text-white leading-none truncate max-w-[150px]">
+                      <p className="text-sm font-bold text-zinc-950 uppercase leading-none truncate max-w-[150px]">
                         {vendor?.companyName || user.name || 'Vendor'}
                       </p>
-                      <p className="text-xs text-zinc-600 mt-0.5">Vendor</p>
+                      <p className="text-[10px] text-zinc-500 mt-1 font-mono uppercase tracking-widest">Network Vendor</p>
                     </div>
-                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium shrink-0">
+                    <div className="h-8 w-8 border-2 border-zinc-950 bg-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded-none shrink-0">
                       {(vendor?.contactPerson?.[0] || user.name?.[0] || 'V').toUpperCase()}
                     </div>
-                    <ChevronDown className="h-4 w-4 text-zinc-500 hidden sm:block" />
+                    <ChevronDown className="h-4 w-4 text-zinc-950 hidden sm:block" />
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg border-zinc-200 z-50">
+                <DropdownMenuContent align="end" className="w-56 bg-white border-2 border-zinc-950 rounded-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-50">
                   <DropdownMenuLabel className="font-normal font-sans">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium">{vendor?.companyName || user.name}</p>

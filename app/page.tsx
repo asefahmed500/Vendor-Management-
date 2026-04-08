@@ -122,47 +122,65 @@ export default function HomePage() {
       </header>
 
       <main className="flex-1 pt-16">
-        {/* Hero Section */}
-        <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-50">
-          <div className="container mx-auto px-6 relative">
-            <div className="max-w-4xl mx-auto text-center">
-              <Badge variant="outline" className="mb-6 font-sans font-medium px-4 py-1.5 text-sm tracking-wide bg-blue-50 text-blue-700 border-blue-200">
-                <Globe className="h-4 w-4 mr-2" />
-                #1 Enterprise Vendor Management Software
-              </Badge>
-              
-              <h1 className="text-5xl sm:text-6xl md:text-7xl font-heading font-bold tracking-tight mb-6 text-slate-900 leading-[1.1]">
-                Take Control of Your <br className="hidden sm:block" />
-                <span className="text-blue-600">Vendor Ecosystem</span>
-              </h1>
-              
-              <p className="text-lg md:text-xl font-sans text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-                Streamline compliance, automate onboarding, and mitigate risk with the platform built for modern enterprise security and scale.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href="/register">
-                  <Button size="lg" className="h-12 px-8 font-sans font-semibold text-base bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-md transition-all hover:-translate-y-0.5">
-                    Contact Sales
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href="/login">
-                  <Button variant="outline" size="lg" className="h-12 px-8 font-sans font-semibold text-base rounded-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-all">
-                    Login to Portal
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Client Logos (Social Proof) */}
-              <div className="mt-20 pt-10 border-t border-slate-200">
-                <p className="text-sm font-medium text-slate-500 mb-6 uppercase tracking-wider">Trusted by innovative enterprises</p>
-                <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
-                  <div className="text-xl font-bold font-heading text-slate-800">AcmeCorp</div>
-                  <div className="text-xl font-bold font-heading text-slate-800">GlobalTech</div>
-                  <div className="text-xl font-bold font-heading text-slate-800">NexusHealth</div>
-                  <div className="text-xl font-bold font-heading text-slate-800">FinServe</div>
+        {/* Editorial Tech Hero Section */}
+        <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden bg-white border-b-2 border-zinc-950">
+          <div className="absolute inset-0 z-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="grid lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-7">
+                <Badge variant="outline" className="mb-8 font-sans font-bold px-4 py-1.5 text-xs uppercase tracking-widest bg-zinc-950 text-white rounded-none border-zinc-950">
+                  <Globe className="h-3 w-3 mr-2" />
+                  Enterprise OS // 2026 Edition
+                </Badge>
+                
+                <h1 className="text-6xl sm:text-7xl md:text-8xl font-heading font-extrabold tracking-tighter mb-8 text-zinc-950 leading-[0.9] -ml-1">
+                  Vendor Management.<br />
+                  <span className="text-indigo-600">Engineered.</span>
+                </h1>
+                
+                <p className="text-xl md:text-2xl font-sans text-zinc-600 max-w-2xl mb-12 leading-relaxed font-medium">
+                  The brutal truth? Vendor onboarding shouldn't take weeks. We built a hyper-functional operating system to automate compliance and secure your supply chain instantly.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <Link href="/register" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto h-14 px-8 font-heading font-bold text-lg bg-indigo-600 hover:bg-indigo-700 text-white rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                      Initialize Platform
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <Link href="/login" className="w-full sm:w-auto">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto h-14 px-8 font-heading font-bold text-lg rounded-none border-2 border-zinc-950 text-zinc-950 hover:bg-zinc-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                      Access Terminal
+                    </Button>
+                  </Link>
                 </div>
+              </div>
+              <div className="lg:col-span-5 relative hidden lg:block">
+                {/* Asymmetrical Structural Element */}
+                <div className="border-4 border-zinc-950 bg-white p-6 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] relative animate-fade-in z-20">
+                   <div className="flex border-b-2 border-zinc-950 pb-4 mb-4 justify-between items-center">
+                     <span className="font-heading font-bold text-zinc-950 uppercase tracking-widest">System_Status</span>
+                     <span className="bg-emerald-500 w-3 h-3 rounded-none animate-pulse border border-zinc-950"></span>
+                   </div>
+                   <div className="space-y-4 font-mono text-sm text-zinc-800">
+                     <div className="flex justify-between border-b border-zinc-200 pb-2"><span>COMPLIANCE_CHECKS</span><span className="font-bold">PASS</span></div>
+                     <div className="flex justify-between border-b border-zinc-200 pb-2"><span>ACTIVE_VENDORS</span><span className="font-bold">1,402</span></div>
+                     <div className="flex justify-between border-b border-zinc-200 pb-2"><span>ENCRYPTION</span><span className="font-bold">AES-256</span></div>
+                   </div>
+                </div>
+                <div className="absolute top-10 -right-10 w-full h-full border-4 border-indigo-600 bg-indigo-50 z-10" />
+              </div>
+            </div>
+
+            {/* Client Logos (Social Proof) */}
+            <div className="mt-32 pt-10 border-t-2 border-zinc-950">
+              <p className="text-sm font-bold text-zinc-950 mb-6 uppercase tracking-wider font-sans">Trusted by innovative enterprises</p>
+              <div className="flex flex-wrap items-center gap-8 md:gap-16 opacity-100 transition-all duration-300">
+                <div className="text-2xl font-black font-heading text-zinc-400 hover:text-zinc-950 transition-colors">ACME_CORP</div>
+                <div className="text-2xl font-black font-heading text-zinc-400 hover:text-zinc-950 transition-colors">GLOBAL.TECH</div>
+                <div className="text-2xl font-black font-heading text-zinc-400 hover:text-zinc-950 transition-colors">NEXUS_HEALTH</div>
+                <div className="text-2xl font-black font-heading text-zinc-400 hover:text-zinc-950 transition-colors">FINSERVE</div>
               </div>
             </div>
           </div>
@@ -184,44 +202,44 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Demo Dashboard Preview - Larger & More Detailed */}
-            <div className="bg-background rounded-xl border border-border shadow-2xl overflow-hidden max-w-5xl mx-auto">
+            {/* Demo Dashboard Preview - Sharp Editorial Style */}
+            <div className="bg-white border-4 border-zinc-950 shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] max-w-5xl mx-auto rounded-none mb-10 overflow-hidden relative z-10 transition-transform hover:-translate-y-1">
               {/* Dashboard Header */}
-              <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 flex items-center justify-between">
+              <div className="bg-zinc-950 text-white p-6 border-b-4 border-zinc-950 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-primary-foreground/20 rounded-lg flex items-center justify-center font-bold text-lg">
+                  <div className="h-12 w-12 bg-white text-zinc-950 flex items-center justify-center font-black text-xl border-2 border-white">
                     V
                   </div>
                   <div>
-                    <span className="font-heading font-bold text-xl">Admin Dashboard</span>
-                    <p className="text-primary-foreground/70 text-sm">Vendor Management System</p>
+                    <span className="font-heading font-black text-2xl uppercase tracking-tight">Terminal</span>
+                    <p className="text-zinc-400 font-mono text-xs uppercase tracking-widest mt-1">VMS_OS_CORE</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 hidden sm:flex">
                   <div className="text-right">
-                    <p className="text-sm font-medium">Admin User</p>
-                    <p className="text-xs text-primary-foreground/70">admin@vms.com</p>
+                    <p className="text-sm font-bold uppercase tracking-wider font-heading">Global Admin</p>
+                    <p className="text-xs text-zinc-400 font-mono">SYS_ROOT</p>
                   </div>
-                  <div className="h-10 w-10 bg-primary-foreground/20 rounded-full flex items-center justify-center">
-                    <Users className="h-5 w-5" />
+                  <div className="h-10 w-10 border-2 border-zinc-700 bg-zinc-800 flex items-center justify-center">
+                    <Users className="h-5 w-5 text-white" />
                   </div>
                 </div>
               </div>
 
               {/* Dashboard Content */}
-              <div className="p-8">
-                {/* Stats Cards - Larger */}
+              <div className="p-8 bg-[#f4f4f5]">
+                {/* Stats Cards - Sharp */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
                   {demoStats.map((stat) => (
-                    <div key={stat.label} className="p-6 rounded-xl border bg-card hover:shadow-lg transition-shadow">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className={`p-2 rounded-lg ${stat.color.replace('text', 'bg')}/10`}>
-                          <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                    <div key={stat.label} className="p-6 border-2 border-zinc-950 bg-white hover:bg-zinc-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+                      <div className="flex items-center justify-between mb-4 pb-4 border-b-2 border-zinc-100">
+                        <div className="p-2 border-2 border-zinc-950 bg-white rounded-none">
+                          <stat.icon className="h-6 w-6 text-zinc-950" />
                         </div>
-                        <span className="text-xs font-semibold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">{stat.change}</span>
+                        <span className="text-xs font-black font-mono text-zinc-950 border-2 border-zinc-950 px-2 py-1 uppercase">{stat.change}</span>
                       </div>
-                      <div className="text-3xl font-bold mb-1">{stat.value}</div>
-                      <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
+                      <div className="text-4xl font-black font-heading mb-1 text-zinc-950">{stat.value}</div>
+                      <div className="text-xs font-bold uppercase tracking-widest text-zinc-500 font-sans">{stat.label}</div>
                     </div>
                   ))}
                 </div>
@@ -229,68 +247,54 @@ export default function HomePage() {
                 {/* Two Column Layout */}
                 <div className="grid md:grid-cols-2 gap-8">
                   {/* Recent Vendors */}
-                  <div className="rounded-xl border bg-card">
-                    <div className="p-5 border-b flex items-center justify-between bg-muted/30">
-                      <h3 className="font-heading font-bold text-lg">Recent Vendors</h3>
-                      <Button variant="ghost" size="sm">View All →</Button>
+                  <div className="border-2 border-zinc-950 bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="p-5 border-b-2 border-zinc-950 flex items-center justify-between bg-zinc-100">
+                      <h3 className="font-heading font-black text-lg uppercase tracking-tight">Recent Deployments</h3>
+                      <Button variant="outline" size="sm" className="rounded-none border-2 border-zinc-950 font-bold uppercase text-xs">View Log</Button>
                     </div>
                     <div className="p-5 space-y-4">
                       {demoVendors.map((vendor) => (
-                        <div key={vendor.name} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                        <div key={vendor.name} className="flex items-center justify-between p-3 border-2 border-transparent hover:border-zinc-200 transition-colors">
                           <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 bg-accent/10 rounded-full flex items-center justify-center font-bold text-accent">
+                            <div className="h-10 w-10 border-2 border-zinc-950 flex items-center justify-center font-black text-zinc-950">
                               {vendor.name.charAt(0)}
                             </div>
                             <div>
-                              <p className="font-semibold">{vendor.name}</p>
-                              <p className="text-xs text-muted-foreground">{vendor.type}</p>
+                              <p className="font-bold text-zinc-950 uppercase">{vendor.name}</p>
+                              <p className="text-xs font-mono text-zinc-500">{vendor.type}</p>
                             </div>
                           </div>
-                          <Badge 
-                            variant={
-                              vendor.status === "Approved" ? "default" :
-                              vendor.status === "Under Review" ? "secondary" :
-                              "outline"
-                            }
-                            className="font-medium"
-                          >
+                          <span className={`text-xs font-bold uppercase tracking-wider font-mono border-2 px-2 py-1 ${vendor.status === 'Approved' ? 'border-emerald-500 text-emerald-600 bg-emerald-50' : 'border-amber-500 text-amber-600 bg-amber-50'}`}>
                             {vendor.status}
-                          </Badge>
+                          </span>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Proposal Evaluations */}
-                  <div className="rounded-xl border bg-card">
-                    <div className="p-5 border-b flex items-center justify-between bg-muted/30">
-                      <h3 className="font-heading font-bold text-lg">Active Proposals</h3>
-                      <Button variant="ghost" size="sm">View All →</Button>
+                  <div className="border-2 border-zinc-950 bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="p-5 border-b-2 border-zinc-950 flex items-center justify-between bg-zinc-100">
+                      <h3 className="font-heading font-black text-lg uppercase tracking-tight">Active Threads</h3>
+                      <Button variant="outline" size="sm" className="rounded-none border-2 border-zinc-950 font-bold uppercase text-xs">Manage</Button>
                     </div>
                     <div className="p-5 space-y-4">
                       {demoProposals.map((proposal) => (
-                        <div key={proposal.vendor} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                          <div>
-                            <p className="font-semibold">{proposal.vendor}</p>
-                            <p className="text-xs text-muted-foreground">Score: {proposal.score}/100</p>
+                        <div key={proposal.vendor} className="flex flex-col gap-2 p-3 border-2 border-transparent hover:border-zinc-200 transition-colors">
+                          <div className="flex justify-between items-center">
+                            <p className="font-bold text-zinc-950 uppercase">{proposal.vendor}</p>
+                            <span className="text-xs font-bold uppercase tracking-wider font-mono bg-zinc-950 text-white px-2 py-1">
+                              {proposal.status}
+                            </span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+                          <div className="flex items-center gap-3 w-full">
+                            <div className="flex-1 h-3 border-2 border-zinc-950 bg-zinc-100 p-0.5">
                               <div 
-                                className="h-full bg-primary rounded-full" 
+                                className="h-full bg-indigo-600" 
                                 style={{ width: `${proposal.score}%` }}
                               />
                             </div>
-                            <Badge 
-                              variant={
-                                proposal.status === "Selected" ? "default" :
-                                proposal.status === "Reviewing" ? "secondary" :
-                                "outline"
-                              }
-                              className="font-medium"
-                            >
-                              {proposal.status}
-                            </Badge>
+                            <span className="text-xs font-black font-mono">v{proposal.score}</span>
                           </div>
                         </div>
                       ))}
@@ -340,28 +344,28 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-24 md:py-32">
+        <section id="features" className="py-24 md:py-32 bg-zinc-950 text-white">
           <div className="container mx-auto px-6">
             <div className="max-w-2xl mb-16">
-              <Badge variant="outline" className="mb-4 font-medium">
+              <Badge variant="outline" className="mb-4 font-bold border-zinc-700 text-zinc-300 rounded-none uppercase tracking-widest bg-zinc-900 border-2">
                 Capabilities
               </Badge>
-              <h2 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
-                Everything you need to manage vendors at scale
+              <h2 className="text-4xl md:text-5xl font-heading font-black tracking-tighter">
+                A system built for <br/><span className="text-indigo-400">absolute control.</span>
               </h2>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {features.map((feature, index) => (
-                <Card key={feature.title} className="border-border/50 hover:border-accent/20 transition-colors">
-                  <CardContent className="p-6">
-                    <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
-                      <feature.icon className="h-5 w-5 text-accent" />
+                <Card key={feature.title} className="bg-zinc-900 border-2 border-zinc-800 rounded-none hover:border-indigo-500 transition-colors group">
+                  <CardContent className="p-8">
+                    <div className="h-12 w-12 border-2 border-zinc-700 bg-zinc-950 flex items-center justify-center mb-6 group-hover:border-indigo-500 group-hover:bg-indigo-950 transition-colors">
+                      <feature.icon className="h-6 w-6 text-indigo-400" />
                     </div>
-                    <h3 className="font-heading font-semibold text-lg mb-2">
+                    <h3 className="font-heading font-bold text-xl mb-3 uppercase tracking-tight text-white">
                       {feature.title}
                     </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
+                    <p className="text-zinc-400 text-base leading-relaxed font-sans font-medium">
                       {feature.description}
                     </p>
                   </CardContent>
@@ -372,29 +376,20 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 md:py-32 border-t border-slate-200 bg-white">
+        <section className="py-24 md:py-32 border-t-4 border-zinc-950 bg-indigo-600">
           <div className="container mx-auto px-6">
-            <Card className="bg-blue-600 text-white border-0 shadow-xl overflow-hidden relative">
-              <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-blue-500 opacity-50 blur-3xl" />
-              <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-blue-700 opacity-50 blur-3xl" />
-              
-              <CardContent className="p-12 md:p-16 text-center relative z-10">
-                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-                  Ready to transform your vendor ecosystem?
+            <Card className="bg-transparent border-0 overflow-hidden relative">
+              <CardContent className="p-0 text-center relative z-10 flex flex-col items-center">
+                <h2 className="text-4xl md:text-6xl font-heading font-black mb-6 text-white tracking-tighter">
+                  READY TO DEPLOY?
                 </h2>
-                <p className="text-blue-100 max-w-xl mx-auto mb-8 text-lg">
-                  Join hundreds of enterprises using VendorPortal to streamline compliance, 
-                  automate onboarding, and secure their supply chain.
+                <p className="text-indigo-100 max-w-xl mx-auto mb-10 text-xl font-medium font-sans">
+                  The OS for the modern enterprise. Stop managing vendors. Start engineering relationships.
                 </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <Link href="/register">
-                    <Button size="lg" className="h-12 px-8 font-medium bg-orange-500 hover:bg-orange-600 text-white border-0">
-                      Contact Sales
-                    </Button>
-                  </Link>
-                  <Link href="/login">
-                    <Button size="lg" variant="outline" className="h-12 px-8 font-medium border-blue-300 text-white hover:bg-blue-700 hover:text-white">
-                      Login to Portal
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full sm:w-auto">
+                  <Link href="/register" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto h-16 px-12 font-heading font-black text-xl bg-white hover:bg-zinc-100 text-zinc-950 border-4 border-zinc-950 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all rounded-none uppercase tracking-widest">
+                      Initialize Trial
                     </Button>
                   </Link>
                 </div>

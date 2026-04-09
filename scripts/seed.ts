@@ -66,6 +66,17 @@ async function seed() {
   console.log('🌱 Starting VMS seed...');
   
   await connectDB();
+
+  console.log('🧹 Cleaning up database...');
+  await Promise.all([
+    User.deleteMany({}),
+    Vendor.deleteMany({}),
+    Proposal.deleteMany({}),
+    ProposalSubmission.deleteMany({}),
+    Document.deleteMany({}),
+    DocumentType.deleteMany({}),
+    ActivityLog.deleteMany({}),
+  ]);
   
   console.log('\n📋 Seeding Document Types...');
   const documentTypes = await DocumentType.insertMany([
@@ -136,7 +147,7 @@ async function seed() {
       email: 'john@techcorp.com',
       phone: '+1 555-0101',
       address: { city: 'San Francisco', country: 'USA' },
-      companyType: 'Technology',
+      companyType: 'Corporation',
       status: 'APPROVED',
     },
     {
@@ -145,7 +156,7 @@ async function seed() {
       email: 'sarah@globalservices.com',
       phone: '+1 555-0102',
       address: { city: 'New York', country: 'USA' },
-      companyType: 'Services',
+      companyType: 'LLC',
       status: 'APPROVED',
     },
     {
@@ -154,7 +165,7 @@ async function seed() {
       email: 'mike@primelogistics.com',
       phone: '+1 555-0103',
       address: { city: 'Chicago', country: 'USA' },
-      companyType: 'Logistics',
+      companyType: 'Partnership',
       status: 'DOCUMENTS_SUBMITTED',
     },
     {
@@ -163,7 +174,7 @@ async function seed() {
       email: 'emily@cloudtech.com',
       phone: '+1 555-0104',
       address: { city: 'Seattle', country: 'USA' },
-      companyType: 'Technology',
+      companyType: 'Corporation',
       status: 'PENDING',
     },
     {
@@ -172,7 +183,7 @@ async function seed() {
       email: 'robert@apexconsulting.com',
       phone: '+1 555-0105',
       address: { city: 'Boston', country: 'USA' },
-      companyType: 'Consulting',
+      companyType: 'Sole Proprietorship',
       status: 'UNDER_REVIEW',
     },
   ];
@@ -214,38 +225,52 @@ async function seed() {
     {
       title: 'Cloud Infrastructure Upgrade',
       description: 'Seeking vendor to upgrade our cloud infrastructure including servers, storage, and networking.',
-      budget: 150000,
+      category: 'IT_INFRASTRUCTURE',
+      budgetMin: 100000,
+      budgetMax: 150000,
       deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       status: 'OPEN',
       requirements: ['Cloud architecture certification', 'Minimum 5 years experience', '24/7 support capability'],
+      createdBy: adminUser._id,
     },
     {
       title: 'Security Audit Services',
       description: 'Comprehensive security audit and penetration testing for enterprise systems.',
-      budget: 75000,
+      category: 'CYBER_SECURITY',
+      budgetMin: 50000,
+      budgetMax: 75000,
       deadline: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
       status: 'OPEN',
       requirements: ['CISSP certification', 'ISO 27001 experience', 'Detailed report capability'],
+      createdBy: adminUser._id,
     },
     {
       title: 'IT Support Contract',
       description: 'Ongoing IT support and maintenance for 500+ employees.',
-      budget: 200000,
+      category: 'IT_MANAGED_SERVICES',
+      budgetMin: 150000,
+      budgetMax: 200000,
       deadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
       status: 'OPEN',
       requirements: ['Help desk experience', 'SLA commitment', 'On-site and remote support'],
+      createdBy: adminUser._id,
     },
     {
       title: 'Database Migration Project',
       description: 'Migrate legacy databases to modern cloud-based solution.',
-      budget: 120000,
+      category: 'DATA_MANAGEMENT',
+      budgetMin: 80000,
+      budgetMax: 120000,
       deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
       status: 'CLOSED',
       requirements: ['Database certification', 'Migration experience', 'Data integrity guarantee'],
+      createdBy: adminUser._id,
     },
   ];
 
-  const createdProposals = await Proposal.insertMany(proposalData);
+  const createdProposals = await Promise.all(
+    proposalData.map(data => Proposal.create(data))
+  );
   console.log(`   Created ${createdProposals.length} proposals`);
 
   console.log('\n📨 Seeding Proposal Submissions...');
@@ -254,34 +279,42 @@ async function seed() {
       proposalId: createdProposals[0]._id,
       vendorId: createdVendors[0]._id,
       proposedAmount: 145000,
+      timeline: '12 weeks',
       description: 'Complete cloud infrastructure upgrade with 3-year support.',
-      status: 'PENDING',
+      approach: 'Phase-based migration with zero downtime.',
+      status: 'SUBMITTED',
     },
     {
       proposalId: createdProposals[0]._id,
       vendorId: createdVendors[1]._id,
       proposedAmount: 155000,
+      timeline: '10 weeks',
       description: 'Enterprise cloud solution with dedicated support team.',
+      approach: 'Cloud-native architecture with focus on scalability.',
       status: 'ACCEPTED',
     },
     {
       proposalId: createdProposals[1]._id,
       vendorId: createdVendors[2]._id,
       proposedAmount: 70000,
+      timeline: '4 weeks',
       description: 'Comprehensive security audit with detailed remediation plan.',
-      status: 'PENDING',
+      approach: 'Internal and external vulnerability assessment.',
+      status: 'SUBMITTED',
     },
     {
       proposalId: createdProposals[2]._id,
       vendorId: createdVendors[0]._id,
       proposedAmount: 195000,
+      timeline: '24 months',
       description: 'Full IT support with dedicated account manager.',
-      status: 'PENDING',
+      approach: 'Hybrid support model with on-site presence.',
+      status: 'SUBMITTED',
     },
   ];
 
   for (const sub of submissionData) {
-    await findOrCreateSubmission(sub.proposalId, sub.vendorId, sub);
+    await findOrCreateSubmission(sub.proposalId, sub.vendorId, sub as any);
   }
   console.log(`   Created ${submissionData.length} submissions`);
 

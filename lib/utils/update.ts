@@ -21,9 +21,15 @@ const ADMIN_ONLY_FIELDS = [
   'status',
   'rejectionReason',
   'approvalDate',
+  'userId',
+];
+
+/**
+ * System protected fields that should never be manually updated via these helpers
+ */
+const SYSTEM_PROTECTED_FIELDS = [
   'certificateNumber',
   'registrationDate',
-  'userId',
 ];
 
 /**

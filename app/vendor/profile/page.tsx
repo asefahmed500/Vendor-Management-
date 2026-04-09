@@ -149,84 +149,84 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-8 pb-12">
-        <div className="h-24 bg-muted animate-pulse rounded-lg" />
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-1 h-64 bg-muted animate-pulse rounded-lg" />
-          <div className="md:col-span-2 h-96 bg-muted animate-pulse rounded-lg" />
+      <div className="space-y-12 pb-24 p-8">
+        <div className="h-32 bg-zinc-50 border-2 border-zinc-950 animate-pulse" />
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="md:col-span-1 h-64 bg-zinc-50 border-2 border-zinc-950 animate-pulse" />
+          <div className="md:col-span-2 h-96 bg-zinc-50 border-2 border-zinc-950 animate-pulse" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-12 pb-24 p-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b-4 border-zinc-950">
         <div>
-          <Badge variant="secondary" className="mb-3 font-medium">Profile</Badge>
-          <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
-            Company Profile
+          <Badge variant="outline" className="mb-4 border-zinc-950 text-zinc-950">System: Identity</Badge>
+          <h1 className="text-4xl md:text-6xl font-heading font-black tracking-tighter text-zinc-950 uppercase">
+            Enterprise Profile
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your company information and settings
+          <p className="text-zinc-600 mt-2 font-medium uppercase tracking-widest text-xs">
+            Manage operational indices and authority data.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           {isEditing ? (
             <>
-              <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
-                Cancel
+              <Button variant="outline" onClick={handleCancel} disabled={isSaving} className="border-2 border-zinc-950">
+                DISCARD
               </Button>
-              <Button onClick={form.handleSubmit(onSubmit)} disabled={isSaving}>
+              <Button onClick={form.handleSubmit(onSubmit)} disabled={isSaving} className="border-2 border-zinc-950 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-indigo-600">
                 {isSaving ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving…
+                    SYNCING…
                   </>
                 ) : (
                   <>
                     <Save className="mr-2 h-4 w-4" />
-                    Save Changes
+                    COMMIT CHANGES
                   </>
                 )}
               </Button>
             </>
           ) : (
-            <Button onClick={() => setIsEditing(true)}>
-              Edit Profile
+            <Button onClick={() => setIsEditing(true)} className="border-2 border-zinc-950 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              AUTHORIZE EDIT
             </Button>
           )}
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-3 gap-12">
         {/* Sidebar */}
         <div className="md:col-span-1">
-          <Card className="border-border/50">
-            <CardContent className="p-6">
-              <div className="flex flex-col items-center text-center mb-6">
-                <div className="h-16 w-16 rounded-xl bg-muted flex items-center justify-center mb-4">
-                  <Building2 className="h-8 w-8 text-muted-foreground" />
+          <Card className="border-2 border-zinc-950 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-white overflow-hidden">
+            <CardContent className="p-8">
+              <div className="flex flex-col items-center text-center mb-10 pb-10 border-b-2 border-zinc-100">
+                <div className="h-24 w-24 border-2 border-zinc-950 bg-zinc-50 flex items-center justify-center mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <Building2 className="h-10 w-10 text-zinc-950" />
                 </div>
-                <h2 className="font-heading font-semibold text-lg">{vendor?.companyName}</h2>
-                <p className="text-sm text-muted-foreground">{vendor?.companyType || 'Company'}</p>
+                <h2 className="font-heading font-black text-2xl uppercase tracking-tight text-zinc-950">{vendor?.companyName}</h2>
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mt-2">{vendor?.companyType || 'Asset Entity'}</p>
               </div>
               
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-foreground">{email}</span>
+              <div className="space-y-6">
+                <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-tight">
+                  <Mail className="h-4 w-4 text-zinc-400" />
+                  <span className="text-zinc-950 underline underline-offset-4 decoration-zinc-200">{email}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Status</span>
-                  <Badge variant={vendor?.status === 'APPROVED' ? 'success' : 'warning'}>
-                    {vendor?.status?.replace(/_/g, ' ') || 'Unknown'}
+                <div className="flex items-center justify-between border-t border-zinc-100 pt-6">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Verification Status</span>
+                  <Badge className={`border-2 font-black ${vendor?.status === 'APPROVED' ? 'border-emerald-600 text-emerald-600 bg-white' : 'border-amber-600 text-amber-600 bg-white'}`}>
+                    {vendor?.status?.replace(/_/g, ' ') || 'ID_UNKNOWN'}
                   </Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Registered</span>
-                  <span className="text-sm">
+                <div className="flex items-center justify-between border-t border-zinc-100 pt-6">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Entry Date</span>
+                  <span className="text-xs font-black text-zinc-950 uppercase">
                     {vendor?.createdAt ? new Date(vendor.createdAt).toLocaleDateString() : 'N/A'}
                   </span>
                 </div>
@@ -237,11 +237,11 @@ export default function ProfilePage() {
 
         {/* Form */}
         <div className="md:col-span-2">
-          <Card className="border-border/50">
-            <CardHeader>
-              <CardTitle className="text-lg font-heading">Company Information</CardTitle>
+          <Card className="border-2 border-zinc-950 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-white overflow-hidden">
+            <CardHeader className="border-b-2 border-zinc-950 bg-zinc-50 p-8">
+              <CardTitle className="text-2xl font-heading font-black uppercase tracking-tight text-zinc-950">Entity Index</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-8">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">

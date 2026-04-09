@@ -1,0 +1,66 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - link "VMS_VENDOR" [ref=e6] [cursor=pointer]:
+          - /url: /vendor/dashboard
+          - img [ref=e8]
+          - generic [ref=e12]: VMS_VENDOR
+        - navigation [ref=e16]:
+          - link "Dashboard" [ref=e17] [cursor=pointer]:
+            - /url: /vendor/dashboard
+            - img [ref=e18]
+            - generic [ref=e23]: Dashboard
+          - link "Opportunities" [ref=e24] [cursor=pointer]:
+            - /url: /vendor/proposals
+            - img [ref=e25]
+            - generic [ref=e28]: Opportunities
+          - link "My Submissions" [ref=e29] [cursor=pointer]:
+            - /url: /vendor/proposals/submissions
+            - img [ref=e30]
+            - generic [ref=e33]: My Submissions
+          - link "Profile" [ref=e34] [cursor=pointer]:
+            - /url: /vendor/profile
+            - img [ref=e35]
+            - generic [ref=e38]: Profile
+          - link "Documents" [ref=e39] [cursor=pointer]:
+            - /url: /vendor/documents
+            - img [ref=e40]
+            - generic [ref=e43]: Documents
+          - link "Certificate" [ref=e44] [cursor=pointer]:
+            - /url: /vendor/certificate
+            - img [ref=e45]
+            - generic [ref=e48]: Certificate
+        - button "Terminate Session" [ref=e50]:
+          - img
+          - text: Terminate Session
+    - generic [ref=e51]:
+      - banner [ref=e52]:
+        - generic [ref=e54]:
+          - generic [ref=e55]: VENDOR_ROOT
+          - img [ref=e56]
+          - generic [ref=e58]: Certificate
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - img [ref=e61]
+            - generic [ref=e64]: Search...
+          - button [ref=e65]:
+            - img
+          - button [ref=e66]:
+            - img
+      - main [ref=e68]:
+        - generic [ref=e70]:
+          - generic [ref=e72]:
+            - generic [ref=e73]: Certificate
+            - heading "Vendor Certificate" [level=1] [ref=e74]
+          - generic [ref=e76]:
+            - img [ref=e77]
+            - heading "Not Eligible" [level=3] [ref=e80]
+            - paragraph [ref=e81]: Complete the verification process to receive your vendor certificate.
+  - button "Open Next.js Dev Tools" [ref=e87] [cursor=pointer]:
+    - img [ref=e88]
+  - alert [ref=e91]
+```

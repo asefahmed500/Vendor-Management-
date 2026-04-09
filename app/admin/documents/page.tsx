@@ -186,68 +186,68 @@ export default function AdminDocumentsPage() {
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-12 pb-24 p-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-zinc-950 pb-8">
         <div>
-          <Badge variant="secondary" className="mb-3 font-medium">Admin</Badge>
-          <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
-            Documents
+          <Badge variant="outline" className="mb-4 border-zinc-950 text-zinc-950">System: Compliance</Badge>
+          <h1 className="text-4xl md:text-6xl font-heading font-black tracking-tighter text-zinc-950 uppercase">
+            Asset Verification
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Review and verify vendor compliance documents
+          <p className="text-zinc-600 mt-2 font-medium uppercase tracking-widest text-xs">
+            Operational: Reviewing {documents.length} network objects
           </p>
         </div>
 
-        <div className="flex items-center gap-6 p-3 bg-muted/30 rounded-lg border border-border">
+        <div className="flex items-center gap-6 p-6 border-2 border-zinc-950 bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <div className="flex flex-col">
-            <span className="text-xs text-zinc-600">Total</span>
-            <span className="text-lg font-semibold">{documents.length}</span>
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Aggregate</span>
+            <span className="text-xl font-heading font-black text-zinc-950">{documents.length}</span>
           </div>
-          <Separator orientation="vertical" className="h-8" />
+          <div className="w-[1px] h-8 bg-zinc-200" />
           <div className="flex flex-col">
-            <span className="text-xs text-zinc-600">Pending</span>
-            <span className="text-lg font-semibold text-amber-600">{statusCounts.PENDING}</span>
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Action</span>
+            <span className="text-xl font-heading font-black text-amber-600">{statusCounts.PENDING}</span>
           </div>
-          <Separator orientation="vertical" className="h-8" />
+          <div className="w-[1px] h-8 bg-zinc-200" />
           <div className="flex flex-col">
-            <span className="text-xs text-zinc-600">Verified</span>
-            <span className="text-lg font-semibold text-emerald-600">{statusCounts.VERIFIED}</span>
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Verified</span>
+            <span className="text-xl font-heading font-black text-emerald-600">{statusCounts.VERIFIED}</span>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <Card className="border-border">
-        <CardContent className="p-4">
-          <div className="flex flex-col lg:flex-row gap-4">
+      <Card className="border-4 border-zinc-950 bg-zinc-50 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <CardContent className="p-6">
+          <div className="flex flex-col lg:flex-row gap-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
               <Input
-                placeholder="Search documents..."
+                placeholder="Query registry by object ID or name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-10"
+                className="pl-10 border-2 border-zinc-950 bg-white"
               />
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3">
               {(['ALL', 'PENDING', 'VERIFIED', 'REJECTED'] as const).map((status) => (
                 <button
                   key={status}
                   onClick={() => setStatusFilter(status)}
-                  className={`h-10 px-4 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                  className={`h-12 px-6 border-2 border-zinc-950 text-[10px] font-bold uppercase tracking-widest transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 ${
                     statusFilter === status
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-600 dark:hover:bg-zinc-700'
+                      ? 'bg-zinc-950 text-white'
+                      : 'bg-white text-zinc-950'
                   }`}
                 >
-                  {status === 'ALL' ? 'All' : status.charAt(0) + status.slice(1).toLowerCase()}
-                  <span className={`text-xs px-1.5 py-0.5 rounded ${
+                  {status === 'ALL' ? 'UNIVERSAL' : status}
+                  <span className={`px-1 font-black ${
                     statusFilter === status
-                      ? 'bg-white/20 dark:bg-black/20'
-                      : 'bg-zinc-200 dark:bg-zinc-700'
+                      ? 'text-zinc-400'
+                      : 'text-zinc-300'
                   }`}>
-                    {statusCounts[status]}
+                    [{statusCounts[status]}]
                   </span>
                 </button>
               ))}
@@ -257,16 +257,16 @@ export default function AdminDocumentsPage() {
       </Card>
 
       {/* Table */}
-      <Card className="border-border">
-        <CardHeader className="pb-4">
+      <Card className="border-4 border-zinc-950 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-white overflow-hidden">
+        <CardHeader className="border-b-2 border-zinc-950 bg-zinc-50 p-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-                <Archive className="h-5 w-5" />
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 border-2 border-zinc-950 flex items-center justify-center bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <Archive className="h-6 w-6 text-zinc-950" />
               </div>
               <div>
-                <CardTitle className="text-lg">Document Review</CardTitle>
-                <CardDescription className="text-sm">Review and verify vendor submissions</CardDescription>
+                <CardTitle className="text-2xl font-heading font-black uppercase tracking-tight text-zinc-950">Review Queue</CardTitle>
+                <CardDescription className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-1">Authorized compliance verification terminal.</CardDescription>
               </div>
             </div>
             {isLoading && <Loader2 className="h-5 w-5 animate-spin text-zinc-600" />}

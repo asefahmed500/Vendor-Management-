@@ -219,15 +219,15 @@ function RegisterForm() {
           Back to home
         </Link>
 
-        <Card className="border-border/50">
-          <CardHeader className="text-center pb-4">
-            <div className="mx-auto h-10 w-10 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xl">
+        <Card className="border-2 border-zinc-950 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-none">
+          <CardHeader className="text-center pb-4 border-b-2 border-zinc-950 bg-zinc-50">
+            <div className="mx-auto h-12 w-12 bg-zinc-950 rounded-none flex items-center justify-center text-white font-black text-2xl border-2 border-zinc-950 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
               V
             </div>
-            <div>
-              <CardTitle className="text-xl font-heading">Create your account</CardTitle>
-              <CardDescription className="text-muted-foreground text-sm">
-                Start managing your vendors enterprise-wide
+            <div className="mt-4">
+              <CardTitle className="text-2xl font-heading font-black uppercase tracking-tighter">Initialize Account</CardTitle>
+              <CardDescription className="text-zinc-500 text-xs font-bold uppercase tracking-widest mt-1">
+                VMS_OS Registration Protocol
               </CardDescription>
             </div>
           </CardHeader>
@@ -418,7 +418,7 @@ function RegisterForm() {
                                 <span className="text-muted-foreground">Strength: {getStrengthLabel(passwordStrength)}</span>
                                 <span className="font-medium">{Math.round((passwordStrength / 5) * 100)}%</span>
                               </div>
-                              <Progress value={(passwordStrength / 5) * 100} className="h-1" />
+                               <Progress value={(passwordStrength / 5) * 100} className="h-2 rounded-none border-2 border-zinc-950 bg-white" />
                             </div>
                           )}
                         </FormItem>
@@ -483,17 +483,17 @@ function RegisterForm() {
 
                 <Button
                   type="submit"
-                  className="w-full h-10 font-medium"
+                  className="w-full h-12 font-heading font-black uppercase text-lg border-2 border-zinc-950 rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all mt-4"
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating account…
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Initializing…
                     </>
                   ) : (
                     <>
-                      Create Account
+                      Deploy Account
                     </>
                   )}
                 </Button>

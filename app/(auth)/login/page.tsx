@@ -124,17 +124,12 @@ function LoginForm() {
           Back to home
         </Link>
 
-        <Card className="border-border/50">
-          <CardHeader className="text-center space-y-4">
-            <div className="mx-auto h-12 w-12 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xl">
-              V
-            </div>
-            <div>
-              <CardTitle className="text-2xl font-heading">Sign in</CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Access your vendor portal
-              </CardDescription>
-            </div>
+        <Card className="border-2 border-zinc-950 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-none">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-black uppercase tracking-tighter">Login_</CardTitle>
+            <p className="text-xs font-black text-zinc-400 uppercase tracking-widest leading-loose">
+              Initialize_Session… Authenticate_Node.
+            </p>
           </CardHeader>
           
           <CardContent>
@@ -160,6 +155,7 @@ function LoginForm() {
                             type="email"
                             autoComplete="email"
                             disabled={isLoading}
+                            className="border-2 border-zinc-950 rounded-none focus-visible:ring-zinc-950 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
                             {...field}
                           />
                         </FormControl>
@@ -188,6 +184,7 @@ function LoginForm() {
                             type="password"
                             autoComplete="current-password"
                             disabled={isLoading}
+                            className="border-2 border-zinc-950 rounded-none focus-visible:ring-zinc-950 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
                             {...field}
                           />
                         </FormControl>
@@ -199,16 +196,16 @@ function LoginForm() {
 
                 <Button
                   type="submit"
-                  className="w-full h-11 font-medium"
+                  className="w-full h-12 font-heading font-black uppercase text-lg border-2 border-zinc-950 rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all mt-4"
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Signing in…
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Authenticating...
                     </>
                   ) : (
-                    'Sign in'
+                    'Enter System'
                   )}
                 </Button>
               </form>

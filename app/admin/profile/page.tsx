@@ -9,43 +9,43 @@ export default function AdminProfilePage() {
   const user = session?.user;
 
   return (
-    <div className="space-y-6 pb-12">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
+    <div className="space-y-12 pb-24 p-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-zinc-950 pb-8">
         <div>
-          <Badge variant="secondary" className="mb-3 font-medium">Admin</Badge>
-          <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
-            Administrator Profile
+          <Badge variant="outline" className="mb-4 border-zinc-950 text-zinc-950">Identity: Operations</Badge>
+          <h1 className="text-4xl md:text-6xl font-heading font-black tracking-tighter text-zinc-950 uppercase">
+            Chief Administrator
           </h1>
-          <p className="text-muted-foreground mt-1">
-            View your system administrator credentials and access levels
+          <p className="text-zinc-600 mt-2 font-medium uppercase tracking-widest text-xs">
+            Assigned: System Level Privileges
           </p>
         </div>
       </div>
 
-      <Card className="max-w-2xl border-zinc-200 bg-white shadow-sm">
-        <CardHeader className="border-b border-zinc-100 bg-zinc-50/50">
-          <CardTitle className="font-heading tracking-wide uppercase text-xl">Personal Details</CardTitle>
-          <CardDescription className="font-sans text-base">Your basic account information configured via your provider.</CardDescription>
+      <Card className="max-w-2xl border-2 border-zinc-950 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-white overflow-hidden">
+        <CardHeader className="border-b-2 border-zinc-950 bg-zinc-50 p-8">
+          <CardTitle className="font-heading font-black tracking-tight uppercase text-2xl text-zinc-950">System Credentials</CardTitle>
+          <CardDescription className="font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-2">Verified hardware-encrypted identity tokens.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6 pt-6">
-          <div className="grid grid-cols-2 gap-6 border-b border-zinc-100 pb-6">
-            <div>
-              <p className="text-sm font-semibold tracking-wider uppercase text-zinc-500">Full Name</p>
-              <p className="font-sans text-lg font-medium text-zinc-950 mt-1">{user?.name || 'VMS Administrator'}</p>
+        <CardContent className="space-y-8 p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-b-2 border-zinc-100 pb-8">
+            <div className="space-y-1">
+              <p className="text-[10px] font-bold tracking-widest uppercase text-zinc-400">Personnel ID</p>
+              <p className="text-xl font-heading font-black text-zinc-950 uppercase italic">{user?.name || 'VMS ADMINISTRATOR'}</p>
             </div>
-            <div>
-              <p className="text-sm font-semibold tracking-wider uppercase text-zinc-500">Email Address</p>
-              <p className="font-sans text-lg font-medium text-zinc-950 mt-1">{user?.email || 'admin@vms-system.com'}</p>
+            <div className="space-y-1">
+              <p className="text-[10px] font-bold tracking-widest uppercase text-zinc-400">Network Address</p>
+              <p className="text-xl font-heading font-black text-zinc-950 lowercase underline underline-offset-4 decoration-2">{user?.email || 'admin@vms.system'}</p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <p className="text-sm font-semibold tracking-wider uppercase text-zinc-500">System Role</p>
-              <Badge className="mt-2 font-sans font-medium px-3 py-1 shadow-sm" variant="default">Global Admin</Badge>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-2">
+              <p className="text-[10px] font-bold tracking-widest uppercase text-zinc-400">Clearance Tier</p>
+              <Badge className="border-2 border-zinc-950 bg-zinc-950 text-white font-black" variant="default">LVL 5: EXEC</Badge>
             </div>
-            <div>
-              <p className="text-sm font-semibold tracking-wider uppercase text-zinc-500">Account Status</p>
-              <Badge className="mt-2 font-sans font-medium px-3 py-1 bg-emerald-100 text-emerald-800 shadow-sm hover:bg-emerald-200 border-emerald-200" variant="outline">Active</Badge>
+            <div className="space-y-2">
+              <p className="text-[10px] font-bold tracking-widest uppercase text-zinc-400">Authorization Status</p>
+              <Badge className="border-2 border-emerald-600 bg-white text-emerald-600 font-black shadow-[2px_2px_0px_0px_rgba(5,150,105,1)]" variant="outline">OPERATIONAL</Badge>
             </div>
           </div>
         </CardContent>

@@ -1,0 +1,41 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - link "Back to home" [ref=e5] [cursor=pointer]:
+      - /url: /
+      - img [ref=e6]
+      - text: Back to home
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: V
+        - generic [ref=e11]:
+          - heading "Sign in" [level=3] [ref=e12]
+          - paragraph [ref=e13]: Access your vendor portal
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - text: Email
+            - textbox "Email" [ref=e19]:
+              - /placeholder: you@company.com
+          - generic [ref=e20]:
+            - generic [ref=e21]:
+              - generic [ref=e22]: Password
+              - link "Forgot password?" [ref=e23] [cursor=pointer]:
+                - /url: /forgot-password
+            - textbox "Password" [ref=e25]:
+              - /placeholder: ••••••••
+        - button "Sign in" [ref=e26]
+      - paragraph [ref=e28]: Contact your administrator to get vendor access
+    - paragraph [ref=e29]:
+      - text: By signing in, you agree to our
+      - link "Terms of Service" [ref=e30] [cursor=pointer]:
+        - /url: "#"
+      - text: and
+      - link "Privacy Policy" [ref=e31] [cursor=pointer]:
+        - /url: "#"
+  - button "Open Next.js Dev Tools" [ref=e37] [cursor=pointer]:
+    - img [ref=e38]
+  - alert [ref=e41]
+```

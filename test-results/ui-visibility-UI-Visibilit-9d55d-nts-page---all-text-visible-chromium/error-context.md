@@ -1,0 +1,96 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - link "VMS_VENDOR" [ref=e6] [cursor=pointer]:
+          - /url: /vendor/dashboard
+          - img [ref=e8]
+          - generic [ref=e12]: VMS_VENDOR
+        - navigation [ref=e16]:
+          - link "Dashboard" [ref=e17] [cursor=pointer]:
+            - /url: /vendor/dashboard
+            - img [ref=e18]
+            - generic [ref=e23]: Dashboard
+          - link "Opportunities" [ref=e24] [cursor=pointer]:
+            - /url: /vendor/proposals
+            - img [ref=e25]
+            - generic [ref=e28]: Opportunities
+          - link "My Submissions" [ref=e29] [cursor=pointer]:
+            - /url: /vendor/proposals/submissions
+            - img [ref=e30]
+            - generic [ref=e33]: My Submissions
+          - link "Profile" [ref=e34] [cursor=pointer]:
+            - /url: /vendor/profile
+            - img [ref=e35]
+            - generic [ref=e38]: Profile
+          - link "Documents" [ref=e39] [cursor=pointer]:
+            - /url: /vendor/documents
+            - img [ref=e40]
+            - generic [ref=e43]: Documents
+          - link "Certificate" [ref=e44] [cursor=pointer]:
+            - /url: /vendor/certificate
+            - img [ref=e45]
+            - generic [ref=e48]: Certificate
+        - button "Terminate Session" [ref=e50]:
+          - img
+          - text: Terminate Session
+    - generic [ref=e51]:
+      - banner [ref=e52]:
+        - generic [ref=e54]:
+          - generic [ref=e55]: VENDOR_ROOT
+          - img [ref=e56]
+          - generic [ref=e58]: Documents
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - img [ref=e61]
+            - generic [ref=e64]: Search...
+          - button [ref=e65]:
+            - img
+          - button [ref=e66]:
+            - img
+      - main [ref=e68]:
+        - generic [ref=e70]:
+          - generic [ref=e72]:
+            - generic [ref=e73]: Documents
+            - heading "Document Vault" [level=1] [ref=e74]
+            - paragraph [ref=e75]: Upload and manage your compliance documents
+          - generic [ref=e76]:
+            - generic [ref=e78]:
+              - img [ref=e80]
+              - generic [ref=e83]:
+                - paragraph [ref=e84]: "0"
+                - paragraph [ref=e85]: Pending
+            - generic [ref=e87]:
+              - img [ref=e89]
+              - generic [ref=e92]:
+                - paragraph [ref=e93]: "0"
+                - paragraph [ref=e94]: Verified
+            - generic [ref=e96]:
+              - img [ref=e98]
+              - generic [ref=e102]:
+                - paragraph [ref=e103]: "0"
+                - paragraph [ref=e104]: Rejected
+          - generic [ref=e105]:
+            - heading "Upload Document" [level=3] [ref=e107]
+            - generic [ref=e109]:
+              - generic [ref=e110]:
+                - combobox [ref=e111]:
+                  - generic: Document type
+                  - img [ref=e112]
+                - combobox [ref=e114]
+              - button "Choose File" [ref=e117] [cursor=pointer]
+              - button "Upload" [ref=e118]:
+                - img
+                - text: Upload
+          - generic [ref=e119]:
+            - heading "Your Documents" [level=3] [ref=e121]
+            - generic [ref=e123]:
+              - img [ref=e124]
+              - paragraph [ref=e127]: No documents uploaded yet
+  - button "Open Next.js Dev Tools" [ref=e133] [cursor=pointer]:
+    - img [ref=e134]
+  - alert [ref=e137]
+```

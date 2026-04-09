@@ -21,19 +21,19 @@ import {
 import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton';
 
 const statCards = [
-  { key: 'total', label: 'Total Vendors', icon: Users, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/10' },
-  { key: 'approvedLogin', label: 'Access Granted', icon: CheckCircle, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
-  { key: 'documentsSubmitted', label: 'Documents', icon: FileText, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-500/10' },
-  { key: 'underReview', label: 'Under Review', icon: Search, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/10' },
-  { key: 'approved', label: 'Verified', icon: Trophy, color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-50 dark:bg-teal-500/10' },
-  { key: 'rejected', label: 'Rejected', icon: XCircle, color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-500/10' },
+  { key: 'total', label: 'Total Vendors', icon: Users, color: 'text-zinc-950', bg: 'bg-zinc-50' },
+  { key: 'approvedLogin', label: 'Access Granted', icon: CheckCircle, color: 'text-zinc-600', bg: 'bg-zinc-50' },
+  { key: 'documentsSubmitted', label: 'Documents', icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+  { key: 'underReview', label: 'Under Review', icon: Search, color: 'text-zinc-500', bg: 'bg-zinc-50' },
+  { key: 'approved', label: 'Verified', icon: Trophy, color: 'text-zinc-950', bg: 'bg-zinc-50' },
+  { key: 'rejected', label: 'Rejected', icon: XCircle, color: 'text-red-600', bg: 'bg-red-50' },
 ];
 
 const proposalStatCards = [
-  { key: 'total', label: 'Total RFPs', icon: Briefcase, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/10' },
-  { key: 'open', label: 'Open', icon: Activity, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
-  { key: 'closed', label: 'Closed', icon: CheckCircle, color: 'text-gray-600 dark:text-gray-400', bg: 'bg-gray-50 dark:bg-zinc-800/50' },
-  { key: 'awarded', label: 'Awarded', icon: Trophy, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/10' },
+  { key: 'total', label: 'Total RFPs', icon: Briefcase, color: 'text-zinc-950', bg: 'bg-zinc-50' },
+  { key: 'open', label: 'Open', icon: Activity, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+  { key: 'closed', label: 'Closed', icon: CheckCircle, color: 'text-zinc-500', bg: 'bg-zinc-100' },
+  { key: 'awarded', label: 'Awarded', icon: Trophy, color: 'text-zinc-950', bg: 'bg-zinc-50' },
 ];
 
 const mockData = {
@@ -111,43 +111,43 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="space-y-8 pb-12 p-6">
+    <div className="space-y-12 pb-24 p-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-zinc-950 pb-8">
         <div>
-          <Badge variant="secondary" className="mb-3 font-medium">Admin</Badge>
-          <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight text-foreground">
-            Dashboard
+          <Badge variant="outline" className="mb-4 border-zinc-950 text-zinc-950">System: Principal Admin</Badge>
+          <h1 className="text-4xl md:text-6xl font-heading font-black tracking-tighter text-zinc-950 uppercase">
+            Operations Center
           </h1>
-          <p className="text-muted-foreground mt-1">
-            {showDemo ? 'Preview mode - showing demo data' : `Managing ${data.stats.total} vendors and ${data.proposalStats.total} RFPs`}
+          <p className="text-zinc-600 mt-2 font-medium uppercase tracking-widest text-xs">
+            {showDemo ? 'Terminal: Simulated Data Mode' : `Authorized: Managing ${data.stats.total} entities`}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" asChild>
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="sm" asChild className="border-2 border-zinc-950 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <Link href="/admin/audit-logs">
               <Activity className="h-4 w-4 mr-2" />
-              Activity
+              Audit Log
             </Link>
           </Button>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {statCards.map((card) => {
           const value = data.stats[card.key] || 0;
           const Icon = card.icon;
           return (
-            <Card key={card.key} className="shadow-sm">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className={`h-12 w-12 rounded-lg ${card.bg} flex items-center justify-center`}>
-                    <Icon className={`h-6 w-6 ${card.color}`} />
+            <Card key={card.key} className="border-2 border-zinc-950 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-all">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-6">
+                  <div className={`h-16 w-16 border-2 border-zinc-950 flex items-center justify-center bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
+                    <Icon className={`h-8 w-8 text-zinc-950`} />
                   </div>
                   <div>
-                    <p className="text-3xl font-heading font-bold text-foreground">{value}</p>
-                    <p className="text-sm font-medium text-muted-foreground mt-0.5">{card.label}</p>
+                    <p className="text-5xl font-heading font-black text-zinc-950 tracking-tighter">{value}</p>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mt-1">{card.label}</p>
                   </div>
                 </div>
               </CardContent>
@@ -158,22 +158,22 @@ export default function AdminDashboardPage() {
 
       {/* Pending Documents Alert */}
       {data.pendingDocuments > 0 && (
-        <Card className="border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10">
-          <CardContent className="p-6">
+        <Card className="border-4 border-amber-500 bg-amber-50 shadow-[8px_8px_0px_0px_rgba(245,158,11,1)]">
+          <CardContent className="p-8">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="h-10 w-10 rounded-lg bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center">
-                  <FileText className="h-5 w-5 text-amber-700 dark:text-amber-400" />
+              <div className="flex items-center gap-6">
+                <div className="h-16 w-16 border-2 border-amber-500 bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(245,158,11,1)]">
+                  <FileText className="h-8 w-8 text-amber-600" />
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground">Pending Document Reviews</p>
-                  <p className="text-sm text-muted-foreground mt-0.5">
-                    {data.pendingDocuments} documents awaiting verification
+                  <p className="text-2xl font-heading font-black text-amber-950 uppercase tracking-tight">Pending Action Required</p>
+                  <p className="text-xs font-bold text-amber-700 mt-1 uppercase tracking-widest">
+                    {data.pendingDocuments} documents awaiting supervisor verification
                   </p>
                 </div>
               </div>
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/admin/documents">Review Documents</Link>
+              <Button variant="outline" size="lg" asChild className="border-2 border-amber-600 bg-white shadow-[4px_4px_0px_0px_rgba(245,158,11,1)]">
+                <Link href="/admin/documents">Execute Review</Link>
               </Button>
             </div>
           </CardContent>
@@ -181,22 +181,22 @@ export default function AdminDashboardPage() {
       )}
 
       {/* RFP Stats */}
-      <div>
-        <h2 className="text-xl font-heading font-bold mb-4 text-foreground">RFP Overview</h2>
-        <div className="grid md:grid-cols-4 gap-4">
+      <div className="pt-8 border-t-2 border-zinc-950/10">
+        <h2 className="text-2xl font-heading font-black mb-8 text-zinc-950 uppercase tracking-tighter">Asset Acquisition Protocol</h2>
+        <div className="grid md:grid-cols-4 gap-6">
           {proposalStatCards.map((card) => {
             const value = data.proposalStats[card.key] || 0;
             const Icon = card.icon;
             return (
-              <Card key={card.key} className="shadow-sm">
+              <Card key={card.key} className="border-2 border-zinc-950 bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
-                    <div className={`h-10 w-10 rounded-lg ${card.bg} flex items-center justify-center`}>
-                      <Icon className={`h-5 w-5 ${card.color}`} />
+                    <div className={`h-10 w-10 border-2 border-zinc-950 flex items-center justify-center bg-zinc-50`}>
+                      <Icon className={`h-5 w-5 text-zinc-950`} />
                     </div>
                     <div>
-                      <p className="text-2xl font-heading font-bold text-foreground">{value}</p>
-                      <p className="text-sm font-medium text-muted-foreground mt-0.5">{card.label}</p>
+                      <p className="text-2xl font-heading font-black text-zinc-950 tracking-tighter">{value}</p>
+                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">{card.label}</p>
                     </div>
                   </div>
                 </CardContent>

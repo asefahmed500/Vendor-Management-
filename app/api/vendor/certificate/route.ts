@@ -4,6 +4,7 @@ import Vendor from '@/lib/db/models/Vendor';
 import { vendorGuard } from '@/lib/auth/guards';
 import { generateCertificatePDF } from '@/lib/services/certificate.service';
 import { IVendor } from '@/lib/types/vendor';
+import { handleApiError, NotFoundError, ForbiddenError } from '@/lib/middleware/errorHandler';
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,17 +22,11 @@ export async function GET(request: NextRequest) {
     const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor) {
-      return NextResponse.json(
-        { success: false, error: 'Vendor profile not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor profile not found');
     }
 
     if (vendor.status !== 'APPROVED') {
-      return NextResponse.json(
-        { success: false, error: 'Certificate not available. Vendor must be approved.' },
-        { status: 403 }
-      );
+      throw new ForbiddenError('Certificate not available. Vendor must be approved.');
     }
 
     const pdf = generateCertificatePDF(vendor.toJSON() as unknown as IVendor);
@@ -44,11 +39,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Certificate generation error:', error);
-
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
+

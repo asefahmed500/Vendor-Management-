@@ -5,10 +5,10 @@ import User from '@/lib/db/models/User';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse, PaginatedResponse } from '@/lib/types/api';
 import { IVendor } from '@/lib/types/vendor';
-import { ZodError, z } from 'zod';
-import { createVendorSchema } from '@/lib/validation/schemas/auth';
-import { vendorListFiltersSchema } from '@/lib/validation/schemas/vendor';
+import { handleApiError, BadRequestError, ConflictError } from '@/lib/middleware/errorHandler';
+import { adminCreateVendorSchema, vendorListFiltersSchema } from '@/lib/validation/schemas/vendor';
 import { sanitizeSearchQuery } from '@/lib/utils/sanitize';
+import { serialize } from '@/lib/utils/serialization';
 
 export async function GET(request: NextRequest) {
   try {
@@ -60,8 +60,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json<ApiResponse<PaginatedResponse<IVendor>>>(
       {
         success: true,
-        data: {
-          items: vendors.map((v) => v as unknown as IVendor),
+        data: serialize({
+          items: vendors,
           pagination: {
             total,
             page: filters.page,
@@ -70,35 +70,12 @@ export async function GET(request: NextRequest) {
             hasNext: filters.page < totalPages,
             hasPrev: filters.page > 1,
           },
-        },
+        }) as unknown as PaginatedResponse<IVendor>,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get vendors error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors: errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetVendors');
   }
 }
 
@@ -114,34 +91,19 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const generatePassword = body.generatePassword === true;
-    
-    const createSchema = z.object({
-      email: z.string().min(1, 'Email is required').email('Invalid email'),
-      companyName: z.string().min(2, 'Company name required'),
-      contactPerson: z.string().min(2, 'Contact person required'),
-      phone: z.string().min(1, 'Phone required'),
-      companyType: z.string().optional(),
-      taxId: z.string().optional(),
-      address: z.string().optional(),
-    });
-    
-    const validatedData = createSchema.parse(body);
+    const validatedData = adminCreateVendorSchema.parse(body);
 
     await connectDB();
 
     const existingUser = await User.findOne({ email: validatedData.email.toLowerCase() });
     if (existingUser) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Email already exists' },
-        { status: 400 }
-      );
+      throw new ConflictError('Email already exists in registry');
     }
 
     let password: string;
     let tempPassword: string | undefined;
     
-    if (generatePassword) {
+    if (validatedData.generatePassword) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
       let generated = '';
       for (let i = 0; i < 12; i++) {
@@ -150,12 +112,9 @@ export async function POST(request: NextRequest) {
       tempPassword = generated;
       password = generated;
     } else {
-      password = body.password || '';
+      password = validatedData.password || '';
       if (!password || password.length < 8) {
-        return NextResponse.json<ApiResponse>(
-          { success: false, error: 'Password must be at least 8 characters' },
-          { status: 400 }
-        );
+        throw new BadRequestError('Password must be at least 8 characters');
       }
     }
 
@@ -164,7 +123,7 @@ export async function POST(request: NextRequest) {
       email: validatedData.email.toLowerCase(),
       password: password,
       role: 'VENDOR',
-      mustChangePassword: generatePassword,
+      mustChangePassword: validatedData.generatePassword,
     });
 
     const vendor = await Vendor.create({
@@ -189,7 +148,7 @@ export async function POST(request: NextRequest) {
       description: `Vendor account created for ${validatedData.companyName}`,
     });
 
-    const responseData: any = { vendor: vendor.toJSON() as unknown as IVendor };
+    const responseData: any = { vendor: vendor.toJSON() };
     if (tempPassword) {
       responseData.tempPassword = tempPassword;
     }
@@ -197,35 +156,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json<ApiResponse<any>>(
       {
         success: true,
-        data: responseData,
-        message: 'Vendor created successfully',
+        data: serialize(responseData),
+        message: 'Vendor record established successfully',
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error('Create vendor error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors: errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'CreateVendor');
   }
 }
+

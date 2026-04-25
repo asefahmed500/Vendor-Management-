@@ -9,6 +9,7 @@ import type { IProposal } from '@/lib/types/proposal';
 import { handleApiError } from '@/lib/middleware/errorHandler';
 import { createProposalSchema, proposalFiltersSchema } from '@/lib/validation/schemas/proposal';
 import { createBulkNotifications } from '@/lib/notifications/service';
+import { serialize } from '@/lib/utils/serialization';
 
 export async function GET(request: NextRequest) {
   try {
@@ -64,7 +65,7 @@ export async function GET(request: NextRequest) {
       {
         success: true,
         data: {
-          items: proposals as unknown as IProposal[],
+          items: serialize(proposals) as unknown as IProposal[],
           pagination: {
             total,
             page: filters.page,
@@ -135,7 +136,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json<ApiResponse<{ proposal: IProposal }>>(
       {
         success: true,
-        data: { proposal: proposal.toJSON() as unknown as IProposal },
+        data: { proposal: serialize(proposal) as unknown as IProposal },
         message: 'Proposal created successfully',
       },
       { status: 201 }

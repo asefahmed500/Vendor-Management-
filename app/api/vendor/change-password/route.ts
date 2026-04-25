@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/connect';
 import User from '@/lib/db/models/User';
+import { vendorGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
-import { auth } from '@/lib/auth/auth';
+import { handleApiError, NotFoundError } from '@/lib/middleware/errorHandler';
+import { updatePasswordSchema } from '@/lib/validation/schemas/auth';
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
+    const { authorized, user } = await vendorGuard(request);
 
-    if (!session) {
+    if (!authorized || !user) {
       return NextResponse.json<ApiResponse>(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
@@ -18,45 +18,28 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { currentPassword, newPassword } = body;
-
-    if (!currentPassword || !newPassword) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Current and new password are required' },
-        { status: 400 }
-      );
-    }
-
-    if (newPassword.length < 8) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'New password must be at least 8 characters' },
-        { status: 400 }
-      );
-    }
+    const validatedData = updatePasswordSchema.parse(body);
 
     await connectDB();
 
-    const user = await User.findById(session.user.id).select('+password');
+    const userData = await User.findById(user.id).select('+password');
     
-    if (!user || !user.password) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      );
+    if (!userData) {
+      throw new NotFoundError('User not found');
     }
 
-    const isMatch = await user.comparePassword(currentPassword);
+    const isMatch = await userData.comparePassword(validatedData.currentPassword);
     if (!isMatch) {
       return NextResponse.json<ApiResponse>(
         { success: false, error: 'Current password is incorrect' },
-        { status: 400 }
+        { status: 401 }
       );
     }
 
-    user.password = newPassword;
-    user.mustChangePassword = false;
-    user.passwordChangedAt = new Date();
-    await user.save();
+    userData.password = validatedData.newPassword;
+    userData.mustChangePassword = false;
+    userData.passwordChangedAt = new Date();
+    await userData.save();
 
     return NextResponse.json<ApiResponse>(
       {
@@ -66,10 +49,6 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Change password error:', error);
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'VendorChangePassword');
   }
 }

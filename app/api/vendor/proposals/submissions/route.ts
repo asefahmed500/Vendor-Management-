@@ -4,7 +4,8 @@ import Vendor from '@/lib/db/models/Vendor';
 import ProposalSubmission from '@/lib/db/models/ProposalSubmission';
 import { vendorGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
-import { IProposalSubmission } from '@/lib/types/proposal';
+import { handleApiError, NotFoundError } from '@/lib/middleware/errorHandler';
+import { serialize } from '@/lib/utils/serialization';
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,10 +23,7 @@ export async function GET(request: NextRequest) {
     const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor profile not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor profile not found');
     }
 
     const submissions = await ProposalSubmission.find({ vendorId: vendor._id })
@@ -43,30 +41,26 @@ export async function GET(request: NextRequest) {
       averageScore: 0,
     };
 
-    const scoredSubmissions = submissions.filter((s) => (s as unknown as { ranking?: { score?: number } }).ranking?.score);
+    const scoredSubmissions = submissions.filter((s) => (s as any).ranking?.score);
     if (scoredSubmissions.length > 0) {
-      const totalScore = scoredSubmissions.reduce((sum: number, s: unknown) => {
-        return sum + ((s as unknown as { ranking?: { score?: number } }).ranking?.score || 0);
+      const totalScore = scoredSubmissions.reduce((sum: number, s: any) => {
+        return sum + (s.ranking?.score || 0);
       }, 0);
       stats.averageScore = totalScore / scoredSubmissions.length;
     }
 
-    return NextResponse.json<ApiResponse<{ submissions: IProposalSubmission[]; stats: typeof stats }>>(
+    return NextResponse.json<ApiResponse>(
       {
         success: true,
         data: {
-          submissions: submissions as unknown as IProposalSubmission[],
+          submissions: serialize(submissions),
           stats,
         },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get submissions error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
+

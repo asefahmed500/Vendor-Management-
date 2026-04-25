@@ -1,25 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/connect';
-import Vendor from '@/lib/db/models/Vendor';
-import Document from '@/lib/db/models/Document';
-import Proposal from '@/lib/db/models/Proposal';
-import ProposalSubmission from '@/lib/db/models/ProposalSubmission';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
 import { IVendorStats } from '@/lib/types/vendor';
 import { getAdminDashboardStats } from '@/lib/services/dashboard';
+import { handleApiError } from '@/lib/middleware/errorHandler';
 
 export async function GET(request: NextRequest) {
   try {
-    const result = await adminGuard(request);
-    const { authorized } = result;
+    const { authorized, user } = await adminGuard(request);
 
-    if (!authorized) {
+    if (!authorized || !user) {
       return NextResponse.json<ApiResponse>(
-        { success: false, error: result.error || 'Unauthorized' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
+
+    await connectDB();
 
     const data = await getAdminDashboardStats();
 
@@ -41,11 +39,7 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get dashboard stats error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetDashboardStats');
   }
 }
+

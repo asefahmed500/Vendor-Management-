@@ -19,7 +19,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
@@ -91,139 +91,138 @@ export default function VendorChangePasswordPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-400" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="mx-auto h-12 w-12 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xl mb-4">
-            V
-          </div>
-          <h1 className="text-2xl font-heading font-bold">Change Your Password</h1>
-          <p className="text-muted-foreground mt-2">
-            For security, please set a new password for your account.
-          </p>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="flex flex-col items-center space-y-2 text-center">
+        <div className="h-12 w-12 bg-zinc-950 rounded-2xl flex items-center justify-center text-white font-bold text-xl mb-2 shadow-lg">
+          V
         </div>
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-950 font-heading">Security Update</h1>
+        <p className="text-zinc-500 text-sm font-medium">
+          Set a new access key for your account
+        </p>
+      </div>
 
-        <Card className="border-border/50">
-          <CardHeader>
-            <CardTitle className="text-lg font-heading flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-accent" />
-              Security Check
-            </CardTitle>
-            <CardDescription>
-              Your temporary password has expired. Create a new secure password.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                {submitError && (
-                  <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                    <p className="text-sm text-destructive">{submitError}</p>
-                  </div>
+      <Card className="border-none shadow-none bg-transparent">
+        <CardContent className="p-0">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {submitError && (
+                <div className="p-3 bg-red-50 border border-red-100 rounded-xl">
+                  <p className="text-xs font-bold text-red-500">{submitError}</p>
+                </div>
+              )}
+
+              <FormField
+                control={form.control}
+                name="currentPassword"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Current Access Key</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                        <Input
+                          type="password"
+                          className="pl-11 h-12 rounded-2xl border-zinc-200 focus:border-zinc-950 focus:ring-0 transition-all font-medium"
+                          placeholder="Temporary password"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage className="font-medium text-xs text-red-500" />
+                  </FormItem>
                 )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="currentPassword"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">Current Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            type="password"
-                            className="pl-10"
-                            placeholder="Enter current password"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">New Security Key</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                        <Input
+                          type="password"
+                          className="pl-11 h-12 rounded-2xl border-zinc-200 focus:border-zinc-950 focus:ring-0 transition-all font-medium"
+                          placeholder="Create strong password"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage className="font-medium text-xs text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="newPassword"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">New Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            type="password"
-                            className="pl-10"
-                            placeholder="Create a strong password"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                      <p className="text-xs text-muted-foreground">
-                        Must contain: uppercase, lowercase, number, special char
-                      </p>
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Verify New Key</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                        <Input
+                          type="password"
+                          className="pl-11 h-12 rounded-2xl border-zinc-200 focus:border-zinc-950 focus:ring-0 transition-all font-medium"
+                          placeholder="Confirm security key"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage className="font-medium text-xs text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">Confirm New Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            type="password"
-                            className="pl-10"
-                            placeholder="Confirm your new password"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
+              <Button
+                type="submit"
+                className="w-full h-12 text-sm font-bold bg-zinc-950 text-white hover:bg-zinc-800 transition-all rounded-2xl group"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    REWRITING SECURITY...
+                  </>
+                ) : (
+                  <>
+                    CONFIRM NEW IDENTITY
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
 
-                <Button
-                  type="submit"
-                  className="w-full h-10 font-medium"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Changing Password…
-                    </>
-                  ) : (
-                    <>
-                      Set New Password
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-
-        <p className="text-center text-sm text-muted-foreground mt-6">
-          Having trouble? <Link href="/login" className="text-primary hover:underline">Contact support</Link>
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex items-center gap-6 opacity-40">
+          <div className="flex items-center gap-1.5 text-[9px] font-bold tracking-widest uppercase text-zinc-500">
+            <ShieldCheck className="h-3 w-3 text-zinc-950" /> Secure Protocol
+          </div>
+          <div className="flex items-center gap-1.5 text-[9px] font-bold tracking-widest uppercase text-zinc-500">
+            <Lock className="h-3 w-3 text-zinc-950" /> Vault Protection
+          </div>
+        </div>
+        
+        <p className="text-center text-[10px] font-bold text-zinc-400 uppercase tracking-widest pt-4">
+          Having trouble? <Link href="/login" className="text-zinc-950 hover:underline">Contact System Admin</Link>
         </p>
       </div>
     </div>
   );
+}
+
 }

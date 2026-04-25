@@ -5,9 +5,9 @@ import Vendor from '@/lib/db/models/Vendor';
 import ProposalSubmission from '@/lib/db/models/ProposalSubmission';
 import { vendorGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
-import { IProposal, IProposalSubmission } from '@/lib/types/proposal';
-import { ZodError } from 'zod';
+import { handleApiError, NotFoundError, BadRequestError } from '@/lib/middleware/errorHandler';
 import { createSubmissionSchema } from '@/lib/validation/schemas/proposal';
+import { serialize } from '@/lib/utils/serialization';
 
 export async function GET(
   request: NextRequest,
@@ -30,10 +30,7 @@ export async function GET(
     const proposal = await Proposal.findById(id).lean();
 
     if (!proposal) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Proposal not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Proposal not found');
     }
 
     const vendor = await Vendor.findOne({ userId: user.id });
@@ -50,23 +47,18 @@ export async function GET(
       vendorId: vendor._id,
     }).lean();
 
-    return NextResponse.json<ApiResponse<{ proposal: IProposal; submission?: IProposalSubmission }>>(
+    return NextResponse.json<ApiResponse>(
       {
         success: true,
         data: {
-          proposal: proposal as unknown as IProposal,
-          submission: submission as unknown as IProposalSubmission | undefined,
+          proposal: serialize(proposal),
+          submission: submission ? serialize(submission) : undefined,
         },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get proposal error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetVendorProposal');
   }
 }
 
@@ -94,24 +86,15 @@ export async function POST(
     const proposal = await Proposal.findById(id);
 
     if (!proposal) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Proposal not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Proposal not found');
     }
 
     if (proposal.status !== 'OPEN') {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'This proposal is not open for submissions' },
-        { status: 400 }
-      );
+      throw new BadRequestError('This proposal is not open for submissions');
     }
 
     if (new Date(proposal.deadline) < new Date()) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'This proposal has passed its deadline' },
-        { status: 400 }
-      );
+      throw new BadRequestError('This proposal has passed its deadline');
     }
 
     const vendor = await Vendor.findOne({ userId: user.id });
@@ -131,10 +114,7 @@ export async function POST(
     let submission;
     if (existingSubmission) {
       if (existingSubmission.status === 'SUBMITTED' || existingSubmission.status === 'UNDER_REVIEW') {
-        return NextResponse.json<ApiResponse>(
-          { success: false, error: 'You cannot modify a submitted proposal' },
-          { status: 400 }
-        );
+        throw new BadRequestError('You cannot modify a submitted proposal');
       }
 
       Object.assign(existingSubmission, validatedData);
@@ -152,7 +132,6 @@ export async function POST(
     if (!existingSubmission) {
       try {
         const { createNotification } = await import('@/lib/notifications/service');
-        const { getAdminEmail } = await import('@/lib/email');
         const User = (await import('@/lib/db/models/User')).default;
         
         const admin = await User.findOne({ role: 'ADMIN' });
@@ -163,7 +142,10 @@ export async function POST(
             title: 'New Proposal Submission',
             message: `Vendor "${vendor.companyName}" has submitted a proposal for "${proposal.title}".`,
             link: `/admin/proposals/${proposal._id}/submissions`,
-            metadata: { submissionId: submission._id.toString(), vendorId: vendor._id.toString() }
+            metadata: { 
+              submissionId: submission._id.toString(), 
+              vendorId: vendor._id.toString() 
+            }
           });
         }
       } catch (notifError) {
@@ -171,38 +153,15 @@ export async function POST(
       }
     }
 
-    return NextResponse.json<ApiResponse<{ submission: IProposalSubmission }>>(
+    return NextResponse.json<ApiResponse>(
       {
         success: true,
-        data: { submission: submission.toJSON() as unknown as IProposalSubmission },
+        data: { submission: serialize(submission) },
         message: existingSubmission ? 'Submission updated successfully' : 'Proposal submitted successfully',
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error('Submit proposal error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors: errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'SubmitVendorProposal');
   }
 }

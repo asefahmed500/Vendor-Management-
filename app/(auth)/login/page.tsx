@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { Loader2, ArrowLeft, ShieldCheck, AlertCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -21,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+
 import { authClient } from '@/lib/auth/auth-client';
 
 const loginSchema = z.object({
@@ -107,138 +107,141 @@ function LoginForm() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+      <div className="flex items-center justify-center">
+        <div className="h-10 w-10 border-4 border-zinc-100 border-t-zinc-900 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        <Link 
-          href="/" 
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to home
-        </Link>
+    <>
+      <Link 
+        href="/" 
+        className="inline-flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-zinc-950 mb-12 transition-all group"
+      >
+        <ArrowLeft className="mr-2 h-3 w-3 transition-transform group-hover:-translate-x-1" />
+        Gateway Exit
+      </Link>
 
-        <Card className="border-2 border-zinc-950 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-none">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-black uppercase tracking-tighter">Login_</CardTitle>
-            <p className="text-xs font-black text-zinc-400 uppercase tracking-widest leading-loose">
-              Initialize_Session… Authenticate_Node.
-            </p>
-          </CardHeader>
-          
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {submitError && (
-                  <Alert variant="destructive" className="rounded-lg">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription className="font-medium">{submitError}</AlertDescription>
-                  </Alert>
-                )}
-
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="space-y-2">
-                        <FormLabel className="text-sm font-medium">Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="you@company.com"
-                            type="email"
-                            autoComplete="email"
-                            disabled={isLoading}
-                            className="border-2 border-zinc-950 rounded-none focus-visible:ring-zinc-950 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <FormLabel className="text-sm font-medium">Password</FormLabel>
-                          <Link
-                            className="text-xs font-medium text-accent hover:text-accent/80 transition-colors"
-                            href="/forgot-password"
-                          >
-                            Forgot password?
-                          </Link>
-                        </div>
-                        <FormControl>
-                          <Input
-                            placeholder="••••••••"
-                            type="password"
-                            autoComplete="current-password"
-                            disabled={isLoading}
-                            className="border-2 border-zinc-950 rounded-none focus-visible:ring-zinc-950 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
+      <Card className="border-none shadow-4xl shadow-zinc-200/50 rounded-[3.5rem] bg-white p-2 overflow-hidden">
+          <div className="bg-zinc-50/30 rounded-[3.2rem] px-10 py-14">
+            <CardHeader className="p-0 space-y-6 mb-12">
+              <div className="flex items-center justify-between">
+                <div className="h-16 w-16 rounded-[1.5rem] bg-zinc-950 flex items-center justify-center shadow-2xl shadow-zinc-950/20 group-hover:rotate-12 transition-all">
+                  <ShieldCheck className="h-8 w-8 text-white" />
                 </div>
-
-                <Button
-                  type="submit"
-                  className="w-full h-12 font-heading font-black uppercase text-lg border-2 border-zinc-950 rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all mt-4"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Authenticating...
-                    </>
-                  ) : (
-                    'Enter System'
+                <Badge className="bg-white text-zinc-400 border border-zinc-100 font-black uppercase tracking-[0.2em] text-[9px] px-4 py-1.5 rounded-full shadow-sm italic font-syne">Auth_Protocol_v4</Badge>
+              </div>
+              <div className="space-y-2">
+                <CardTitle className="text-4xl md:text-5xl font-syne font-black italic tracking-tighter text-zinc-950 uppercase leading-none">
+                  Identity <br /> Validation
+                </CardTitle>
+                <CardDescription className="text-[11px] font-black text-zinc-400 uppercase tracking-[0.3em] leading-relaxed">
+                  Authentication required for <span className="text-zinc-950 italic">Secure Shard</span> access.
+                </CardDescription>
+              </div>
+            </CardHeader>
+            
+            <CardContent className="p-0">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  {submitError && (
+                    <Alert variant="destructive" className="rounded-2xl border-none bg-red-50 text-red-600 animate-in shake duration-500">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription className="text-xs font-bold uppercase tracking-wider">{submitError}</AlertDescription>
+                    </Alert>
                   )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-          
-          <CardFooter className="flex flex-col space-y-4">
-            <p className="text-center text-xs text-muted-foreground">
-              Contact your administrator to get vendor access
-            </p>
-          </CardFooter>
+
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="space-y-2">
+                          <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">Identity Vector</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="operator@system.io"
+                              type="email"
+                              autoComplete="email"
+                              disabled={isLoading}
+                              className="h-12 px-4 border-zinc-200/80 rounded-2xl focus-visible:ring-zinc-950 focus-visible:ring-offset-0 bg-white transition-all shadow-sm placeholder:text-zinc-300 text-sm font-medium"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem className="space-y-2">
+                          <div className="flex items-center justify-between ml-1">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Security Key</FormLabel>
+                            <Link
+                              className="text-[10px] font-bold uppercase tracking-widest text-blue-600 hover:text-blue-700 transition-colors"
+                              href="/forgot-password"
+                            >
+                              Reset
+                            </Link>
+                          </div>
+                          <FormControl>
+                            <Input
+                              placeholder="••••••••••••"
+                              type="password"
+                              autoComplete="current-password"
+                              disabled={isLoading}
+                              className="h-12 px-4 border-zinc-200/80 rounded-2xl focus-visible:ring-zinc-950 focus-visible:ring-offset-0 bg-white transition-all shadow-sm placeholder:text-zinc-300 text-sm font-medium"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full h-20 bg-zinc-950 hover:bg-zinc-800 text-white font-black uppercase tracking-[0.3em] text-[12px] rounded-[1.5rem] shadow-2xl shadow-zinc-950/20 transition-all hover:scale-[1.02] active:scale-[0.98] mt-8 font-syne italic"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-4">
+                        <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Verifying...
+                      </div>
+                    ) : (
+                      'Establish Connection'
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+            
+            <CardFooter className="p-0 mt-10">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 leading-loose text-center w-full">
+                By entering, you acknowledge the <Link href="#" className="text-zinc-950 underline underline-offset-4">Terms</Link> & <Link href="#" className="text-zinc-950 underline underline-offset-4">Protocols</Link>.
+              </p>
+            </CardFooter>
+          </div>
         </Card>
 
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          By signing in, you agree to our{' '}
-          <Link href="#" className="underline underline-offset-4 hover:text-foreground">
-            Terms of Service
-          </Link>{' '}
-          and{' '}
-          <Link href="#" className="underline underline-offset-4 hover:text-foreground">
-            Privacy Policy
-          </Link>
+        <p className="mt-12 text-center text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-300">
+          Secure Environment v2.4.0
         </p>
-      </div>
-    </div>
+    </>
   );
 }
 
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+      <div className="flex items-center justify-center">
+        <div className="h-10 w-10 border-4 border-zinc-100 border-t-zinc-900 rounded-full animate-spin" />
       </div>
     }>
       <LoginForm />

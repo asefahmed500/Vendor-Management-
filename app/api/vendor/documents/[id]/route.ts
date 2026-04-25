@@ -5,6 +5,7 @@ import Vendor from '@/lib/db/models/Vendor';
 import { vendorGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
 import { deleteFile as deleteCloudinaryFile } from '@/lib/cloudinary/config';
+import { handleApiError, NotFoundError, BadRequestError } from '@/lib/middleware/errorHandler';
 
 export async function DELETE(
   request: NextRequest,
@@ -27,26 +28,17 @@ export async function DELETE(
     const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor profile not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor profile not found');
     }
 
     const document = await Document.findOne({ _id: id, vendorId: vendor._id });
 
     if (!document) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Document not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Document not found');
     }
 
     if (document.status !== 'PENDING') {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Cannot delete a document that has been reviewed' },
-        { status: 400 }
-      );
+      throw new BadRequestError('Cannot delete a document that has been reviewed');
     }
 
     // Delete from Cloudinary FIRST, then delete from DB
@@ -61,7 +53,6 @@ export async function DELETE(
       } catch (error) {
         console.error('Failed to delete file from Cloudinary:', error);
         // Proceed with DB deletion even if Cloudinary fails to avoid inconsistency
-        // In production, you may want to flag this for manual cleanup
         cloudinaryDeleted = false;
       }
     }
@@ -86,11 +77,7 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error('Delete document error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
+

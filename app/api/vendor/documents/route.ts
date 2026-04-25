@@ -5,13 +5,13 @@ import Vendor from '@/lib/db/models/Vendor';
 import User from '@/lib/db/models/User';
 import { vendorGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
-import type { IDocument } from '@/lib/types/document';
-import { ZodError } from 'zod';
 import { submitDocumentsSchema } from '@/lib/validation/schemas/document';
-import { uploadBuffer, validateFileType, deleteFile } from '@/lib/cloudinary/config';
+import { uploadBuffer, validateFileType } from '@/lib/cloudinary/config';
 import { sanitizeUserInput } from '@/lib/utils/sanitize';
 import { sendEmail, DocumentsConfirmationEmail, DocumentsReceivedEmail, getAdminEmail } from '@/lib/email';
 import { createBulkNotifications } from '@/lib/notifications/service';
+import { handleApiError, NotFoundError, BadRequestError } from '@/lib/middleware/errorHandler';
+import { serialize } from '@/lib/utils/serialization';
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,16 +24,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-
     await connectDB();
 
     const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor profile not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor profile not found');
     }
 
     const documents = await Document.find({ vendorId: vendor._id })
@@ -41,20 +37,15 @@ export async function GET(request: NextRequest) {
       .populate('verification')
       .lean();
 
-    return NextResponse.json<ApiResponse<{ documents: IDocument[] }>>(
+    return NextResponse.json<ApiResponse>(
       {
         success: true,
-        data: { documents: documents as any[] },
+        data: { documents: serialize(documents) },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get vendor documents error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
@@ -69,16 +60,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-
     await connectDB();
 
     const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor profile not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor profile not found');
     }
 
     const formData = await request.formData();
@@ -86,40 +73,22 @@ export async function POST(request: NextRequest) {
     const documentTypeId = formData.get('documentTypeId') as string;
 
     if (!file) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'No file provided' },
-        { status: 400 }
-      );
+      throw new BadRequestError('No file provided');
     }
 
     if (!documentTypeId) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Document type is required' },
-        { status: 400 }
-      );
+      throw new BadRequestError('Document type is required');
     }
 
     // Validate file type
     if (!validateFileType(file.name, file.type)) {
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Invalid file type. Allowed types: PDF, JPG, PNG, DOCX',
-        },
-        { status: 400 }
-      );
+      throw new BadRequestError('Invalid file type. Allowed types: PDF, JPG, PNG, DOCX');
     }
 
     // Validate file size (10MB max)
     const maxSize = parseInt(process.env.MAX_FILE_SIZE || '10485760');
     if (file.size > maxSize) {
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: `File size exceeds maximum allowed size of ${maxSize / 1024 / 1024}MB`,
-        },
-        { status: 400 }
-      );
+      throw new BadRequestError(`File size exceeds maximum allowed size of ${maxSize / 1024 / 1024}MB`);
     }
 
     // Convert file to buffer
@@ -154,21 +123,16 @@ export async function POST(request: NextRequest) {
       metadata: { documentId: document._id, publicId: uploadResult.publicId },
     });
 
-    return NextResponse.json<ApiResponse<{ document: IDocument }>>(
+    return NextResponse.json<ApiResponse>(
       {
         success: true,
-        data: { document: document.toJSON() as any },
+        data: { document: serialize(document) },
         message: 'Document uploaded successfully to Cloudinary',
       },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error('Document upload error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: `Internal server error: ${error.message || 'Unknown error'}` },
-      { status: 500 }
-    );
+  } catch (error) {
+    return handleApiError(error);
   }
 }
 
@@ -191,17 +155,11 @@ export async function PUT(request: NextRequest) {
     const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor profile not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor profile not found');
     }
 
     if (vendor.status !== 'APPROVED_LOGIN') {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Cannot submit documents in current status' },
-        { status: 400 }
-      );
+      throw new BadRequestError('Cannot submit documents in current status');
     }
 
     vendor.status = 'DOCUMENTS_SUBMITTED';
@@ -279,30 +237,8 @@ export async function PUT(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
-    console.error('Submit documents error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors: errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+  } catch (error) {
+    return handleApiError(error);
   }
 }
+

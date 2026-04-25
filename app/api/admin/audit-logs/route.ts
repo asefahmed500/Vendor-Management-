@@ -4,6 +4,7 @@ import ActivityLog from '@/lib/db/models/ActivityLog';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
 import { handleApiError } from '@/lib/middleware/errorHandler';
+import { serialize } from '@/lib/utils/serialization';
 
 interface AggregatedStats {
   totalActivities: number;
@@ -12,23 +13,7 @@ interface AggregatedStats {
   monthActivities: number;
   activitiesByType: Record<string, number>;
   activitiesByUser: Array<{ userId: string; count: number; email?: string }>;
-  recentActivities: Array<{
-    _id: string;
-    activityType: string;
-    description: string;
-    vendorId?: { companyName: string };
-    performedBy: string;
-    createdAt: Date;
-  }>;
-}
-
-interface PopulatedActivity {
-  _id: { toString(): string };
-  activityType: string;
-  description: string;
-  createdAt: Date;
-  performedBy?: { _id: { toString(): string }; email?: string };
-  vendorId?: { companyName: string };
+  recentActivities: Array<unknown>;
 }
 
 export async function GET(request: NextRequest) {
@@ -65,53 +50,56 @@ export async function GET(request: NextRequest) {
       query.activityType = activityType;
     }
 
+    // Use lean() for performance and manual serialization where needed
     const allActivities = await ActivityLog.find(query)
       .populate('vendorId', 'companyName')
       .populate('performedBy', 'email')
       .sort({ createdAt: -1 })
       .limit(1000)
-      .lean() as unknown as PopulatedActivity[];
+      .lean();
 
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const todayActivities = allActivities.filter((a) => new Date(a.createdAt) >= todayStart);
-    const weekActivities = allActivities.filter((a) => new Date(a.createdAt) >= weekStart);
-    const monthActivities = allActivities.filter((a) => new Date(a.createdAt) >= monthStart);
-
     const activitiesByType: Record<string, number> = {};
+    const userCounts = new Map<string, { count: number; email?: string }>();
+
+    let todayCount = 0;
+    let weekCount = 0;
+    let monthCount = 0;
+
     allActivities.forEach((activity) => {
+      const activityDate = new Date(activity.createdAt);
+      
+      // Time-based stats
+      if (activityDate >= todayStart) todayCount++;
+      if (activityDate >= weekStart) weekCount++;
+      if (activityDate >= monthStart) monthCount++;
+
+      // Type-based stats
       const type = activity.activityType;
       activitiesByType[type] = (activitiesByType[type] || 0) + 1;
-    });
 
-    const activitiesByUser: Array<{ userId: string; count: number; email?: string }> = [];
-    const userCounts = new Map<string, number>();
-    allActivities.forEach((activity) => {
+      // User-based stats
       const userId = activity.performedBy?._id?.toString() || 'system';
-      userCounts.set(userId, (userCounts.get(userId) || 0) + 1);
+      const existing = userCounts.get(userId) || { count: 0, email: activity.performedBy?.email };
+      userCounts.set(userId, { count: existing.count + 1, email: existing.email });
     });
 
-    userCounts.forEach((count, userId) => {
-      const activity = allActivities.find((a) => a.performedBy?._id?.toString() === userId);
-      activitiesByUser.push({
+    const activitiesByUser = Array.from(userCounts.entries())
+      .map(([userId, info]) => ({
         userId,
-        count,
-        email: activity?.performedBy?.email,
-      });
-    });
-
-    activitiesByUser.sort((a, b) => b.count - a.count);
+        count: info.count,
+        email: info.email,
+      }))
+      .sort((a, b) => b.count - a.count);
 
     const recentActivities = allActivities.slice(0, 50).map((activity) => ({
+      ...activity,
       _id: activity._id.toString(),
-      activityType: activity.activityType,
-      description: activity.description,
-      vendorId: activity.vendorId ? { companyName: activity.vendorId.companyName } : undefined,
       performedBy: activity.performedBy?.email || 'System',
-      createdAt: activity.createdAt,
     }));
 
     return NextResponse.json<ApiResponse<AggregatedStats>>(
@@ -119,12 +107,12 @@ export async function GET(request: NextRequest) {
         success: true,
         data: {
           totalActivities: allActivities.length,
-          todayActivities: todayActivities.length,
-          weekActivities: weekActivities.length,
-          monthActivities: monthActivities.length,
+          todayActivities: todayCount,
+          weekActivities: weekCount,
+          monthActivities: monthCount,
           activitiesByType,
           activitiesByUser,
-          recentActivities,
+          recentActivities: serialize(recentActivities),
         },
       },
       { status: 200 }

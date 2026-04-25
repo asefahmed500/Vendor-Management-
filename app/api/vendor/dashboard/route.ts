@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { vendorGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
 import { getVendorDashboardData } from '@/lib/services/dashboard';
+import { handleApiError, NotFoundError } from '@/lib/middleware/errorHandler';
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,10 +18,7 @@ export async function GET(request: NextRequest) {
     const data = await getVendorDashboardData(user.id);
 
     if (!data) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor profile not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor profile not found');
     }
 
     return NextResponse.json<ApiResponse>(
@@ -31,11 +29,6 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get vendor dashboard data error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetVendorDashboard');
   }
 }

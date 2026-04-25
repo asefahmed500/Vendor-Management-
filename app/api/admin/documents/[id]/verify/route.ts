@@ -8,7 +8,7 @@ import Vendor from '@/lib/db/models/Vendor';
 import User from '@/lib/db/models/User';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
-import { ZodError } from 'zod';
+import { handleApiError, NotFoundError } from '@/lib/middleware/errorHandler';
 import { documentVerificationSchema } from '@/lib/validation/schemas/document';
 import { sanitizeUserInput } from '@/lib/utils/sanitize';
 import { sendEmail, DocumentVerifiedEmail } from '@/lib/email';
@@ -37,10 +37,7 @@ export async function PUT(
     const document = await Document.findById(id);
 
     if (!document) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Document not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Document not found in registry');
     }
 
     document.status = validatedData.status;
@@ -68,7 +65,7 @@ export async function PUT(
       vendorId: document.vendorId,
       performedBy: user.id,
       activityType: validatedData.status === 'VERIFIED' ? 'DOCUMENT_VERIFIED' : 'DOCUMENT_REJECTED',
-      description: `Document ${validatedData.status.toLowerCase()}`,
+      description: `Document ${validatedData.status.toLowerCase()} by registry admin`,
       metadata: {
         documentId: id,
         comments: validatedData.comments ? sanitizeUserInput(validatedData.comments) : undefined
@@ -103,36 +100,12 @@ export async function PUT(
     return NextResponse.json<ApiResponse>(
       {
         success: true,
-        message: `Document ${validatedData.status.toLowerCase()} successfully`,
+        message: `Document status updated to ${validatedData.status.toLowerCase()}`,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Verify document error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      // Filter out undefined values
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'VerifyDocument');
   }
 }
+

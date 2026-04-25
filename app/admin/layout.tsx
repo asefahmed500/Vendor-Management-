@@ -1,8 +1,8 @@
 'use client';
 
-import { type ReactNode, useState, useEffect } from 'react';
+import { type ReactNode, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   Users,
@@ -18,6 +18,13 @@ import {
   Settings,
   HelpCircle,
   ChevronDown,
+  ShieldCheck,
+  BarChart3,
+  History,
+  Shield,
+  Zap,
+  Globe,
+  Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -34,26 +41,16 @@ import {
 import { authClient } from '@/lib/auth/auth-client';
 import { useNotificationStore } from '@/lib/stores/useNotificationStore';
 import { useRealtimeNotifications } from '@/hooks/useRealtimeNotifications';
-import { ThemeToggle } from '@/components/theme-toggle';
-
-interface Notification {
-  _id: string;
-  title: string;
-  message: string;
-  read: boolean;
-  link?: string;
-  createdAt: string;
-}
+import { toast } from 'sonner';
 
 const navItems = [
-  { title: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+  { title: 'Overview', href: '/admin/dashboard', icon: LayoutDashboard },
   { title: 'Vendors', href: '/admin/vendors', icon: Users },
-  { title: 'Onboarding', href: '/admin/create-vendor', icon: UserPlus },
-  { title: 'RFPs', href: '/admin/proposals', icon: Briefcase },
-  { title: 'Documents', href: '/admin/documents', icon: FileText },
-  { title: 'Document Types', href: '/admin/document-types', icon: FileText },
-  { title: 'Audit Logs', href: '/admin/audit-logs', icon: FileText },
-  { title: 'Analytics', href: '/admin/analytics', icon: FileText },
+  { title: 'Proposals', href: '/admin/proposals', icon: Briefcase },
+  { title: 'Compliance', href: '/admin/documents', icon: ShieldCheck },
+  { title: 'Directories', href: '/admin/document-types', icon: FileText },
+  { title: 'Security Logs', href: '/admin/audit-logs', icon: History },
+  { title: 'Intelligence', href: '/admin/analytics', icon: BarChart3 },
 ];
 
 function SidebarContent({ pathname, setMobileMenuOpen, handleLogout }: {
@@ -62,18 +59,24 @@ function SidebarContent({ pathname, setMobileMenuOpen, handleLogout }: {
   handleLogout: () => void;
 }) {
   return (
-    <div className="flex flex-col h-full bg-background text-foreground">
-      <div className="h-16 flex items-center px-6 border-b-2 border-zinc-950">
-        <Link href="/admin/dashboard" className="flex items-center gap-3">
-          <div className="h-8 w-8 border-2 border-zinc-950 bg-indigo-600 flex items-center justify-center text-white">
-            <Building2 className="h-4 w-4" />
+    <div className="flex flex-col h-full bg-white border-r border-zinc-100 font-body">
+      <div className="h-20 flex items-center px-8 shrink-0">
+        <Link href="/admin/dashboard" className="flex items-center gap-3 group">
+          <div className="h-10 w-10 rounded-2xl bg-zinc-950 flex items-center justify-center text-white shadow-xl shadow-zinc-200 group-hover:scale-110 transition-all duration-500 rotate-3 group-hover:rotate-0">
+            <Shield className="h-5 w-5" />
           </div>
-          <span className="font-heading font-black text-zinc-950 uppercase tracking-tight text-sm">VMS_ADMIN</span>
+          <div className="flex flex-col">
+            <span className="font-bold text-base tracking-tight text-zinc-950 font-heading">ShieldPlus</span>
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest -mt-1">Control Hub</span>
+          </div>
         </Link>
       </div>
 
-      <ScrollArea className="flex-1 px-3 py-4">
-        <nav className="space-y-1">
+      <ScrollArea className="flex-1 px-4 py-4">
+        <div className="px-4 mb-6">
+           <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-4">Core Management</p>
+        </div>
+        <nav className="space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname?.startsWith(item.href);
@@ -83,27 +86,54 @@ function SidebarContent({ pathname, setMobileMenuOpen, handleLogout }: {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-none text-sm font-bold transition-all border-2 border-transparent ${
+                className={`flex items-center gap-4 px-5 py-3.5 rounded-[1.25rem] text-sm font-bold transition-all group relative overflow-hidden ${
                   isActive
-                    ? 'bg-zinc-950 text-white border-zinc-950 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
-                    : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 hover:border-zinc-200'
+                    ? 'bg-zinc-950 text-white shadow-lg shadow-zinc-200'
+                    : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-950'
                 }`}
               >
-                <Icon className="h-5 w-5 shrink-0" />
+                <Icon className={`h-5 w-5 shrink-0 transition-transform duration-500 group-hover:scale-110 ${isActive ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-950'}`} />
                 <span>{item.title}</span>
+                {isActive && (
+                  <div className="absolute right-0 top-0 h-full w-1 bg-white/20" />
+                )}
               </Link>
             );
           })}
         </nav>
+
+        <div className="mt-12 px-4 mb-6">
+           <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-4">Global Network</p>
+        </div>
+        <div className="space-y-2">
+           <Link href="/admin/create-vendor" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 px-5 py-3.5 rounded-[1.25rem] text-sm font-bold text-zinc-500 hover:bg-zinc-50 hover:text-zinc-950 transition-all group">
+             <div className="h-5 w-5 rounded-lg bg-zinc-50 flex items-center justify-center border border-zinc-100 group-hover:bg-white transition-colors">
+               <Plus className="h-3 w-3" />
+             </div>
+             <span>Deploy Vendor</span>
+           </Link>
+        </div>
       </ScrollArea>
 
-      <div className="p-4 border-t-2 border-zinc-950 bg-zinc-50">
+      <div className="p-6 mt-auto">
+        <div className="bg-zinc-50 rounded-[1.5rem] p-5 border border-zinc-100 mb-6 group cursor-pointer hover:bg-zinc-100 transition-all">
+           <div className="flex items-center gap-3 mb-3">
+             <div className="h-8 w-8 rounded-xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
+               <Globe className="h-4 w-4 text-zinc-950" />
+             </div>
+             <p className="text-[10px] font-bold text-zinc-950 uppercase tracking-widest">Global Status</p>
+           </div>
+           <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-emerald-600">All Systems Operational</span>
+              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+           </div>
+        </div>
         <Button
           variant="ghost"
           onClick={handleLogout}
-          className="w-full justify-start text-zinc-950 hover:text-white hover:bg-red-600 border-2 border-transparent hover:border-red-700 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all rounded-none h-10 text-sm font-bold uppercase tracking-wider"
+          className="w-full justify-start h-14 rounded-[1.25rem] text-zinc-500 hover:text-red-600 hover:bg-red-50 transition-all text-sm font-bold px-5"
         >
-          <LogOut className="h-4 w-4 mr-2" />
+          <LogOut className="h-5 w-5 mr-4" />
           Terminate Session
         </Button>
       </div>
@@ -113,153 +143,197 @@ function SidebarContent({ pathname, setMobileMenuOpen, handleLogout }: {
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { notifications, unreadCount } = useNotificationStore();
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
-  // Initialize real-time notifications
   useRealtimeNotifications(user?.id);
 
   const handleLogout = async () => {
     try {
       await authClient.signOut();
-      window.location.href = '/login';
+      toast.success('Logged out successfully');
+      router.push('/login');
     } catch (error) {
-      console.error('Logout error:', error);
+      toast.error('Failed to log out');
     }
   };
 
-  const currentTitle = navItems.find((item) => pathname?.startsWith(item.href))?.title || 'Dashboard';
+  const currentItem = navItems.find((item) => pathname?.startsWith(item.href));
+  const currentTitle = currentItem?.title || 'Dashboard';
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
-      <aside className="w-64 border-r-2 border-zinc-950 flex flex-col hidden lg:flex shrink-0 bg-white">
+    <div className="flex h-screen bg-[#FAFAFA] text-zinc-950 overflow-hidden font-body">
+      <aside className="w-80 flex flex-col hidden lg:flex shrink-0">
         <SidebarContent pathname={pathname} setMobileMenuOpen={setMobileMenuOpen} handleLogout={handleLogout} />
       </aside>
 
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <SheetTrigger asChild className="lg:hidden fixed top-4 left-4 z-50">
-          <Button variant="outline" size="icon" className="bg-background shadow-sm">
-            <Menu className="h-5 w-5" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0 bg-background">
+        <SheetContent side="left" className="w-80 p-0 bg-white border-r border-zinc-100">
           <SidebarContent pathname={pathname} setMobileMenuOpen={setMobileMenuOpen} handleLogout={handleLogout} />
         </SheetContent>
       </Sheet>
 
-      <div className="flex-1 flex flex-col min-w-0 h-full">
-        <header className="h-16 bg-white border-b-2 border-zinc-950 flex items-center justify-between px-6 lg:px-8 sticky top-0 z-30">
-          <div className="flex items-center gap-4">
-            <div className="hidden lg:flex items-center gap-2 text-sm text-zinc-500 font-mono">
-              <span>ADMIN_ROOT</span>
-              <ChevronRight className="h-3 w-3" />
-              <span className="text-zinc-950 font-bold uppercase tracking-widest">{currentTitle}</span>
+      <div className="flex-1 flex flex-col min-w-0 h-full relative">
+        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-zinc-100 flex items-center justify-between px-6 lg:px-10 sticky top-0 z-40">
+          <div className="flex items-center gap-6">
+            <SheetTrigger asChild className="lg:hidden">
+              <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-zinc-50 border border-zinc-100">
+                <Menu className="h-5 w-5 text-zinc-500" />
+              </Button>
+            </SheetTrigger>
+            
+            <div className="hidden lg:flex items-center gap-3">
+              <Badge variant="secondary" className="bg-zinc-100 text-zinc-500 border-none px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full">
+                Admin Console
+              </Badge>
+              <ChevronRight className="h-4 w-4 text-zinc-300" />
+              <span className="text-lg font-bold text-zinc-950 font-heading tracking-tight">
+                {currentTitle}
+              </span>
             </div>
-            <h1 className="text-lg font-black font-heading lg:hidden uppercase">{currentTitle}</h1>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 bg-muted px-3 py-1.5 rounded-lg text-muted-foreground w-64">
-              <Search className="h-4 w-4" />
-              <span className="text-sm">Search...</span>
-              <kbd className="ml-auto h-5 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-                ⌘K
-              </kbd>
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-3 bg-zinc-50 px-5 py-3 rounded-2xl border border-zinc-100 w-80 group focus-within:bg-white focus-within:border-zinc-300 transition-all focus-within:shadow-xl focus-within:shadow-zinc-200/50">
+              <Search className="h-4 w-4 text-zinc-400 group-focus-within:text-zinc-950 transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Secure search..." 
+                className="bg-transparent border-none outline-none text-sm font-bold placeholder:text-zinc-400 w-full text-zinc-950"
+              />
             </div>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="relative rounded-none h-10 w-10 border-2 border-zinc-950 bg-white hover:bg-zinc-100 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
-                  <Bell className="h-4 w-4 text-zinc-950" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-indigo-600 border-2 border-white rounded-none" />
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80 bg-white border-2 border-zinc-950 rounded-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-50">
-                <DropdownMenuLabel className="flex items-center justify-between">
-                  <span>Notifications</span>
-                  {unreadCount > 0 && (
-                    <Badge variant="secondary" className="text-xs">{unreadCount} new</Badge>
-                  )}
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {notifications.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-muted-foreground">
-                    No notifications
-                  </div>
-                ) : (
-                  notifications.slice(0, 5).map((notif) => (
-                    <DropdownMenuItem key={notif._id} className="flex flex-col items-start gap-1 p-3 cursor-pointer">
-                      <div className="flex items-center gap-2 w-full">
-                        <span className={`w-2 h-2 rounded-full ${notif.read ? 'bg-zinc-300' : 'bg-blue-500'}`} />
-                        <span className="font-medium text-sm truncate">{notif.title}</span>
-                      </div>
-                      <span className="text-xs text-muted-foreground truncate w-full">{notif.message}</span>
-                    </DropdownMenuItem>
-                  ))
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild className="cursor-pointer text-center justify-center">
-                  <Link href="/admin/notifications" className="w-full text-sm">View all notifications</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9">
-              <HelpCircle className="h-4 w-4" />
-            </Button>
-
-            <div className="h-6 w-px bg-border mx-1 hidden sm:block" />
-
-            {user && (
+            <div className="flex items-center gap-4">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <div className="flex items-center gap-3 pl-2 cursor-pointer hover:bg-zinc-100 p-1 pr-2 rounded-none transition-all border-2 border-transparent hover:border-zinc-950 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                    <div className="hidden sm:block text-right">
-                      <p className="text-sm font-bold text-zinc-950 uppercase leading-none">{user.name || 'Admin'}</p>
-                      <p className="text-[10px] text-zinc-500 mt-1 font-mono uppercase tracking-widest">Administrator</p>
-                    </div>
-                    <div className="h-8 w-8 border-2 border-zinc-950 bg-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded-none">
-                      {(user.name || 'A').charAt(0).toUpperCase()}
-                    </div>
-                    <ChevronDown className="h-4 w-4 text-zinc-950 hidden sm:block" />
-                  </div>
+                  <Button variant="ghost" size="icon" className="relative h-12 w-12 rounded-2xl bg-zinc-50 border border-zinc-100 hover:bg-white hover:shadow-lg transition-all group">
+                    <Bell className="h-5 w-5 text-zinc-500 group-hover:text-zinc-950 transition-colors" />
+                    {unreadCount > 0 && (
+                      <span className="absolute top-3 right-3 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm animate-pulse" />
+                    )}
+                  </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white border-2 border-zinc-950 rounded-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-50">
-                  <DropdownMenuLabel className="font-normal font-sans">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">{user.name || 'Admin'}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                <DropdownMenuContent align="end" className="w-96 rounded-[2rem] bg-white border border-zinc-100 shadow-2xl p-2 z-50 mt-4 overflow-hidden">
+                  <div className="bg-zinc-950 p-6 text-white mb-2 rounded-t-[1.5rem]">
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Security Alerts</p>
+                      {unreadCount > 0 && (
+                        <Badge className="bg-red-500 text-white border-none text-[9px] font-bold px-2 py-0.5">{unreadCount} Critical</Badge>
+                      )}
                     </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link href="/admin/profile">
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link href="/admin/settings">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
+                    <h3 className="text-xl font-bold font-heading">Notifications</h3>
+                  </div>
+                  
+                  {notifications.length === 0 ? (
+                    <div className="py-12 text-center flex flex-col items-center gap-4">
+                       <div className="h-16 w-16 rounded-[1.5rem] bg-zinc-50 flex items-center justify-center border border-zinc-100">
+                          <Bell className="h-6 w-6 text-zinc-200" />
+                       </div>
+                       <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest">No active alerts</p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="max-h-[400px]">
+                      <div className="space-y-1 p-2">
+                        {notifications.slice(0, 5).map((notif) => (
+                          <DropdownMenuItem key={notif._id} className="flex flex-col items-start gap-1 p-4 cursor-pointer hover:bg-zinc-50 rounded-[1.25rem] mb-1 transition-all border border-transparent hover:border-zinc-100 group">
+                            <div className="flex items-center gap-3 w-full">
+                              {!notif.read && <div className="w-2 h-2 rounded-full bg-blue-500 shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />}
+                              <span className="font-bold text-sm text-zinc-950 leading-tight group-hover:translate-x-1 transition-transform">{notif.title}</span>
+                              <span className="text-[9px] font-bold text-zinc-400 uppercase ml-auto">{new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            </div>
+                            <span className="text-xs font-medium text-zinc-500 pl-5 line-clamp-2 leading-relaxed">{notif.message}</span>
+                          </DropdownMenuItem>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  )}
+                  <DropdownMenuSeparator className="bg-zinc-50" />
+                  <DropdownMenuItem asChild className="cursor-pointer text-center justify-center py-4 rounded-b-[1.5rem] bg-zinc-50 hover:bg-zinc-100 transition-colors">
+                    <Link href="/admin/notifications" className="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-950">Review All Intel</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            )}
+
+              <div className="h-8 w-px bg-zinc-100 mx-2 hidden sm:block" />
+
+              {user && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center gap-4 pl-2 pr-4 py-2 h-14 rounded-2xl bg-zinc-50 border border-zinc-100 hover:bg-white hover:shadow-lg transition-all group">
+                      <div className="h-10 w-10 rounded-xl bg-zinc-950 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-zinc-200 transition-transform group-hover:scale-105">
+                        {(user.name || 'A').charAt(0).toUpperCase()}
+                      </div>
+                      <div className="hidden sm:flex flex-col items-start">
+                        <span className="text-sm font-bold text-zinc-950 tracking-tight leading-none mb-1">{user.name || 'Administrator'}</span>
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Security Level 4</span>
+                      </div>
+                      <ChevronDown className="h-4 w-4 text-zinc-400 group-hover:text-zinc-950 transition-colors" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-72 rounded-[2rem] bg-white border border-zinc-100 shadow-2xl p-2 z-50 mt-4 overflow-hidden">
+                    <div className="p-6 border-b border-zinc-50">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="h-12 w-12 rounded-2xl bg-zinc-950 flex items-center justify-center text-white text-base font-bold shadow-xl">
+                          {(user.name || 'A').charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="text-sm font-bold text-zinc-950">{user.name || 'Administrator'}</p>
+                          <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider truncate max-w-[140px]">{user.email}</p>
+                        </div>
+                      </div>
+                      <Badge className="w-full bg-emerald-50 text-emerald-600 border-none font-bold uppercase tracking-widest text-[9px] py-1.5 justify-center rounded-xl shadow-sm">Verified Operator</Badge>
+                    </div>
+                    
+                    <div className="p-2 space-y-1">
+                      <DropdownMenuItem asChild className="rounded-xl cursor-pointer p-3.5 focus:bg-zinc-50 group">
+                        <Link href="/admin/profile" className="flex items-center w-full">
+                          <div className="h-9 w-9 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center mr-4 group-hover:bg-white transition-colors">
+                            <Settings className="h-4 w-4 text-zinc-400 group-hover:text-zinc-950" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold text-zinc-950">Settings</span>
+                            <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Control Panel</span>
+                          </div>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild className="rounded-xl cursor-pointer p-3.5 focus:bg-zinc-50 group">
+                        <Link href="/admin/audit-logs" className="flex items-center w-full">
+                          <div className="h-9 w-9 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center mr-4 group-hover:bg-white transition-colors">
+                            <History className="h-4 w-4 text-zinc-400 group-hover:text-zinc-950" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold text-zinc-950">Activity Log</span>
+                            <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Session History</span>
+                          </div>
+                        </Link>
+                      </DropdownMenuItem>
+                    </div>
+                    
+                    <DropdownMenuSeparator className="bg-zinc-50" />
+                    
+                    <div className="p-2">
+                      <DropdownMenuItem onClick={handleLogout} className="rounded-xl cursor-pointer p-3.5 text-red-600 focus:bg-red-50 focus:text-red-600 group">
+                        <div className="h-9 w-9 rounded-xl bg-red-50 border border-red-100/50 flex items-center justify-center mr-4 group-hover:bg-white transition-colors">
+                          <LogOut className="h-4 w-4 text-red-400 group-hover:text-red-600" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold">Log out</span>
+                          <span className="text-[9px] font-bold text-red-400/80 uppercase tracking-widest mt-0.5">End Encryption</span>
+                        </div>
+                      </DropdownMenuItem>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-background">
-          <div className="max-w-7xl mx-auto p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto scrollbar-hide">
+          <div className="max-w-[1600px] mx-auto p-8 lg:p-12 animate-fade-in">
             {children}
           </div>
         </main>

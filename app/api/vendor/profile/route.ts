@@ -4,10 +4,10 @@ import Vendor from '@/lib/db/models/Vendor';
 import User from '@/lib/db/models/User';
 import { vendorGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
-import { IVendor } from '@/lib/types/vendor';
-import { ZodError } from 'zod';
+import { handleApiError, NotFoundError } from '@/lib/middleware/errorHandler';
 import { updateVendorSchema } from '@/lib/validation/schemas/vendor';
-import { safeVendorSelfUpdate, safeVendorAdminUpdate } from '@/lib/utils/update';
+import { safeVendorSelfUpdate } from '@/lib/utils/update';
+import { serialize } from '@/lib/utils/serialization';
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,31 +25,23 @@ export async function GET(request: NextRequest) {
     const vendor = await Vendor.findOne({ userId: user.id }).lean();
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor profile not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor profile not found');
     }
 
-    const userData = await User.findById(user.id).select('email');
+    const userData = await User.findById(user.id).select('email').lean();
 
-    return NextResponse.json<ApiResponse<{ vendor: IVendor; email: string }>>(
+    return NextResponse.json<ApiResponse>(
       {
         success: true,
         data: {
-          vendor: vendor as unknown as IVendor,
+          vendor: serialize(vendor),
           email: userData?.email || '',
         },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get vendor profile error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetVendorProfile');
   }
 }
 
@@ -72,47 +64,21 @@ export async function PUT(request: NextRequest) {
     const vendor = await Vendor.findOne({ userId: user.id });
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor profile not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor profile not found');
     }
 
     safeVendorSelfUpdate(vendor, validatedData);
     await vendor.save();
 
-    return NextResponse.json<ApiResponse<{ vendor: IVendor }>>(
+    return NextResponse.json<ApiResponse>(
       {
         success: true,
-        data: { vendor: vendor.toJSON() as unknown as IVendor },
+        data: { vendor: serialize(vendor) },
         message: 'Profile updated successfully',
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Update vendor profile error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors: errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'UpdateVendorProfile');
   }
 }

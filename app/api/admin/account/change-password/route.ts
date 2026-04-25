@@ -3,19 +3,8 @@ import connectDB from '@/lib/db/connect';
 import User from '@/lib/db/models/User';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
-import { handleApiError } from '@/lib/middleware/errorHandler';
-import { z } from 'zod';
-
-// Validation schema for password change
-const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword: z.string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
-});
+import { handleApiError, NotFoundError } from '@/lib/middleware/errorHandler';
+import { updatePasswordSchema } from '@/lib/validation/schemas/auth';
 
 export async function PUT(request: NextRequest) {
   try {
@@ -29,17 +18,14 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const validatedData = changePasswordSchema.parse(body);
+    const validatedData = updatePasswordSchema.parse(body);
 
     await connectDB();
 
     const userData = await User.findById(user.id).select('+password');
 
     if (!userData) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('User not found');
     }
 
     // Verify current password

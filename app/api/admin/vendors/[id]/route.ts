@@ -5,9 +5,10 @@ import User from '@/lib/db/models/User';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
 import { IVendor } from '@/lib/types/vendor';
-import { ZodError } from 'zod';
+import { handleApiError, NotFoundError } from '@/lib/middleware/errorHandler';
 import { updateVendorSchema } from '@/lib/validation/schemas/vendor';
 import { safeVendorAdminUpdate } from '@/lib/utils/update';
+import { serialize } from '@/lib/utils/serialization';
 
 export async function GET(
   request: NextRequest,
@@ -30,26 +31,18 @@ export async function GET(
     const vendor = await Vendor.findById(id).populate('userId', 'email isActive').lean();
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor not found in registry');
     }
 
     return NextResponse.json<ApiResponse<{ vendor: IVendor }>>(
       {
         success: true,
-        data: { vendor: vendor as unknown as IVendor },
+        data: { vendor: serialize(vendor) as unknown as IVendor },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get vendor error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetVendorById');
   }
 }
 
@@ -74,13 +67,10 @@ export async function PUT(
 
     await connectDB();
 
-    const vendor = await Vendor.findById(id);
+    const vendor = await Vendor.findById(id).populate('userId');
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor not found');
     }
 
     const oldStatus = vendor.status;
@@ -93,7 +83,7 @@ export async function PUT(
       const { sendEmail, RegistrationApprovedEmail, RegistrationRejectedEmail } = await import('@/lib/email');
       
       await notifyVendorStatusChanged(
-        vendor.userId.toString(),
+        vendor.userId._id.toString(),
         vendor.status,
         vendor.status === 'REJECTED' ? vendor.rejectionReason : undefined
       );
@@ -106,7 +96,7 @@ export async function PUT(
           loginUrl: `${process.env.NEXT_PUBLIC_APP_URL || ''}/login`,
         });
         await sendEmail({
-          to: (vendor as any).userId.email || '', // Assuming email is populated or available
+          to: (vendor.userId as any).email || '',
           subject: template.subject,
           html: template.html,
         });
@@ -117,7 +107,7 @@ export async function PUT(
           rejectionReason: vendor.rejectionReason || 'Does not meet current requirements',
         });
         await sendEmail({
-          to: (vendor as any).userId.email || '',
+          to: (vendor.userId as any).email || '',
           subject: template.subject,
           html: template.html,
         });
@@ -135,36 +125,13 @@ export async function PUT(
     return NextResponse.json<ApiResponse<{ vendor: IVendor }>>(
       {
         success: true,
-        data: { vendor: vendor.toJSON() as unknown as IVendor },
-        message: 'Vendor updated successfully',
+        data: { vendor: serialize(vendor) as unknown as IVendor },
+        message: 'Vendor record updated successfully',
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Update vendor error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors: errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'UpdateVendor');
   }
 }
 
@@ -189,10 +156,7 @@ export async function DELETE(
     const vendor = await Vendor.findById(id);
 
     if (!vendor) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Vendor not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Vendor not found');
     }
 
     await User.findByIdAndDelete(vendor.userId);
@@ -201,16 +165,12 @@ export async function DELETE(
     return NextResponse.json<ApiResponse>(
       {
         success: true,
-        message: 'Vendor deleted successfully',
+        message: 'Vendor and associated credentials purged from registry',
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Delete vendor error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'DeleteVendor');
   }
 }
+

@@ -15,7 +15,8 @@ import {
   Phone,
   Lock,
   User,
-  Building2
+  Building2,
+  ShieldPlus
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -169,32 +170,32 @@ function RegisterForm() {
 
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
-        <Card className="w-full max-w-md border-border/50">
-          <CardContent className="pt-12 pb-12">
-            <div className="flex flex-col items-center text-center space-y-6">
-              <div className="h-16 w-16 rounded-full bg-success/10 flex items-center justify-center">
-                <CheckCircle2 className="h-8 w-8 text-success" />
-              </div>
-              <div className="space-y-2">
-                <h1 className="text-2xl font-heading font-bold">Welcome aboard!</h1>
-                <p className="text-muted-foreground">
-                  Your account for <span className="font-semibold text-foreground">{registeredCompany}</span> has been created.
-                </p>
-              </div>
-              <div className="w-full space-y-4">
-                <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-success transition-all duration-[3000ms]" 
-                    style={{ width: '100%' }}
-                  />
-                </div>
-                <p className="text-xs font-medium text-muted-foreground text-center">
-                  Redirecting to login…
-                </p>
-              </div>
+      <div className="flex flex-col items-center animate-in fade-in zoom-in duration-700">
+        <Card className="w-full max-w-[480px] border-none shadow-4xl shadow-zinc-200/50 rounded-[4rem] bg-white p-2 overflow-hidden">
+          <div className="bg-zinc-50/30 rounded-[3.8rem] px-12 py-16 flex flex-col items-center text-center space-y-10">
+            <div className="h-24 w-24 rounded-[2rem] bg-zinc-950 flex items-center justify-center shadow-2xl shadow-zinc-950/20 group-hover:rotate-12 transition-all">
+              <CheckCircle2 className="h-10 w-10 text-emerald-400" />
             </div>
-          </CardContent>
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl font-syne font-black italic tracking-tighter text-zinc-950 uppercase leading-none">
+                PROTOCOL <br /> INITIALIZED
+              </h1>
+              <p className="text-[11px] font-black text-zinc-400 uppercase tracking-[0.3em] leading-relaxed">
+                Entity <span className="text-zinc-950 italic">{registeredCompany}</span> has been synchronized with the core registry.
+              </p>
+            </div>
+            <div className="w-full space-y-6 pt-4">
+              <div className="w-full h-2 bg-zinc-100 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-blue-600 transition-all duration-[4000ms] ease-linear shadow-[0_0_12px_rgba(37,99,235,0.5)]" 
+                  style={{ width: '100%' }}
+                />
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-950 font-syne italic">
+                Rerouting to Security Gateway…
+              </p>
+            </div>
+          </div>
         </Card>
       </div>
     );
@@ -202,251 +203,259 @@ function RegisterForm() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+      <div className="flex items-center justify-center">
+        <div className="h-10 w-10 border-4 border-zinc-100 border-t-zinc-900 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-xl">
-        <Link 
-          href="/" 
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to home
-        </Link>
+    <>
+      <Link 
+        href="/" 
+        className="inline-flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-zinc-950 mb-12 transition-all group"
+      >
+        <ArrowLeft className="mr-2 h-3 w-3 transition-transform group-hover:-translate-x-1" />
+        Gateway Exit
+      </Link>
 
-        <Card className="border-2 border-zinc-950 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-none">
-          <CardHeader className="text-center pb-4 border-b-2 border-zinc-950 bg-zinc-50">
-            <div className="mx-auto h-12 w-12 bg-zinc-950 rounded-none flex items-center justify-center text-white font-black text-2xl border-2 border-zinc-950 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
-              V
+      <Card className="border-none shadow-4xl shadow-zinc-200/50 rounded-[3.5rem] bg-white p-2 overflow-hidden">
+        <div className="bg-zinc-50/30 rounded-[3.2rem] px-10 py-14">
+          <CardHeader className="p-0 space-y-6 mb-12">
+            <div className="flex items-center justify-between">
+              <div className="h-16 w-16 rounded-[1.5rem] bg-zinc-950 flex items-center justify-center shadow-2xl shadow-zinc-950/20">
+                <ShieldPlus className="h-8 w-8 text-white" />
+              </div>
+              <Badge className="bg-white text-zinc-400 border border-zinc-100 font-black uppercase tracking-[0.2em] text-[9px] px-4 py-1.5 rounded-full shadow-sm italic font-syne">Entity_Registration_v2</Badge>
             </div>
-            <div className="mt-4">
-              <CardTitle className="text-2xl font-heading font-black uppercase tracking-tighter">Initialize Account</CardTitle>
-              <CardDescription className="text-zinc-500 text-xs font-bold uppercase tracking-widest mt-1">
-                VMS_OS Registration Protocol
+            <div className="space-y-2">
+              <CardTitle className="text-4xl md:text-5xl font-syne font-black italic tracking-tighter text-zinc-950 uppercase leading-none">
+                Entity <br /> Enrollment
+              </CardTitle>
+              <CardDescription className="text-[11px] font-black text-zinc-400 uppercase tracking-[0.3em] leading-relaxed">
+                Register your organization to join the <span className="text-zinc-950 italic">Global Vendor Network</span>.
               </CardDescription>
             </div>
           </CardHeader>
           
-          <CardContent className="pt-2">
+          <CardContent className="p-0">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 {submitError && (
-                  <Alert variant="destructive" className="rounded-lg">
+                  <Alert variant="destructive" className="rounded-2xl border-none bg-red-50 text-red-600 animate-in shake duration-500">
                     <AlertCircle className="h-4 w-4" />
-                    <AlertDescription className="font-medium">{submitError}</AlertDescription>
+                    <AlertDescription className="text-xs font-bold uppercase tracking-wider">{submitError}</AlertDescription>
                   </Alert>
                 )}
 
-                <div className="space-y-4">
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    Company Information
-                  </h3>
-                  
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="companyName"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1.5">
-                          <FormLabel className="text-sm font-medium">Company Name <span className="text-destructive">*</span></FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                placeholder="Acme Corporation"
-                                className="pl-10"
-                                disabled={isLoading}
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="contactPerson"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1.5">
-                          <FormLabel className="text-sm font-medium">Contact Person <span className="text-destructive">*</span></FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                placeholder="John Smith"
-                                className="pl-10"
-                                disabled={isLoading}
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1.5">
-                          <FormLabel className="text-sm font-medium">Email <span className="text-destructive">*</span></FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                placeholder="you@company.com"
-                                type="email"
-                                className="pl-10"
-                                disabled={isLoading}
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1.5">
-                          <FormLabel className="text-sm font-medium">Phone <span className="text-destructive">*</span></FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                placeholder="+1 (555) 000-0000"
-                                type="tel"
-                                className="pl-10"
-                                disabled={isLoading}
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="companyType"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1.5">
-                          <FormLabel className="text-sm font-medium">Company Type</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 ml-1">
+                      Organizational Profile
+                    </h3>
+                    
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="companyName"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">Entity Name</FormLabel>
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select type" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {COMPANY_TYPES.map((type) => (
-                                <SelectItem key={type} value={type}>
-                                  {type}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="taxId"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1.5">
-                          <FormLabel className="text-sm font-medium">Tax ID (Optional)</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="XX-XXXXXXX"
-                              disabled={isLoading}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-4 pt-2 border-t border-border">
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    Security
-                  </h3>
-                  
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1.5">
-                          <FormLabel className="text-sm font-medium">Password <span className="text-destructive">*</span></FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                placeholder="••••••••"
-                                type="password"
-                                className="pl-10"
-                                disabled={isLoading}
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                          {password && (
-                            <div className="space-y-1.5">
-                              <div className="flex items-center justify-between text-xs">
-                                <span className="text-muted-foreground">Strength: {getStrengthLabel(passwordStrength)}</span>
-                                <span className="font-medium">{Math.round((passwordStrength / 5) * 100)}%</span>
+                              <div className="relative group">
+                                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-300 transition-colors group-focus-within:text-zinc-950" />
+                                <Input
+                                  placeholder="Acme Corp"
+                                  className="h-12 pl-11 pr-4 border-zinc-200/80 rounded-2xl focus-visible:ring-zinc-950 focus-visible:ring-offset-0 bg-white transition-all shadow-sm placeholder:text-zinc-300 text-sm font-medium"
+                                  disabled={isLoading}
+                                  {...field}
+                                />
                               </div>
-                               <Progress value={(passwordStrength / 5) * 100} className="h-2 rounded-none border-2 border-zinc-950 bg-white" />
-                            </div>
-                          )}
-                        </FormItem>
-                      )}
-                    />
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name="confirmPassword"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1.5">
-                          <FormLabel className="text-sm font-medium">Confirm Password <span className="text-destructive">*</span></FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <FormField
+                        control={form.control}
+                        name="contactPerson"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">Primary Liaison</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-300 transition-colors group-focus-within:text-zinc-950" />
+                                <Input
+                                  placeholder="John Wick"
+                                  className="h-12 pl-11 pr-4 border-zinc-200/80 rounded-2xl focus-visible:ring-zinc-950 focus-visible:ring-offset-0 bg-white transition-all shadow-sm placeholder:text-zinc-300 text-sm font-medium"
+                                  disabled={isLoading}
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">System Mail</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-300 transition-colors group-focus-within:text-zinc-950" />
+                                <Input
+                                  placeholder="hq@acme.com"
+                                  type="email"
+                                  className="h-12 pl-11 pr-4 border-zinc-200/80 rounded-2xl focus-visible:ring-zinc-950 focus-visible:ring-offset-0 bg-white transition-all shadow-sm placeholder:text-zinc-300 text-sm font-medium"
+                                  disabled={isLoading}
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">Direct Vector</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-300 transition-colors group-focus-within:text-zinc-950" />
+                                <Input
+                                  placeholder="+1 555-0000"
+                                  type="tel"
+                                  className="h-12 pl-11 pr-4 border-zinc-200/80 rounded-2xl focus-visible:ring-zinc-950 focus-visible:ring-offset-0 bg-white transition-all shadow-sm placeholder:text-zinc-300 text-sm font-medium"
+                                  disabled={isLoading}
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="companyType"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">Structure Type</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                              <FormControl>
+                                <SelectTrigger className="h-12 border-zinc-200/80 rounded-2xl focus:ring-zinc-950 focus:ring-offset-0 bg-white shadow-sm text-sm font-medium">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="rounded-2xl border-zinc-200 shadow-xl">
+                                {COMPANY_TYPES.map((type) => (
+                                  <SelectItem key={type} value={type} className="rounded-xl my-1 focus:bg-zinc-50">
+                                    {type}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="taxId"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">Registry Code</FormLabel>
+                            <FormControl>
                               <Input
-                                placeholder="••••••••"
-                                type="password"
-                                className="pl-10"
+                                placeholder="XX-XXXXXXX"
+                                className="h-12 px-4 border-zinc-200/80 rounded-2xl focus-visible:ring-zinc-950 focus-visible:ring-offset-0 bg-white transition-all shadow-sm placeholder:text-zinc-300 text-sm font-medium"
                                 disabled={isLoading}
                                 {...field}
                               />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 pt-4">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 ml-1">
+                      Security Protocol
+                    </h3>
+                    
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">Master Key</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-300 transition-colors group-focus-within:text-zinc-950" />
+                                <Input
+                                  placeholder="••••••••"
+                                  type="password"
+                                  className="h-12 pl-11 pr-4 border-zinc-200/80 rounded-2xl focus-visible:ring-zinc-950 focus-visible:ring-offset-0 bg-white transition-all shadow-sm placeholder:text-zinc-300 text-sm font-medium"
+                                  disabled={isLoading}
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                            {password && (
+                              <div className="space-y-2 px-1 pt-1">
+                                <div className="flex items-center justify-between text-[8px] font-black uppercase tracking-widest">
+                                  <span className="text-zinc-400">Entropy: {getStrengthLabel(passwordStrength)}</span>
+                                  <span className="text-zinc-950">{Math.round((passwordStrength / 5) * 100)}%</span>
+                                </div>
+                                <Progress value={(passwordStrength / 5) * 100} className="h-1 bg-zinc-100 [&>div]:bg-zinc-950 transition-all" />
+                              </div>
+                            )}
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">Confirm Key</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-300 transition-colors group-focus-within:text-zinc-950" />
+                                <Input
+                                  placeholder="••••••••"
+                                  type="password"
+                                  className="h-12 pl-11 pr-4 border-zinc-200/80 rounded-2xl focus-visible:ring-zinc-950 focus-visible:ring-offset-0 bg-white transition-all shadow-sm placeholder:text-zinc-300 text-sm font-medium"
+                                  disabled={isLoading}
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold uppercase text-red-500" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -454,27 +463,28 @@ function RegisterForm() {
                   control={form.control}
                   name="terms"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-start gap-3 space-y-0">
+                    <FormItem className="flex flex-row items-start gap-4 space-y-0 ml-1">
                       <FormControl>
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                           disabled={isLoading}
+                          className="mt-1 border-zinc-200 data-[state=checked]:bg-zinc-950 data-[state=checked]:border-zinc-950 rounded-lg transition-all"
                         />
                       </FormControl>
-                      <div className="space-y-1 leading-none">
+                      <div className="space-y-1 leading-tight">
                         <label
                           htmlFor="terms"
-                          className="text-sm text-muted-foreground cursor-pointer"
+                          className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 cursor-pointer select-none"
                         >
-                          I agree to the{' '}
-                          <Link href="#" className="text-primary hover:underline">
-                            Terms of Service
+                          I acknowledge the{' '}
+                          <Link href="#" className="text-zinc-950 underline underline-offset-4 decoration-zinc-200">
+                            Service Protocols
                           </Link>{' '}
-                          and{' '}
-                          <Link href="#" className="text-primary hover:underline">
-                            Privacy Policy
-                          </Link>
+                          &{' '}
+                          <Link href="#" className="text-zinc-950 underline underline-offset-4 decoration-zinc-200">
+                            Data Privacy
+                          </Link>.
                         </label>
                       </div>
                     </FormItem>
@@ -483,43 +493,45 @@ function RegisterForm() {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 font-heading font-black uppercase text-lg border-2 border-zinc-950 rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all mt-4"
+                  className="w-full h-20 bg-zinc-950 hover:bg-zinc-800 text-white font-black uppercase tracking-[0.3em] text-[12px] rounded-[1.5rem] shadow-2xl shadow-zinc-950/20 transition-all hover:scale-[1.01] active:scale-[0.98] mt-8 font-syne italic"
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Initializing…
-                    </>
+                    <div className="flex items-center gap-4">
+                      <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Synchronizing...
+                    </div>
                   ) : (
-                    <>
-                      Deploy Account
-                    </>
+                    'Initialize Registration'
                   )}
                 </Button>
               </form>
             </Form>
           </CardContent>
           
-          <CardFooter className="justify-center pb-6">
-            <p className="text-sm text-muted-foreground">
-              Already have an account?{' '}
-              <Link href="/login" className="text-primary font-medium hover:underline">
-                Sign in
+          <CardFooter className="justify-center mt-10 p-0 pb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+              Active Member?{' '}
+              <Link href="/login" className="text-blue-600 hover:text-blue-700 transition-colors ml-2">
+                Authorize Here
               </Link>
             </p>
           </CardFooter>
-        </Card>
-      </div>
-    </div>
+        </div>
+      </Card>
+
+      <p className="mt-12 text-center text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-300">
+        Registration Core v1.2.4
+      </p>
+    </>
   );
 }
 
 export default function RegisterPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+      <div className="flex items-center justify-center">
+        <div className="h-10 w-10 border-4 border-zinc-100 border-t-zinc-900 rounded-full animate-spin" />
       </div>
     }>
       <RegisterForm />

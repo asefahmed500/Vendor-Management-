@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/connect';
 import Proposal from '@/lib/db/models/Proposal';
 import Vendor from '@/lib/db/models/Vendor';
+import ProposalSubmission from '@/lib/db/models/ProposalSubmission';
 import { vendorGuard } from '@/lib/auth/guards';
-import { ApiResponse, PaginatedResponse } from '@/lib/types/api';
-import type { IProposal } from '@/lib/types/proposal';
+import { ApiResponse } from '@/lib/types/api';
+import { handleApiError } from '@/lib/middleware/errorHandler';
+import { serialize } from '@/lib/utils/serialization';
 
 export async function GET(request: NextRequest) {
   try {
@@ -54,12 +56,11 @@ export async function GET(request: NextRequest) {
       .lean();
 
     const proposalsWithSubmissionInfo = await Promise.all(
-      (proposals as any[]).map(async (proposal) => {
-        const ProposalSubmission = (await import('@/lib/db/models/ProposalSubmission')).default;
+      proposals.map(async (proposal) => {
         const existingSubmission = await ProposalSubmission.findOne({
           proposalId: proposal._id,
           vendorId: vendor._id,
-        });
+        }).lean();
 
         return {
           ...proposal,
@@ -70,19 +71,14 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    return NextResponse.json<ApiResponse<{ proposals: typeof proposalsWithSubmissionInfo }>>(
+    return NextResponse.json<ApiResponse>(
       {
         success: true,
-        data: { proposals: proposalsWithSubmissionInfo },
+        data: { proposals: serialize(proposalsWithSubmissionInfo) },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get proposals error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetVendorProposals');
   }
 }

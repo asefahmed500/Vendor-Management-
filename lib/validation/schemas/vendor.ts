@@ -56,6 +56,25 @@ export const vendorListFiltersSchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
+export const adminCreateVendorSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Invalid email'),
+  companyName: z.string().min(2, 'Company name required'),
+  contactPerson: z.string().min(2, 'Contact person required'),
+  phone: z.string().min(1, 'Phone required'),
+  companyType: z.enum(['LLC', 'Corporation', 'Partnership', 'Sole Proprietorship', 'Other']).optional(),
+  taxId: z.string().optional(),
+  address: z.object({
+    street: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    country: z.string().optional(),
+    postalCode: z.string().optional(),
+  }).optional(),
+  password: z.string().min(8, 'Password must be at least 8 characters').optional(),
+  generatePassword: z.boolean().optional(),
+});
+
+export type AdminCreateVendorInput = z.infer<typeof adminCreateVendorSchema>;
 export type UpdateVendorInput = z.infer<typeof updateVendorSchema>;
 export type UpdateVendorStatusInput = z.infer<typeof updateVendorStatusSchema>;
 export type ApproveRegistrationInput = z.infer<typeof approveRegistrationSchema>;

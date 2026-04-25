@@ -1,29 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
-import { handleApiError } from '@/lib/middleware/errorHandler';
+import { handleApiError, NotFoundError } from '@/lib/middleware/errorHandler';
 import connectDB from '@/lib/db/connect';
 import DocumentType from '@/lib/db/models/DocumentType';
-import { z } from 'zod';
+import { serialize } from '@/lib/utils/serialization';
+import { updateDocumentTypeSchema } from '@/lib/validation/schemas/document';
 
-const updateSchema = z.object({
-  name: z.string().min(1).optional(),
-  category: z.enum(['BUSINESS_REGISTRATION', 'TAX', 'BANKING', 'CERTIFICATES_LICENCES', 'INSURANCE', 'CUSTOM']).optional(),
-  description: z.string().optional(),
-  isRequired: z.boolean().optional(),
-  isActive: z.boolean().optional(),
-  allowedFormats: z.array(z.string()).optional(),
-  maxSizeMB: z.number().min(1).max(50).optional(),
-});
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { authorized, user } = await adminGuard(request);
+
+    if (!authorized || !user) {
+      return NextResponse.json<ApiResponse>(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await params;
+    await connectDB();
+
+    const documentType = await DocumentType.findById(id).lean();
+
+    if (!documentType) {
+      throw new NotFoundError('Document type not found');
+    }
+
+    return NextResponse.json<ApiResponse>(
+      {
+        success: true,
+        data: {
+          documentType: serialize(documentType),
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return handleApiError(error, 'GetDocumentType');
+  }
+}
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { authorized } = await adminGuard(request);
+    const { authorized, user } = await adminGuard(request);
 
-    if (!authorized) {
+    if (!authorized || !user) {
       return NextResponse.json<ApiResponse>(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
@@ -31,7 +59,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const validated = updateSchema.parse(body);
+    const validated = updateDocumentTypeSchema.parse(body);
     const { id } = await params;
 
     await connectDB();
@@ -40,34 +68,22 @@ export async function PUT(
       id,
       validated,
       { new: true }
-    );
+    ).lean();
 
     if (!documentType) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Document type not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Document type not found');
     }
 
     return NextResponse.json<ApiResponse>(
       {
         success: true,
         data: {
-          documentType: {
-            ...documentType.toObject(),
-            _id: documentType._id.toString(),
-          },
+          documentType: serialize(documentType),
         },
       },
       { status: 200 }
     );
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { success: false, error: 'Validation error' },
-        { status: 400 }
-      );
-    }
     return handleApiError(error, 'UpdateDocumentType');
   }
 }
@@ -77,9 +93,9 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { authorized } = await adminGuard(request);
+    const { authorized, user } = await adminGuard(request);
 
-    if (!authorized) {
+    if (!authorized || !user) {
       return NextResponse.json<ApiResponse>(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
@@ -95,23 +111,17 @@ export async function PATCH(
       id,
       body,
       { new: true }
-    );
+    ).lean();
 
     if (!documentType) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Document type not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Document type not found');
     }
 
     return NextResponse.json<ApiResponse>(
       {
         success: true,
         data: {
-          documentType: {
-            ...documentType.toObject(),
-            _id: documentType._id.toString(),
-          },
+          documentType: serialize(documentType),
         },
       },
       { status: 200 }
@@ -126,9 +136,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { authorized } = await adminGuard(request);
+    const { authorized, user } = await adminGuard(request);
 
-    if (!authorized) {
+    if (!authorized || !user) {
       return NextResponse.json<ApiResponse>(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
@@ -142,10 +152,7 @@ export async function DELETE(
     const documentType = await DocumentType.findByIdAndDelete(id);
 
     if (!documentType) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Document type not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Document type not found');
     }
 
     return NextResponse.json<ApiResponse>(

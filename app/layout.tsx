@@ -25,9 +25,9 @@ export default function RootLayout({
         >
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-white focus:text-zinc-950 focus:border-2 focus:border-zinc-950 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-black uppercase text-[10px] tracking-widest outline-none"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-white focus:text-zinc-950 focus:border-2 focus:border-zinc-950 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-heading uppercase text-[12px] tracking-widest outline-none"
           >
-            Skip_to_Content_
+            Skip to Content
           </a>
           {children}
         </ThemeProvider>

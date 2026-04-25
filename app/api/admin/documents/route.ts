@@ -1,3 +1,4 @@
+import { serialize } from '@/lib/utils/serialization';
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/connect';
 import Document from '@/lib/db/models/Document';
@@ -81,9 +82,11 @@ export async function GET(request: NextRequest) {
         populate: { path: 'userId', select: 'email' },
       })
       .sort({ createdAt: -1 })
-      .lean() as unknown as PopulatedDocument[];
+      .lean();
 
-    const documentsWithVendorInfo = documents.map((doc) => ({
+    const serializedDocuments = serialize(documents) as unknown as PopulatedDocument[];
+
+    const documentsWithVendorInfo = serializedDocuments.map((doc) => ({
       ...doc,
       vendorName: doc.vendorId?.companyName || 'Unknown',
       vendorEmail: doc.vendorId?.userId?.email || 'Unknown',

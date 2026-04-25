@@ -5,10 +5,10 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Loader2, Save, X, Building2, Phone, Mail } from 'lucide-react';
+import { Loader2, Save, X, Building2, Phone, Mail, Globe, MapPin, Shield, CheckCircle2, AlertCircle } from 'lucide-react';
 
 import { IVendor } from '@/lib/types/vendor';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -27,7 +27,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 
 const COMPANY_TYPES = ['LLC', 'Corporation', 'Partnership', 'Sole Proprietorship', 'Other'] as const;
 
@@ -149,85 +148,114 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-12 pb-24 p-8">
-        <div className="h-32 bg-zinc-50 border-2 border-zinc-950 animate-pulse" />
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-1 h-64 bg-zinc-50 border-2 border-zinc-950 animate-pulse" />
-          <div className="md:col-span-2 h-96 bg-zinc-50 border-2 border-zinc-950 animate-pulse" />
+      <div className="max-w-6xl mx-auto space-y-12 pb-24">
+        <div className="h-40 bg-zinc-50 border border-zinc-100 rounded-[2rem] animate-pulse" />
+        <div className="grid md:grid-cols-12 gap-8">
+          <div className="md:col-span-4 h-96 bg-zinc-50 border border-zinc-100 rounded-[2rem] animate-pulse" />
+          <div className="md:col-span-8 h-[600px] bg-zinc-50 border border-zinc-100 rounded-[2rem] animate-pulse" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12 pb-24 p-8">
+    <div className="max-w-6xl mx-auto space-y-12 pb-24">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b-4 border-zinc-950">
-        <div>
-          <Badge variant="outline" className="mb-4 border-zinc-950 text-zinc-950">System: Identity</Badge>
-          <h1 className="text-4xl md:text-6xl font-heading font-black tracking-tighter text-zinc-950 uppercase">
-            Enterprise Profile
-          </h1>
-          <p className="text-zinc-600 mt-2 font-medium uppercase tracking-widest text-xs">
-            Manage operational indices and authority data.
-          </p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-zinc-100">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="h-1.5 w-1.5 rounded-full bg-zinc-950" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Corporate Identity</span>
+          </div>
+          <div className="space-y-1">
+            <h1 className="text-4xl font-heading font-bold tracking-tight text-zinc-950">
+              Enterprise Profile
+            </h1>
+            <p className="text-zinc-500 text-sm font-medium">
+              Verified Partner • Asset Management Portal
+            </p>
+          </div>
         </div>
-        <div className="flex gap-4">
+        
+        <div className="flex items-center gap-3">
           {isEditing ? (
-            <>
-              <Button variant="outline" onClick={handleCancel} disabled={isSaving} className="border-2 border-zinc-950">
-                DISCARD
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" onClick={handleCancel} disabled={isSaving} className="rounded-xl px-6 font-bold text-xs uppercase tracking-widest hover:bg-zinc-100">
+                Cancel
               </Button>
-              <Button onClick={form.handleSubmit(onSubmit)} disabled={isSaving} className="border-2 border-zinc-950 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-indigo-600">
-                {isSaving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    SYNCING…
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    COMMIT CHANGES
-                  </>
-                )}
+              <Button onClick={form.handleSubmit(onSubmit)} disabled={isSaving} className="bg-zinc-950 text-white rounded-xl px-8 font-bold text-xs uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Commit Changes'}
               </Button>
-            </>
+            </div>
           ) : (
-            <Button onClick={() => setIsEditing(true)} className="border-2 border-zinc-950 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              AUTHORIZE EDIT
+            <Button onClick={() => setIsEditing(true)} className="bg-zinc-950 text-white rounded-xl px-8 font-bold text-xs uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+              Update Identity
             </Button>
           )}
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Sidebar */}
-        <div className="md:col-span-1">
-          <Card className="border-2 border-zinc-950 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-white overflow-hidden">
-            <CardContent className="p-8">
-              <div className="flex flex-col items-center text-center mb-10 pb-10 border-b-2 border-zinc-100">
-                <div className="h-24 w-24 border-2 border-zinc-950 bg-zinc-50 flex items-center justify-center mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                  <Building2 className="h-10 w-10 text-zinc-950" />
+        <div className="lg:col-span-4 space-y-8">
+          <Card className="border-zinc-200/50 shadow-sm rounded-[2rem] overflow-hidden bg-white">
+            <CardContent className="p-10 space-y-10">
+              <div className="flex flex-col items-center text-center">
+                <div className="h-24 w-24 rounded-3xl bg-zinc-50 border border-zinc-100 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 transition-transform">
+                  <Building2 className="h-10 w-10 text-zinc-400" />
                 </div>
-                <h2 className="font-heading font-black text-2xl uppercase tracking-tight text-zinc-950">{vendor?.companyName}</h2>
-                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mt-2">{vendor?.companyType || 'Asset Entity'}</p>
+                <div className="space-y-1">
+                  <h2 className="text-2xl font-heading font-bold text-zinc-950 tracking-tight">{vendor?.companyName}</h2>
+                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{vendor?.companyType || 'Corporate Entity'}</p>
+                </div>
               </div>
               
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-tight">
-                  <Mail className="h-4 w-4 text-zinc-400" />
-                  <span className="text-zinc-950 underline underline-offset-4 decoration-zinc-200">{email}</span>
+              <div className="space-y-6 pt-10 border-t border-zinc-50">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400">
+                      <Mail className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Network Email</p>
+                      <p className="text-xs font-bold text-zinc-950">{email}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400">
+                      <Shield className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Verification</p>
+                      <div className="flex items-center gap-1.5">
+                        {vendor?.status === 'APPROVED' ? (
+                          <>
+                            <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                            <span className="text-xs font-bold text-emerald-600 uppercase tracking-tight">Verified</span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertCircle className="h-3 w-3 text-amber-500" />
+                            <span className="text-xs font-bold text-amber-600 uppercase tracking-tight">Pending Approval</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between border-t border-zinc-100 pt-6">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Verification Status</span>
-                  <Badge className={`border-2 font-black ${vendor?.status === 'APPROVED' ? 'border-emerald-600 text-emerald-600 bg-white' : 'border-amber-600 text-amber-600 bg-white'}`}>
-                    {vendor?.status?.replace(/_/g, ' ') || 'ID_UNKNOWN'}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between border-t border-zinc-100 pt-6">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Entry Date</span>
-                  <span className="text-xs font-black text-zinc-950 uppercase">
+              </div>
+
+              <div className="p-6 bg-zinc-50 rounded-2xl border border-zinc-100 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Entry Registry</span>
+                  <span className="text-[10px] font-bold text-zinc-950 uppercase tracking-tight">
                     {vendor?.createdAt ? new Date(vendor.createdAt).toLocaleDateString() : 'N/A'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Registry ID</span>
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase">
+                    {vendor?.id?.slice(-8) || 'SYSTEM_00'}
                   </span>
                 </div>
               </div>
@@ -235,142 +263,161 @@ export default function ProfilePage() {
           </Card>
         </div>
 
-        {/* Form */}
-        <div className="md:col-span-2">
-          <Card className="border-2 border-zinc-950 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-white overflow-hidden">
-            <CardHeader className="border-b-2 border-zinc-950 bg-zinc-50 p-8">
-              <CardTitle className="text-2xl font-heading font-black uppercase tracking-tight text-zinc-950">Entity Index</CardTitle>
-            </CardHeader>
-            <CardContent className="p-8">
+        {/* Main Content */}
+        <div className="lg:col-span-8">
+          <Card className="border-zinc-200/50 shadow-sm rounded-[2rem] overflow-hidden bg-white">
+            <div className="bg-zinc-50/50 border-b border-zinc-100 px-8 py-6 flex items-center justify-between">
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-950">Identity Manifest</h3>
+                <p className="text-[10px] text-zinc-400 font-medium mt-1">Operational data and authority descriptors.</p>
+              </div>
+              <Shield className="h-4 w-4 text-zinc-300" />
+            </div>
+            <CardContent className="p-10">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="companyName"
-                      render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-medium">Company Name</FormLabel>
-                          <FormControl>
-                            <Input {...field} disabled={!isEditing} />
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="contactPerson"
-                      render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-medium">Contact Person</FormLabel>
-                          <FormControl>
-                            <Input {...field} disabled={!isEditing} />
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-medium">Phone</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input {...field} disabled={!isEditing} className="pl-10" />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="companyType"
-                      render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-medium">Company Type</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isEditing}>
+                <form className="space-y-10">
+                  <div className="space-y-8">
+                    <div className="flex items-center gap-2">
+                      <div className="h-1 w-4 bg-zinc-950 rounded-full" />
+                      <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Basic Information</h4>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-8">
+                      <FormField
+                        control={form.control}
+                        name="companyName"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2.5">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Entity Legal Name</FormLabel>
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select type" />
-                              </SelectTrigger>
+                              <Input {...field} disabled={!isEditing} className="h-12 rounded-xl bg-zinc-50/30 border-zinc-200 focus:border-zinc-950 transition-all font-bold text-sm" />
                             </FormControl>
-                            <SelectContent>
-                              {COMPANY_TYPES.map((type) => (
-                                <SelectItem key={type} value={type}>{type}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                            <FormMessage className="text-[10px] font-bold" />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="contactPerson"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2.5">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Primary Representative</FormLabel>
+                            <FormControl>
+                              <Input {...field} disabled={!isEditing} className="h-12 rounded-xl bg-zinc-50/30 border-zinc-200 focus:border-zinc-950 transition-all font-bold text-sm" />
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold" />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2.5">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Communication Channel</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
+                                <Input {...field} disabled={!isEditing} className="h-12 pl-11 rounded-xl bg-zinc-50/30 border-zinc-200 focus:border-zinc-950 transition-all font-bold text-sm" />
+                              </div>
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold" />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="companyType"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2.5">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Entity Structure</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isEditing}>
+                              <FormControl>
+                                <SelectTrigger className="h-12 rounded-xl bg-zinc-50/30 border-zinc-200 focus:border-zinc-950 transition-all font-bold text-sm">
+                                  <SelectValue placeholder="Define type" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="rounded-xl border-zinc-100 shadow-2xl">
+                                {COMPANY_TYPES.map((type) => (
+                                  <SelectItem key={type} value={type} className="text-xs font-bold uppercase tracking-wide py-3">
+                                    {type}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage className="text-[10px] font-bold" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
 
-                  <Separator />
+                  <div className="space-y-8 pt-6">
+                    <div className="flex items-center gap-2">
+                      <div className="h-1 w-4 bg-zinc-950 rounded-full" />
+                      <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Legal & Location</h4>
+                    </div>
 
-                  <FormField
-                    control={form.control}
-                    name="taxId"
-                    render={({ field }) => (
-                      <FormItem className="space-y-2">
-                        <FormLabel className="text-sm font-medium">Tax ID</FormLabel>
-                        <FormControl>
-                          <Input {...field} disabled={!isEditing} placeholder="XX-XXXXXXX" />
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
+                    <div className="grid md:grid-cols-2 gap-8">
+                      <FormField
+                        control={form.control}
+                        name="taxId"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2.5">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Tax Identification Number</FormLabel>
+                            <FormControl>
+                              <Input {...field} disabled={!isEditing} placeholder="XX-XXXXXXX" className="h-12 rounded-xl bg-zinc-50/30 border-zinc-200 focus:border-zinc-950 transition-all font-bold text-sm" />
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold" />
+                          </FormItem>
+                        )}
+                      />
 
-                  <FormField
-                    control={form.control}
-                    name="address.street"
-                    render={({ field }) => (
-                      <FormItem className="space-y-2">
-                        <FormLabel className="text-sm font-medium">Address</FormLabel>
-                        <FormControl>
-                          <Input {...field} disabled={!isEditing} placeholder="Street address" />
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
+                      <FormField
+                        control={form.control}
+                        name="address.street"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2.5">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Street Address</FormLabel>
+                            <FormControl>
+                              <Input {...field} disabled={!isEditing} className="h-12 rounded-xl bg-zinc-50/30 border-zinc-200 focus:border-zinc-950 transition-all font-bold text-sm" />
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold" />
+                          </FormItem>
+                        )}
+                      />
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="address.city"
-                      render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-medium">City</FormLabel>
-                          <FormControl>
-                            <Input {...field} disabled={!isEditing} />
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="address.state"
-                      render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-medium">State/Province</FormLabel>
-                          <FormControl>
-                            <Input {...field} disabled={!isEditing} />
-                          </FormControl>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name="address.city"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2.5">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">City Node</FormLabel>
+                            <FormControl>
+                              <Input {...field} disabled={!isEditing} className="h-12 rounded-xl bg-zinc-50/30 border-zinc-200 focus:border-zinc-950 transition-all font-bold text-sm" />
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold" />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="address.state"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2.5">
+                            <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">State / Province / Region</FormLabel>
+                            <FormControl>
+                              <Input {...field} disabled={!isEditing} className="h-12 rounded-xl bg-zinc-50/30 border-zinc-200 focus:border-zinc-950 transition-all font-bold text-sm" />
+                            </FormControl>
+                            <FormMessage className="text-[10px] font-bold" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 </form>
               </Form>

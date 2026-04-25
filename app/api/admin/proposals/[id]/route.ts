@@ -5,8 +5,9 @@ import ProposalSubmission from '@/lib/db/models/ProposalSubmission';
 import { adminGuard } from '@/lib/auth/guards';
 import { ApiResponse } from '@/lib/types/api';
 import { IProposal } from '@/lib/types/proposal';
-import { ZodError } from 'zod';
+import { handleApiError, NotFoundError, BadRequestError } from '@/lib/middleware/errorHandler';
 import { updateProposalSchema } from '@/lib/validation/schemas/proposal';
+import { serialize } from '@/lib/utils/serialization';
 
 export async function GET(
   request: NextRequest,
@@ -29,10 +30,7 @@ export async function GET(
     const proposal = await Proposal.findById(id).populate('createdBy', 'email').lean();
 
     if (!proposal) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Proposal not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Proposal not found');
     }
 
     const submissions = await ProposalSubmission.find({ proposalId: id })
@@ -44,19 +42,14 @@ export async function GET(
       {
         success: true,
         data: {
-          proposal: proposal as unknown as IProposal,
-          submissions,
+          proposal: serialize(proposal) as unknown as IProposal,
+          submissions: serialize(submissions),
         },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get proposal error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'GetProposalById');
   }
 }
 
@@ -84,10 +77,7 @@ export async function PUT(
     const proposal = await Proposal.findById(id);
 
     if (!proposal) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Proposal not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Proposal not found');
     }
 
     Object.assign(proposal, validatedData);
@@ -101,37 +91,13 @@ export async function PUT(
     return NextResponse.json<ApiResponse<{ proposal: IProposal }>>(
       {
         success: true,
-        data: { proposal: proposal.toJSON() as unknown as IProposal },
+        data: { proposal: serialize(proposal) as unknown as IProposal },
         message: 'Proposal updated successfully',
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Update proposal error:', error);
-
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      const errors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(fieldErrors)) {
-        if (value) {
-          errors[key] = value;
-        }
-      }
-
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: 'Validation error',
-          errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'UpdateProposal');
   }
 }
 
@@ -156,17 +122,12 @@ export async function DELETE(
     const proposal = await Proposal.findById(id);
 
     if (!proposal) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Proposal not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Proposal not found');
     }
 
+    // Business Logic: Don't delete open proposals
     if (proposal.status === 'OPEN') {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: 'Cannot delete an open proposal' },
-        { status: 400 }
-      );
+      throw new BadRequestError('Cannot delete an active procurement channel (Open RFP)');
     }
 
     await ProposalSubmission.deleteMany({ proposalId: id });
@@ -175,16 +136,12 @@ export async function DELETE(
     return NextResponse.json<ApiResponse>(
       {
         success: true,
-        message: 'Proposal deleted successfully',
+        message: 'Proposal purged from registry successfully',
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Delete proposal error:', error);
-
-    return NextResponse.json<ApiResponse>(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'DeleteProposal');
   }
 }
+

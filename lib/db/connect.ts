@@ -1,4 +1,8 @@
 import mongoose from 'mongoose';
+import { globalTransformPlugin } from './plugins/transform';
+
+// Apply global plugin
+mongoose.plugin(globalTransformPlugin);
 
 const MONGODB_URI = process.env.MONGODB_URI || '';
 

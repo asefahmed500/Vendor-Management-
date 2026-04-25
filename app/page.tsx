@@ -31,7 +31,11 @@ import {
   ChevronDown,
   Menu,
   X,
-  Workflow
+  Workflow,
+  QrCode,
+  Box,
+  Binary,
+  Compass
 } from "lucide-react";
 
 import { 
@@ -165,26 +169,23 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-50/50 text-zinc-950 font-dm-sans selection:bg-zinc-950 selection:text-white relative overflow-hidden">
+  return (
+    <div className="flex flex-col min-h-screen bg-[#f7f4ed] text-[#1c1c1c] font-sans selection:bg-[#1c1c1c]/10 selection:text-inherit relative overflow-hidden">
       <GrainOverlay />
       
-      {/* Principal Navigation */}
+      {/* Editorial Navigation */}
       <header className={cn(
-        "fixed top-0 left-0 right-0 z-[100] transition-all duration-700",
-        scrolled ? "py-4" : "py-8"
+        "fixed top-0 left-0 right-0 z-[100] transition-all duration-500",
+        scrolled ? "bg-[#f7f4ed]/80 backdrop-blur-md border-b border-[#eceae4] py-4" : "py-8"
       )}>
-        <div className="container mx-auto px-4 md:px-8">
-           <div className={cn(
-             "mx-auto flex items-center justify-between transition-all duration-700 px-8 py-4 rounded-full border bg-white/70 backdrop-blur-2xl shadow-4xl shadow-zinc-200/40",
-             scrolled ? "max-w-[1200px] border-zinc-100" : "max-w-[1400px] border-transparent bg-white/0 shadow-none backdrop-blur-none"
-           )}>
-              <Link className="flex items-center gap-4 group" href="/">
-                <div className="h-10 w-10 bg-zinc-950 rounded-xl flex items-center justify-center text-white font-syne font-black italic text-xl shadow-2xl shadow-zinc-950/20 group-hover:rotate-12 transition-transform duration-700 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-transparent" />
+        <div className="container mx-auto px-6 md:px-12">
+           <div className="flex items-center justify-between">
+              <Link className="flex items-center gap-3 group" href="/">
+                <div className="h-9 w-9 bg-[#1c1c1c] rounded-md flex items-center justify-center text-[#fcfbf8] font-heading font-semibold text-lg shadow-lovable-inset group-hover:rotate-3 transition-transform duration-500">
                   V
                 </div>
-                <span className="font-syne font-black italic text-xl tracking-tight hidden sm:block uppercase">
-                  Shield<span className="text-zinc-400 italic">Plus</span>
+                <span className="font-heading font-semibold text-xl tracking-tight text-[#1c1c1c]">
+                  ShieldPlus
                 </span>
               </Link>
               
@@ -192,28 +193,26 @@ export default function HomePage() {
                 {["Capabilities", "Architecture", "Registry", "Protocol"].map((item) => (
                   <Link 
                     key={item} 
-                    className="text-[11px] font-black text-zinc-400 hover:text-zinc-950 transition-colors relative group uppercase tracking-[0.3em] font-syne italic" 
+                    className="text-sm font-normal text-[rgba(28,28,28,0.83)] hover:text-[#1c1c1c] transition-colors relative group" 
                     href={`#${item.toLowerCase()}`}
                   >
                     {item}
-                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-1 bg-zinc-950 transition-all duration-500 group-hover:w-full rounded-full" />
                   </Link>
                 ))}
               </nav>
               
-              <div className="flex items-center gap-2 md:gap-4">
+              <div className="flex items-center gap-4">
                 <Link href="/login" className="hidden sm:block">
-                  <Button variant="ghost" className="text-[11px] font-black text-zinc-400 hover:text-zinc-950 hover:bg-transparent uppercase tracking-[0.3em] font-syne italic">
-                    Identity Auth
+                  <Button variant="ghost" className="text-sm font-normal text-[rgba(28,28,28,0.83)] hover:text-[#1c1c1c]">
+                    Log In
                   </Button>
                 </Link>
                 <Link href="/login" className="hidden sm:block">
-                  <Button className="bg-zinc-950 text-white hover:bg-zinc-800 font-black text-[10px] rounded-full shadow-2xl shadow-zinc-950/20 h-12 px-8 uppercase tracking-[0.3em] font-syne italic transition-all hover:scale-105 active:scale-95">
-                    Initialize Access
+                  <Button className="rounded-md px-6">
+                    Start Building
                   </Button>
                 </Link>
 
-                {/* Mobile Menu Trigger */}
                 <div className="lg:hidden">
                    <MobileNav />
                 </div>
@@ -223,58 +222,54 @@ export default function HomePage() {
       </header>
 
       <main id="main-content" className="flex-1 outline-none" tabIndex={-1}>
-        {/* Strategic Hero Section */}
-        <section className="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden">
-          {/* Architectural Background */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1600px] h-full pointer-events-none -z-10">
-             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-500/5 blur-[160px] rounded-full opacity-50" />
-             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[160px] rounded-full opacity-30" />
-             {/* Grid Lines */}
-             <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:100px_100px]" />
+        {/* Editorial Hero Section */}
+        <section className="relative min-h-screen flex items-center pt-32 pb-20">
+          {/* Subtle Atmospheric Wash */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none -z-10">
+             <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-blue-500/5 blur-[120px] rounded-full opacity-50" />
+             <div className="absolute bottom-1/4 left-0 w-[600px] h-[600px] bg-orange-500/5 blur-[120px] rounded-full opacity-50" />
           </div>
           
-          <div className="container mx-auto px-4 md:px-8 relative z-10">
-            <div className="flex flex-col items-center text-center space-y-12">
-              <div className="animate-fade-up">
-                <Badge className="bg-white text-zinc-400 border border-zinc-100 font-black uppercase tracking-[0.4em] text-[10px] px-8 py-3 rounded-full shadow-4xl shadow-zinc-200/50 italic font-syne">
-                  <Sparkles className="h-4 w-4 mr-4 text-blue-500" />
-                  Global Strategic Registry Interface
+          <div className="container mx-auto px-6 md:px-12 relative z-10">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <Badge variant="secondary" className="px-4 py-1.5 text-[11px] font-normal border-[#eceae4] text-[#5f5f5d]">
+                  <Sparkles className="h-3 w-3 mr-2 text-orange-400" />
+                  Unified Strategic Registry v4.0
                 </Badge>
               </div>
               
-              <h1 className="text-6xl sm:text-8xl lg:text-[10rem] font-syne font-black italic tracking-tighter text-zinc-950 uppercase leading-[0.85] drop-shadow-sm max-w-6xl animate-fade-up delay-100">
-                Strategic Entity <br />
-                <span className="text-zinc-300">Management </span> <br />
-                <span className="text-blue-600">Reimagined.</span>
+              <h1 className="mb-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+                Strategic Entity Hub <br className="hidden lg:block" />
+                <span className="text-[rgba(28,28,28,0.4)]">Completely Unified.</span>
               </h1>
               
-              <p className="text-zinc-500 text-xl md:text-2xl font-medium leading-relaxed max-w-3xl animate-fade-up delay-200">
-                A high-fidelity platform for <span className="text-zinc-950 font-bold italic">Automated Compliance</span>, seamless entity enrollment, and end-to-end intelligence across the strategic supply shard.
+              <p className="text-[rgba(28,28,28,0.82)] text-lg md:text-xl font-normal leading-relaxed max-w-2xl mb-16 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
+                The high-fidelity protocol for automated compliance, seamless entity enrollment, and end-to-end intelligence shards.
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-8 w-full max-w-2xl animate-fade-up delay-300">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-700">
                 {registrationEnabled && (
                   <Link href="/register" className="w-full sm:flex-1">
-                    <Button className="w-full h-24 rounded-[2.5rem] bg-zinc-950 text-white hover:bg-zinc-800 shadow-4xl shadow-zinc-950/20 transition-all hover:scale-105 active:scale-95 font-black uppercase tracking-[0.4em] text-[12px] group relative overflow-hidden font-syne italic">
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-white/5 to-blue-600/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                      Initialize Enrollment
-                      <ArrowRight className="ml-4 h-6 w-6 transition-transform duration-500 group-hover:translate-x-3" />
+                    <Button size="lg" className="w-full h-14 rounded-md text-base">
+                      Get Started
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
                 )}
 
                 <Link href="/login" className="w-full sm:flex-1">
-                  <Button variant="outline" className="w-full h-24 rounded-[2.5rem] border-zinc-200 bg-white/50 backdrop-blur-md text-zinc-950 hover:bg-zinc-50 shadow-4xl shadow-zinc-200/30 transition-all font-black uppercase tracking-[0.4em] text-[12px] font-syne italic">
-                    Protocol Manifest
+                  <Button variant="outline" size="lg" className="w-full h-14 rounded-md text-base">
+                    Documentation
                   </Button>
                 </Link>
               </div>
 
-              {/* Principal Logo Cloud */}
-              <div className="w-full pt-32 border-t border-zinc-100 max-w-7xl opacity-40 group animate-fade-in delay-400">
-                <div className="flex flex-wrap items-center justify-center gap-16 md:gap-24">
-                  {["ACME_CORP", "GLOBAL_SYSTEMS", "NEXUS_INDUSTRIAL", "DATALOG_SECURE", "ORION_CORE"].map((brand) => (
-                    <span key={brand} className="text-[10px] font-black tracking-[0.6em] font-syne italic text-zinc-400 group-hover:text-zinc-950 transition-colors cursor-default">{brand}</span>
+              {/* Minimal Logo Cloud */}
+              <div className="w-full pt-32 max-w-5xl opacity-40 animate-in fade-in duration-1000 delay-1000">
+                <div className="flex flex-wrap items-center justify-center gap-12 md:gap-20">
+                  {["Acme Systems", "Global Corp", "Nexus Mod", "Data Core", "Orion Shard"].map((brand) => (
+                    <span key={brand} className="text-sm font-normal text-[#1c1c1c] tracking-tight">{brand}</span>
                   ))}
                 </div>
               </div>
@@ -283,41 +278,40 @@ export default function HomePage() {
         </section>
 
         {/* Capabilities Grid */}
-        <section id="capabilities" className="py-40 bg-white relative overflow-hidden rounded-[5rem] lg:rounded-[10rem] z-10 shadow-4xl shadow-zinc-200/50 mx-4 md:mx-12">
-          <div className="container mx-auto px-4 md:px-12">
-            <div className="flex flex-col lg:flex-row items-end justify-between gap-16 mb-32">
-               <div className="space-y-10 max-w-3xl">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-2xl bg-zinc-950 flex items-center justify-center shadow-2xl shadow-zinc-900/20">
-                       <Layers className="h-6 w-6 text-white" />
-                    </div>
-                    <span className="text-[11px] font-black text-zinc-400 uppercase tracking-[0.4em] font-syne italic">System_Capabilities</span>
-                  </div>
-                  <h2 className="text-5xl md:text-7xl lg:text-8xl font-syne font-black italic tracking-tighter text-zinc-950 uppercase leading-[0.85]">
+        <section id="capabilities" className="py-40 bg-[#f7f4ed]">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="flex flex-col lg:flex-row items-end justify-between gap-12 mb-24">
+               <div className="space-y-6 max-w-3xl">
+                  <Badge variant="secondary" className="px-3 py-1 text-[10px] font-normal border-[#eceae4]">
+                    System Core Capabilities Alpha
+                  </Badge>
+                  <h2 className="text-5xl md:text-7xl font-semibold text-[#1c1c1c] tracking-tight leading-[1.1]">
                     Engineered for <br />
-                    <span className="text-blue-600">Absolute Clarity.</span>
+                    <span className="text-[rgba(28,28,28,0.4)]">Absolute Registry.</span>
                   </h2>
                </div>
-               <p className="text-zinc-500 text-xl font-medium leading-relaxed max-w-md">
-                Deconstruct the complexity of modern enterprise procurement with a unified protocol designed for <span className="text-zinc-950 font-bold">Strategic Resilience</span>.
+               <p className="text-[rgba(28,28,28,0.82)] text-lg md:text-xl font-normal leading-relaxed max-w-sm mb-2">
+                Deconstruct the complexity of modern enterprise procurement with a unified protocol designed for strategic resilience.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {features.map((feature, index) => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {features.map((feature) => (
                 <div 
                   key={feature.title} 
-                  className="p-12 rounded-[4rem] border border-zinc-50 bg-zinc-50/30 hover:bg-white hover:shadow-4xl hover:shadow-zinc-200/60 transition-all duration-700 group hover:-translate-y-4"
+                  className="p-10 rounded-lg border border-[#eceae4] bg-[#f7f4ed] hover:bg-[#eceae4]/30 transition-all duration-300 group"
                 >
-                    <div className="h-20 w-20 rounded-[2rem] bg-white border border-zinc-100 flex items-center justify-center mb-10 group-hover:bg-zinc-950 group-hover:text-white transition-all duration-700 shadow-xl shadow-zinc-200/30 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/0 group-hover:from-blue-500/20 to-transparent transition-all" />
-                      <feature.icon className="h-10 w-10 relative z-10" />
+                    <div className="h-12 w-12 rounded-md bg-[#1c1c1c] flex items-center justify-center mb-8 shadow-lovable-inset">
+                      <feature.icon className="h-5 w-5 text-[#fcfbf8]" />
                     </div>
-                    <h3 className="font-syne font-black italic text-2xl mb-4 uppercase tracking-tighter text-zinc-950">{feature.title}</h3>
-                    <p className="text-zinc-500 text-base leading-relaxed font-medium">
+                    <h3 className="text-2xl font-semibold mb-4 text-[#1c1c1c] tracking-tight">{feature.title}</h3>
+                    <p className="text-[#5f5f5d] text-base leading-relaxed font-normal mb-8">
                       {feature.description}
                     </p>
-                    <div className="h-1.5 w-12 bg-zinc-100 mt-10 rounded-full group-hover:w-full group-hover:bg-blue-600 transition-all duration-1000" />
+                    <div className="flex items-center gap-2 group-hover:gap-4 transition-all duration-300 cursor-pointer">
+                       <span className="text-xs font-normal text-[#1c1c1c]">Learn more</span>
+                       <ArrowRight className="h-4 w-4 text-[#1c1c1c]" />
+                    </div>
                 </div>
               ))}
             </div>
@@ -325,111 +319,94 @@ export default function HomePage() {
         </section>
 
         {/* Intelligence Mockup Architecture */}
-        <section id="architecture" className="py-60 relative overflow-hidden">
-          <div className="container mx-auto px-4 md:px-12 relative z-10">
-            <div className="flex flex-col lg:flex-row items-center gap-24 mb-32">
-               <div className="lg:w-1/2 space-y-12">
+        <section id="architecture" className="py-40 border-t border-[#eceae4]">
+          <div className="container mx-auto px-6 md:px-12 relative z-10">
+            <div className="flex flex-col lg:flex-row items-center gap-20">
+               <div className="lg:w-1/2 space-y-10">
                   <div className="space-y-6">
-                    <Badge className="bg-white text-zinc-400 border border-zinc-100 font-black uppercase tracking-[0.4em] text-[10px] px-8 py-3 rounded-full shadow-4xl shadow-zinc-200/50 italic font-syne">Interface_Architecture</_profile_manifest</span>
-                    <h2 className="text-5xl md:text-7xl font-syne font-black italic tracking-tighter text-zinc-950 uppercase leading-[0.85]">
+                    <Badge variant="secondary" className="px-3 py-1 text-[10px] font-normal border-[#eceae4]">
+                      Interface Architecture
+                    </Badge>
+                    <h2 className="text-5xl md:text-7xl font-semibold text-[#1c1c1c] tracking-tight leading-[1.1]">
                       Visualized <br />
-                      <span className="text-blue-600">Intelligence.</span>
+                      <span className="text-[rgba(28,28,28,0.4)]">Intelligence.</span>
                     </h2>
                   </div>
-                  <p className="text-zinc-500 text-xl font-medium leading-relaxed max-w-xl">
-                    Every pixel is optimized for <span className="text-zinc-950 font-bold italic">Cognitive Efficiency</span>. We've deconstructed the standard dashboard into a strategic ledger that empowers rapid decision-making.
+                  <p className="text-[rgba(28,28,28,0.82)] text-lg font-normal leading-relaxed max-w-xl">
+                    Every pixel is optimized for cognitive efficiency. We've deconstructed the standard dashboard into a strategic ledger that empowers rapid decision-making.
                   </p>
-                  <div className="grid grid-cols-2 gap-8 pt-8">
-                     <div className="space-y-2">
-                        <p className="text-4xl font-syne font-black text-zinc-950 tracking-tighter">99.8%</p>
-                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest font-syne italic">Audit_Precision</p>
+                  <div className="grid grid-cols-2 gap-8 pt-6">
+                     <div className="space-y-1">
+                        <p className="text-3xl font-semibold text-[#1c1c1c] tracking-tighter">99.8%</p>
+                        <p className="text-[10px] font-normal text-[#5f5f5d] uppercase tracking-widest">Audit Precision</p>
                      </div>
-                     <div className="space-y-2">
-                        <p className="text-4xl font-syne font-black text-zinc-950 tracking-tighter">0.02s</p>
-                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest font-syne italic">Latency_Index</p>
+                     <div className="space-y-1">
+                        <p className="text-3xl font-semibold text-[#1c1c1c] tracking-tighter">0.02s</p>
+                        <p className="text-[10px] font-normal text-[#5f5f5d] uppercase tracking-widest">Latency Index</p>
                      </div>
                   </div>
                </div>
 
-               <div className="lg:w-1/2 relative group">
-                  <div className="absolute -inset-10 bg-blue-500/5 blur-[120px] rounded-full opacity-50 pointer-events-none group-hover:opacity-100 transition-opacity duration-1000" />
-                  
-                  {/* Floating Elements */}
-                  <div className="absolute -top-12 -right-12 z-30 bg-zinc-950 text-white p-10 rounded-[3rem] shadow-4xl rotate-12 group-hover:rotate-6 transition-all duration-1000 hidden xl:block border border-white/10 scale-110">
-                    <div className="flex items-center gap-6 mb-4">
-                      <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center">
-                        <ShieldCheck className="h-6 w-6 text-emerald-400" />
+               <div className="lg:w-1/2 w-full">
+                  <div className="bg-[#f7f4ed] rounded-xl border border-[#eceae4] shadow-lovable-focus overflow-hidden">
+                    <div className="h-14 border-b border-[#eceae4] bg-[#fcfbf8] flex items-center justify-between px-6">
+                      <div className="flex gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#eceae4]" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#eceae4]" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#eceae4]" />
                       </div>
-                      <span className="font-syne font-black italic uppercase tracking-tighter text-xl">Verified</span>
-                    </div>
-                    <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2 font-syne italic">COMPLIANCE_SCORE</div>
-                    <div className="text-4xl font-syne font-black text-emerald-400 italic tracking-tighter">98.4%</div>
-                  </div>
-
-                  {/* Principal Dashboard Frame */}
-                  <div className="bg-white rounded-[4rem] border border-zinc-100 shadow-4xl shadow-zinc-300/40 overflow-hidden transition-all duration-1000 group-hover:shadow-zinc-400/60 scale-[1.02] group-hover:scale-105">
-                    {/* Frame Navigation */}
-                    <div className="h-20 border-b border-zinc-50 bg-zinc-50/30 flex items-center justify-between px-10">
-                      <div className="flex gap-3">
-                        <div className="w-3 h-3 rounded-full bg-zinc-200" />
-                        <div className="w-3 h-3 rounded-full bg-zinc-200" />
-                        <div className="w-3 h-3 rounded-full bg-zinc-200" />
+                      <div className="px-4 py-1.5 rounded-md text-[10px] text-[#5f5f5d] font-normal flex items-center gap-3 border border-[#eceae4] bg-[#f7f4ed] uppercase tracking-widest">
+                        <Lock className="h-3 w-3 text-emerald-600/60" />
+                        VMS Registry Shard
                       </div>
-                      <div className="bg-white px-8 py-2.5 rounded-full text-[9px] text-zinc-400 font-black flex items-center gap-4 border border-zinc-100 shadow-sm uppercase tracking-widest font-syne italic">
-                        <Lock className="h-3 w-3 text-emerald-500" />
-                        VMS_CORE_ALPHA / REGISTRY_SHARD
-                      </div>
-                      <div className="flex items-center gap-4 opacity-10">
-                         <Activity className="h-5 w-5" />
+                      <div className="flex items-center gap-4 opacity-20">
+                         <Activity className="h-4 w-4" />
                       </div>
                     </div>
 
-                    {/* Frame Content */}
-                    <div className="p-10 md:p-16 space-y-12 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.02),transparent_40%)]">
-                      <div className="grid grid-cols-2 gap-8">
-                        {demoStats.slice(0, 4).map((stat, i) => (
-                          <div key={stat.label} className="p-8 rounded-[2.5rem] border border-zinc-50 bg-white shadow-sm hover:border-zinc-950 transition-all duration-500 group/stat">
-                            <div className="flex items-center justify-between mb-6">
-                              <div className={cn("h-12 w-12 rounded-2xl bg-zinc-50 flex items-center justify-center transition-colors group-hover/stat:bg-zinc-950 group-hover/stat:text-white", stat.color)}>
-                                <stat.icon className="h-6 w-6" />
+                    <div className="p-8 space-y-8">
+                      <div className="grid grid-cols-2 gap-4">
+                        {demoStats.slice(0, 4).map((stat) => (
+                          <div key={stat.label} className="p-6 rounded-lg border border-[#eceae4] bg-[#fcfbf8]">
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="h-9 w-9 rounded-md bg-[#1c1c1c] flex items-center justify-center shadow-lovable-inset">
+                                <stat.icon className="h-4 w-4 text-[#fcfbf8]" />
                               </div>
-                              <Badge className="bg-zinc-50 text-zinc-400 border-none rounded-full px-4 py-1 text-[9px] font-black uppercase tracking-widest group-hover/stat:bg-blue-500 group-hover/stat:text-white transition-all">{stat.change}</Badge>
+                              <Badge className="bg-[#f7f4ed] text-[#5f5f5d] border-[#eceae4] text-[9px]">{stat.change}</Badge>
                             </div>
-                            <div className="text-4xl font-syne font-black text-zinc-950 tracking-tighter italic mb-1 uppercase leading-none">{stat.value}</div>
-                            <div className="text-[9px] font-black text-zinc-400 uppercase tracking-widest font-syne italic">{stat.label}</div>
+                            <div className="text-2xl font-semibold text-[#1c1c1c] tracking-tight">{stat.value}</div>
+                            <div className="text-[10px] font-normal text-[#5f5f5d] uppercase tracking-widest">{stat.label}</div>
                           </div>
                         ))}
                       </div>
 
-                      <div className="rounded-[3rem] border border-zinc-50 overflow-hidden bg-white shadow-sm relative">
-                         <div className="px-10 py-8 border-b border-zinc-50 flex items-center justify-between bg-zinc-50/20">
-                           <span className="text-[10px] font-black text-zinc-950 uppercase tracking-[0.4em] font-syne italic">Recent_Entity_Activity</span>
-                           <Fingerprint className="h-5 w-5 text-zinc-100" />
+                      <div className="rounded-lg border border-[#eceae4] overflow-hidden bg-[#fcfbf8]">
+                         <div className="px-6 py-4 border-b border-[#eceae4] flex items-center justify-between bg-[#f7f4ed]/30">
+                           <span className="text-[10px] font-normal text-[#1c1c1c] uppercase tracking-widest">Recent Entity Activity</span>
+                           <Fingerprint className="h-4 w-4 text-[#eceae4]" />
                          </div>
-                         <div className="divide-y divide-zinc-50">
+                         <div className="divide-y divide-[#eceae4]">
                             {demoVendors.map((v) => (
-                              <div key={v.name} className="px-10 py-6 flex items-center justify-between hover:bg-zinc-50/50 transition-all group/row">
-                                <div className="flex items-center gap-6">
-                                  <div className="h-12 w-12 rounded-[1.25rem] bg-zinc-50 flex items-center justify-center text-sm font-syne font-black italic border border-zinc-100 group-hover/row:bg-zinc-950 group-hover/row:text-white transition-all duration-500">
+                              <div key={v.name} className="px-6 py-4 flex items-center justify-between hover:bg-[#f7f4ed]/50 transition-all group/row">
+                                <div className="flex items-center gap-4">
+                                  <div className="h-9 w-9 rounded-md bg-[#f7f4ed] border border-[#eceae4] flex items-center justify-center text-xs font-semibold text-[#1c1c1c]">
                                     {v.name.charAt(0)}
                                   </div>
                                   <div>
-                                    <div className="text-sm font-black text-zinc-950 font-syne uppercase italic tracking-tighter">{v.name}</div>
-                                    <div className="text-[9px] text-zinc-400 font-black uppercase tracking-widest font-syne italic">{v.type}</div>
+                                    <div className="text-sm font-semibold text-[#1c1c1c]">{v.name}</div>
+                                    <div className="text-[10px] text-[#5f5f5d] font-normal uppercase tracking-widest">{v.type}</div>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-10">
+                                <div className="flex items-center gap-8">
                                   <div className="text-right hidden sm:block">
-                                     <div className="text-[10px] font-black text-zinc-950 font-syne italic uppercase tracking-tight">{v.score}%</div>
-                                     <div className="text-[8px] text-zinc-300 font-black uppercase tracking-widest">SENSORY_RATING</div>
+                                     <div className="text-xs font-semibold text-[#1c1c1c]">{v.score}%</div>
+                                     <div className="text-[8px] text-[#5f5f5d] font-normal uppercase tracking-widest">Rating</div>
                                   </div>
-                                  <Badge className="text-[9px] font-black px-6 py-2 rounded-full bg-zinc-950 text-white border-none italic font-syne tracking-widest">{v.status}</Badge>
+                                  <Badge variant="outline" className="text-[9px] px-3 py-0.5">{v.status}</Badge>
                                 </div>
                               </div>
                             ))}
                          </div>
-                         {/* Scanline Effect */}
-                         <div className="absolute top-0 left-0 w-full h-1 bg-blue-500/20 blur-sm animate-[scan_4s_linear_infinite] pointer-events-none" />
                       </div>
                     </div>
                   </div>
@@ -439,120 +416,118 @@ export default function HomePage() {
         </section>
 
         {/* Global CTA Protocol */}
-        <section className="py-40">
-          <div className="container mx-auto px-4 md:px-12">
-            <div className="bg-zinc-950 text-white rounded-[5rem] lg:rounded-[8rem] p-20 lg:p-40 text-center relative overflow-hidden group shadow-4xl shadow-zinc-900/40 border border-white/5">
-                {/* Visual Architecture */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.15),transparent_60%)]" />
-                <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.1),transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/5 blur-[160px] rounded-full pointer-events-none" />
-                
-                <h2 className="text-6xl md:text-8xl lg:text-9xl font-syne font-black italic mb-12 relative z-10 tracking-tighter leading-[0.85] uppercase">
-                  Secure Your <br className="hidden md:block" /> <span className="text-blue-500">Infrastructure.</span>
+        <section className="py-40 bg-[#1c1c1c] text-[#fcfbf8] overflow-hidden">
+          <div className="container mx-auto px-6 md:px-12 text-center relative">
+            <div className="max-w-4xl mx-auto space-y-12 relative z-10">
+                <Badge variant="outline" className="px-3 py-1 text-[10px] font-normal border-white/10 text-white/60">
+                  Global Deployment Portal
+                </Badge>
+                <h2 className="text-5xl md:text-8xl font-semibold tracking-tight leading-[1.05]">
+                  Secure Your <br /> 
+                  <span className="text-white/40">Infrastructure.</span>
                 </h2>
-                <p className="text-zinc-500 max-w-2xl mx-auto mb-20 text-xl md:text-2xl relative z-10 leading-relaxed font-medium">
-                  Join hundreds of enterprise procurement teams automating their <span className="text-white font-bold italic underline decoration-blue-500 underline-offset-8">Strategic Compliance Shards</span> today.
+                <p className="text-white/60 max-w-2xl mx-auto text-lg md:text-xl font-normal leading-relaxed">
+                  Join hundreds of enterprise procurement teams automating their strategic compliance shards with the ShieldPlus registry.
                 </p>
                 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-8 relative z-10">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                   {registrationEnabled ? (
                     <Link href="/register" className="w-full sm:w-auto">
-                      <Button className="w-full sm:w-auto h-24 px-16 text-[12px] font-black bg-white text-zinc-950 hover:bg-zinc-100 rounded-[2.5rem] shadow-4xl shadow-zinc-950/20 transition-all hover:scale-[1.05] active:scale-[0.95] uppercase tracking-[0.4em] font-syne italic">
+                      <Button size="lg" className="w-full sm:w-auto h-14 px-10 text-sm font-normal rounded-md bg-[#fcfbf8] text-[#1c1c1c] hover:bg-[#fcfbf8]/90 shadow-lovable-inset">
                         Initialize Protocol
                       </Button>
                     </Link>
                   ) : (
                     <Link href="/login" className="w-full sm:w-auto">
-                      <Button className="w-full sm:w-auto h-24 px-16 text-[12px] font-black bg-white text-zinc-950 hover:bg-zinc-100 rounded-[2.5rem] shadow-4xl shadow-zinc-950/20 uppercase tracking-[0.4em] font-syne italic">
+                      <Button size="lg" className="w-full sm:w-auto h-14 px-10 text-sm font-normal rounded-md bg-[#fcfbf8] text-[#1c1c1c] hover:bg-[#fcfbf8]/90 shadow-lovable-inset">
                         Access Portal
                       </Button>
                     </Link>
                   )}
-                  <Button variant="ghost" className="w-full sm:w-auto h-24 px-12 text-[12px] font-black text-white hover:bg-white/5 rounded-[2.5rem] transition-all uppercase tracking-[0.4em] font-syne italic border border-white/5">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto h-14 px-10 text-sm font-normal rounded-md border-white/10 text-white hover:bg-white/5">
                     Speak with an Architect
                   </Button>
                 </div>
-
-                <div className="absolute top-10 left-10 opacity-10">
-                   <Shield className="h-40 w-40" />
-                </div>
-                <div className="absolute bottom-10 right-10 opacity-10 scale-x-[-1]">
-                   <QrCode className="h-32 w-32" />
-                </div>
+            </div>
+            
+            {/* Minimalist Background Detail */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-5 pointer-events-none">
+               <Shield className="w-full h-full stroke-[0.5px]" />
             </div>
           </div>
         </section>
       </main>
 
       {/* Manifest Footer */}
-      <footer className="py-40 bg-zinc-50/50 border-t border-zinc-100">
-        <div className="container mx-auto px-4 md:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-24 lg:gap-32">
-            <div className="col-span-1 md:col-span-5 space-y-12">
-              <Link className="flex items-center gap-6" href="/">
-                <div className="h-14 w-14 bg-zinc-950 rounded-2xl flex items-center justify-center text-white font-syne font-black italic text-2xl shadow-3xl shadow-zinc-950/20">
+      <footer className="py-32 bg-[#f7f4ed] border-t border-[#eceae4]">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-16 lg:gap-24">
+            <div className="col-span-1 md:col-span-5 space-y-8">
+              <Link className="flex items-center gap-4" href="/">
+                <div className="h-10 w-10 bg-[#1c1c1c] rounded-md flex items-center justify-center text-[#fcfbf8] font-semibold text-xl shadow-lovable-inset">
                   V
                 </div>
-                <span className="font-syne font-black italic text-3xl tracking-tighter uppercase">
-                  Shield<span className="text-zinc-400">Plus</span>
+                <span className="font-semibold text-2xl tracking-tight text-[#1c1c1c]">
+                  ShieldPlus
                 </span>
               </Link>
-              <p className="text-xl text-zinc-400 leading-relaxed max-w-sm font-medium">
+              <p className="text-base text-[#5f5f5d] leading-relaxed max-w-sm font-normal">
                 The modern standard for vendor management, automated compliance, and strategic supply chain security.
               </p>
-              <div className="flex items-center gap-10 pt-4">
-                 {["X_LINK", "LINKEDIN", "GITHUB_REPOS"].map((social) => (
-                   <Link key={social} href="#" className="text-[10px] font-black text-zinc-300 hover:text-zinc-950 transition-colors uppercase tracking-[0.3em] font-syne italic">
+              <div className="flex items-center gap-6 pt-2">
+                 {["X", "LinkedIn", "GitHub"].map((social) => (
+                   <Link key={social} href="#" className="text-xs font-normal text-[#5f5f5d] hover:text-[#1c1c1c] transition-colors">
                      {social}
                    </Link>
                  ))}
               </div>
             </div>
             
-            <div className="col-span-1 md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-16">
-              <div className="space-y-10">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-950 font-syne italic">Registry_Shards</h4>
-                <ul className="space-y-6">
-                  {["Capabilities", "Architecture", "Registry", "Protocol", "API_CORE"].map(item => (
-                    <li key={item}><Link href="#" className="text-sm font-bold text-zinc-400 hover:text-zinc-950 transition-colors uppercase tracking-tight">{item}</Link></li>
+            <div className="col-span-1 md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-12">
+              <div className="space-y-6">
+                <h4 className="text-[10px] font-normal uppercase tracking-widest text-[#1c1c1c]">Ecosystem</h4>
+                <ul className="space-y-4">
+                  {["Capabilities", "Architecture", "Registry", "Protocol"].map(item => (
+                    <li key={item}><Link href="#" className="text-sm font-normal text-[#5f5f5d] hover:text-[#1c1c1c] transition-colors">{item}</Link></li>
                   ))}
                 </ul>
               </div>
 
-              <div className="space-y-10">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-950 font-syne italic">Principal_Entity</h4>
-                <ul className="space-y-6">
-                  {["About_VMS", "Strategic_History", "Career_Nodes", "Press_Registry", "Contact_Auth"].map(item => (
-                    <li key={item}><Link href="#" className="text-sm font-bold text-zinc-400 hover:text-zinc-950 transition-colors uppercase tracking-tight">{item}</Link></li>
+              <div className="space-y-6">
+                <h4 className="text-[10px] font-normal uppercase tracking-widest text-[#1c1c1c]">Company</h4>
+                <ul className="space-y-4">
+                  {["About", "History", "Careers", "Press"].map(item => (
+                    <li key={item}><Link href="#" className="text-sm font-normal text-[#5f5f5d] hover:text-[#1c1c1c] transition-colors">{item}</Link></li>
                   ))}
                 </ul>
               </div>
 
-              <div className="space-y-10">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-950 font-syne italic">Legal_Protocol</h4>
-                <ul className="space-y-6">
-                  {["Privacy_Shard", "Terms_Manifest", "Security_Vault", "Compliance_Ledger"].map(item => (
-                    <li key={item}><Link href="#" className="text-sm font-bold text-zinc-400 hover:text-zinc-950 transition-colors uppercase tracking-tight">{item}</Link></li>
+              <div className="space-y-6">
+                <h4 className="text-[10px] font-normal uppercase tracking-widest text-[#1c1c1c]">Governance</h4>
+                <ul className="space-y-4">
+                  {["Privacy", "Terms", "Security", "Compliance"].map(item => (
+                    <li key={item}><Link href="#" className="text-sm font-normal text-[#5f5f5d] hover:text-[#1c1c1c] transition-colors">{item}</Link></li>
                   ))}
                 </ul>
               </div>
             </div>
           </div>
           
-          <div className="mt-40 pt-12 border-t border-zinc-100 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-            <p className="text-[11px] font-black text-zinc-300 uppercase tracking-[0.3em] font-syne italic">
-              © {new Date().getFullYear()} Specialized Systems Intelligence. All rights reserved.
+          <div className="mt-24 pt-8 border-t border-[#eceae4] flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <p className="text-xs font-normal text-[#5f5f5d]">
+              © {new Date().getFullYear()} Specialized Systems Intelligence.
             </p>
-            <div className="flex items-center gap-12">
-               <div className="flex items-center gap-4 text-[10px] font-black text-zinc-400 uppercase tracking-widest font-syne italic">
-                  <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50" />
+            <div className="flex items-center gap-8">
+               <div className="flex items-center gap-2 text-[10px] font-normal text-[#5f5f5d] uppercase tracking-widest">
+                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   Telemetry: Active
                </div>
-               <Link href="#" className="text-[10px] font-black text-zinc-400 hover:text-zinc-950 transition-colors uppercase tracking-[0.3em] font-syne italic">Cookie_Registry</Link>
+               <Link href="#" className="text-[10px] font-normal text-[#5f5f5d] hover:text-[#1c1c1c] transition-colors uppercase tracking-widest">Cookie Policy</Link>
             </div>
           </div>
         </div>
       </footer>
     </div>
   );
+}
 }

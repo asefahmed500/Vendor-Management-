@@ -6,107 +6,145 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   theme: {
     extend: {
-      // VMS PRO Brand Colors
+      // Notion Color Palette
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        notion: {
+          black: 'rgba(0, 0, 0, 0.95)',
+          white: '#ffffff',
+          blue: '#0075de',
+          'active-blue': '#005bab',
+          'focus-blue': '#097fe8',
+          'badge-blue-bg': '#f2f9ff',
+          'badge-blue-text': '#097fe8',
+        },
+        // Warm Neutral Scale - Yellow-Brown Undertones
+        warm: {
+          white: '#f6f5f4',
+          dark: '#31302e',
+          gray: {
+            500: '#615d59',
+            300: '#a39e98',
+          }
+        },
+        // Semantic Colors
+        semantic: {
+          teal: '#2a9d99',
+          green: '#1aae39',
+          orange: '#dd5b00',
+          pink: '#ff64c8',
+          purple: '#391c57',
+          brown: '#523410',
+        },
+        // Legacy VMS colors (for compatibility)
+        background: 'rgba(255, 255, 255, 1)',
+        foreground: 'rgba(0, 0, 0, 0.95)',
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: '#ffffff',
+          foreground: 'rgba(0, 0, 0, 0.95)',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          DEFAULT: '#ffffff',
+          foreground: 'rgba(0, 0, 0, 0.95)',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: 'rgba(0, 0, 0, 0.05)',
+          foreground: 'rgba(0, 0, 0, 0.95)',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: 'rgba(0, 0, 0, 0.05)',
+          foreground: '#615d59',
+        },
+        'muted-foreground': '#615d59',
+        accent: {
+          DEFAULT: '#0075de',
+          foreground: '#ffffff',
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: '#ef4444',
+          foreground: '#ffffff',
         },
-        success: {
-          DEFAULT: 'hsl(var(--success))',
-          foreground: 'hsl(var(--success-foreground))',
-        },
-        warning: {
-          DEFAULT: 'hsl(var(--warning))',
-          foreground: 'hsl(var(--warning-foreground))',
-        },
-        info: {
-          DEFAULT: 'hsl(var(--info))',
-          foreground: 'hsl(var(--info-foreground))',
-        },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
+        border: 'rgba(0, 0, 0, 0.1)',
+        input: '#dddddd',
+        ring: '#097fe8',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: '#0075de',
+          foreground: '#ffffff',
         },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        cta: {
-          DEFAULT: 'hsl(var(--accent))',  // CTA uses accent color
-          foreground: 'hsl(var(--accent-foreground))',
-          light: '#FBB24A',
-          dark: '#E85D0A',
-        },
-        // Professional slate palette for neutral colors
-        slate: {
-          50: '#F8FAFC',
-          100: '#F1F5F9',
-          200: '#E2E8F0',
-          300: '#CBD5E1',
-          400: '#94A3B8',
-          500: '#64748B',
-          600: '#475569',
-          700: '#334155',
-          800: '#1E293B',
-          900: '#0F172A',
-          950: '#020617',
-        },
+        success: '#1aae39',
+        warning: '#dd5b00',
+        info: '#0075de',
       },
-      // Border radius - Professional scale
+      // Notion Border Radius Scale
       borderRadius: {
-        sm: 'var(--radius-sm)',
-        md: 'var(--radius-md)',
-        lg: 'var(--radius-lg)',
-        xl: 'var(--radius-xl)',
+        micro: '4px',
+        subtle: '5px',
+        standard: '8px',
+        comfortable: '12px',
+        large: '16px',
+        pill: '9999px',
+        circle: '100%',
       },
-      // Shadows - Subtle, professional
+      // Notion Shadow System - Multi-layer whisper stacks
       boxShadow: {
-        sm: 'var(--shadow-sm)',
-        md: 'var(--shadow-md)',
-        lg: 'var(--shadow-lg)',
+        'notion-card': 'rgba(0, 0, 0, 0.04) 0px 4px 18px, rgba(0, 0, 0, 0.027) 0px 2.025px 7.84688px, rgba(0, 0, 0, 0.02) 0px 0.8px 2.925px, rgba(0, 0, 0, 0.01) 0px 0.175px 1.04062px',
+        'notion-deep': 'rgba(0, 0, 0, 0.01) 0px 1px 3px, rgba(0, 0, 0, 0.02) 0px 3px 7px, rgba(0, 0, 0, 0.02) 0px 7px 15px, rgba(0, 0, 0, 0.04) 0px 14px 28px, rgba(0, 0, 0, 0.05) 0px 23px 52px',
+        'notion-focus': '0 0 0 2px #097fe8',
       },
-      // Base Spacing - Use Tailwind Defaults, but keep custom semantic tokens if needed
-      // To avoid clashing with standard tokens (like md, 2xl),
-      // we'll remove the redundant and clashing ones.
+      // Notion Spacing Scale - 8px base unit
       spacing: {
-        'vms-xs': 'var(--vms-spacing-xs)',
-        'vms-sm': 'var(--vms-spacing-sm)',
-        'vms-md': 'var(--vms-spacing-md)',
-        'vms-lg': 'var(--vms-spacing-lg)',
-        'vms-xl': 'var(--vms-spacing-xl)',
-        'vms-2xl': 'var(--vms-spacing-2xl)',
+        '1': '2px',
+        '2': '3px',
+        '3': '4px',
+        '4': '5px',
+        '5': '6px',
+        '6': '7px',
+        '7': '8px',
+        '8': '11px',
+        '9': '12px',
+        '10': '14px',
+        '11': '16px',
+        '12': '24px',
+        '13': '32px',
       },
-      // Animation durations
+      // Animation Durations
       transitionDuration: {
-        fast: 'var(--duration-fast)',
-        normal: 'var(--duration-normal)',
-        slow: 'var(--duration-slow)',
+        fast: '150ms',
+        normal: '200ms',
+        slow: '300ms',
       },
       // Custom easing
       transitionTimingFunction: {
-        smooth: 'var(--easing-smooth)',
+        'ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
+        'ease-in': 'cubic-bezier(0.4, 0, 1, 1)',
+      },
+      // Letter spacing for Notion typography
+      letterSpacing: {
+        'display-hero': '-2.125px',
+        'display-secondary': '-1.875px',
+        'section-heading': '-1.5px',
+        'sub-heading': '-0.625px',
+        'card-title': '-0.25px',
+        'body-large': '-0.125px',
+        'badge': '0.125px',
+      },
+      // Font sizes for Notion typography
+      fontSize: {
+        'display-hero': ['4rem', { lineHeight: '1', letterSpacing: '-2.125px', fontWeight: '700' }],
+        'display-secondary': ['3.375rem', { lineHeight: '1.04', letterSpacing: '-1.875px', fontWeight: '700' }],
+        'section-heading': ['3rem', { lineHeight: '1', letterSpacing: '-1.5px', fontWeight: '700' }],
+        'sub-heading-large': ['2.5rem', { lineHeight: '1.5', letterSpacing: '0', fontWeight: '700' }],
+        'sub-heading': ['1.625rem', { lineHeight: '1.23', letterSpacing: '-0.625px', fontWeight: '700' }],
+        'card-title': ['1.375rem', { lineHeight: '1.27', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'body-large': ['1.25rem', { lineHeight: '1.4', letterSpacing: '-0.125px', fontWeight: '600' }],
+        'body': ['1rem', { lineHeight: '1.5', letterSpacing: '0', fontWeight: '400' }],
+        'body-medium': ['1rem', { lineHeight: '1.5', letterSpacing: '0', fontWeight: '500' }],
+        'body-semibold': ['1rem', { lineHeight: '1.5', letterSpacing: '0', fontWeight: '600' }],
+        'body-bold': ['1rem', { lineHeight: '1.5', letterSpacing: '0', fontWeight: '700' }],
+        'nav': ['0.9375rem', { lineHeight: '1.33', letterSpacing: '0', fontWeight: '600' }],
+        'caption': ['0.875rem', { lineHeight: '1.43', letterSpacing: '0', fontWeight: '500' }],
+        'caption-light': ['0.875rem', { lineHeight: '1.43', letterSpacing: '0', fontWeight: '400' }],
+        'badge': ['0.75rem', { lineHeight: '1.33', letterSpacing: '0.125px', fontWeight: '600' }],
+        'micro': ['0.75rem', { lineHeight: '1.33', letterSpacing: '0.125px', fontWeight: '400' }],
       },
     },
   },

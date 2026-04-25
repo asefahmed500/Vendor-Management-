@@ -410,7 +410,7 @@ export default function AnalyticsPage() {
                       tickLine={false} 
                       tick={{ fontSize: 10, fontWeight: 700, fill: '#a1a1aa', fontFamily: 'Syne' }} 
                     />
-                    <Tooltip content={<CustomTooltip />} cursor={{ fill: '#fafafa', radius: [20, 20, 0, 0] }} />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: '#fafafa' }} />
                     <Bar 
                       dataKey="value" 
                       fill={COLORS.primary} 

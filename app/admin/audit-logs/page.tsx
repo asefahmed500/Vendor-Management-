@@ -28,6 +28,7 @@ import {
   Cpu,
   History,
   AlertCircle,
+  XCircle,
   ChevronLeft,
   LayoutGrid,
   Settings2,

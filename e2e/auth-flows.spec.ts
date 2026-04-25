@@ -6,18 +6,18 @@ test.describe('Authentication Flows', () => {
   });
 
   test('should display login form', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /sign in/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /identity validation/i })).toBeVisible();
     await expect(page.locator('input[type="email"]')).toBeVisible();
     await expect(page.locator('input[type="password"]')).toBeVisible();
   });
 
   test('should navigate to registration page', async ({ page }) => {
-    await page.click('text=Create account');
+    await page.getByRole('link', { name: /Create account/i }).click();
     await expect(page).toHaveURL(/\/register/);
   });
 
   test('should navigate to forgot password page', async ({ page }) => {
-    await page.click('text=Forgot password');
+    await page.getByRole('link', { name: /Forgot password\?/i }).click();
     await expect(page).toHaveURL(/\/forgot-password/);
   });
 
@@ -37,7 +37,7 @@ test.describe('Vendor Registration', () => {
   });
 
   test('should display registration form', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /create.*account/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /entity enrollment/i })).toBeVisible();
   });
 
   test('should validate form on submit', async ({ page }) => {
@@ -49,6 +49,6 @@ test.describe('Vendor Registration', () => {
 test.describe('Password Reset', () => {
   test('should display forgot password page', async ({ page }) => {
     await page.goto('/forgot-password');
-    await expect(page.getByRole('heading', { name: /forgot.*password|reset/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /identity recovery/i })).toBeVisible();
   });
 });

@@ -33,6 +33,7 @@ export function serialize<T>(data: T): T {
       // We'll keep _id as string per requirements
       if (key === '_id' && val && typeof val === 'object') {
         obj[key] = val.toString();
+        obj.id = val.toString();
       }
     });
 

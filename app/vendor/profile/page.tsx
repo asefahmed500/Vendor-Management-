@@ -33,12 +33,13 @@ const COMPANY_TYPES = ['LLC', 'Corporation', 'Partnership', 'Sole Proprietorship
 const profileSchema = z.object({
   companyName: z.string()
     .min(2, 'Company name must be at least 2 characters')
-    .max(100, 'Company name must not exceed 100 characters'),
+    .max(200, 'Company name must not exceed 200 characters'),
   contactPerson: z.string()
     .min(2, 'Contact person name must be at least 2 characters')
     .max(50, 'Contact person name must not exceed 50 characters'),
   phone: z.string()
-    .min(1, 'Phone number is required'),
+    .min(1, 'Phone number is required')
+    .regex(/^[+]?[\d\s\-()]+$/, 'Invalid phone number format'),
   companyType: z.string().optional(),
   taxId: z.string().optional(),
   address: z.object({
@@ -94,6 +95,9 @@ export default function ProfilePage() {
               postalCode: result.data.vendor.address?.postalCode || '',
             },
           });
+        } else {
+          const errorData = await response.json();
+          toast.error(errorData.error || 'Failed to load profile');
         }
       } catch (error) {
         console.error('Error fetching vendor:', error);
@@ -114,13 +118,17 @@ export default function ProfilePage() {
         body: JSON.stringify(values),
       });
       
-      if (!response.ok) throw new Error('Failed to update');
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update');
+      }
       
+      const result = await response.json();
       toast.success('Profile updated successfully');
       setIsEditing(false);
-      setVendor((prev) => prev ? { ...prev, ...values } : null);
-    } catch (error) {
-      toast.error('Failed to update profile');
+      setVendor((prev) => prev ? { ...prev, ...result.data.vendor } : null);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update profile');
     } finally {
       setIsSaving(false);
     }
@@ -252,12 +260,12 @@ export default function ProfilePage() {
                     {vendor?.createdAt ? new Date(vendor.createdAt).toLocaleDateString() : 'N/A'}
                   </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Registry ID</span>
-                  <span className="text-[10px] font-mono text-zinc-500 uppercase">
-                    {vendor?.id?.slice(-8) || 'SYSTEM_00'}
-                  </span>
-                </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Registry ID</span>
+                    <span className="text-[10px] font-mono text-zinc-500 uppercase">
+                      {vendor?._id ? vendor._id.slice(-8) : 'PENDING'}
+                    </span>
+                  </div>
               </div>
             </CardContent>
           </Card>

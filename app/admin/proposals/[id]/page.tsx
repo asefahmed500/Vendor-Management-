@@ -267,7 +267,7 @@ export default function AdminProposalDetailPage() {
             </Badge>
             <div className="h-1 w-1 rounded-full bg-zinc-300" />
             <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-              Revision {proposal.__v || 0}.0
+              Revision {(proposal as any).__v || 0}.0
             </span>
           </div>
           
@@ -433,7 +433,7 @@ export default function AdminProposalDetailPage() {
                           </TableCell>
                           <TableCell className="py-6">
                             <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-tighter">
-                              {new Date(submission.submittedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' })}
+                              {new Date(submission.submittedAt || new Date()).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' })}
                             </span>
                           </TableCell>
                           <TableCell className="px-8 py-6 text-right">

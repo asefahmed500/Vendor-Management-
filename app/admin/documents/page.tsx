@@ -77,7 +77,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-interface DocumentWithVendor extends IDocument {
+interface DocumentWithVendor extends Omit<IDocument, 'documentType'> {
   vendorName: string;
   vendorEmail: string;
   documentType: {

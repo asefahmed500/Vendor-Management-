@@ -26,6 +26,7 @@ export interface IDocument {
   _id: string;
   vendorId: string;
   documentTypeId: string;
+  documentType?: IDocumentType;
   fileName: string;
   originalName: string;
   fileUrl: string;

@@ -105,13 +105,13 @@ PENDING → APPROVED_LOGIN → DOCUMENTS_SUBMITTED → UNDER_REVIEW → APPROVED
 
 ### Middleware & Edge Runtime
 
-**IMPORTANT:** The middleware (`middleware.ts`) requires Node.js runtime for Better Auth.
+**IMPORTANT:** Better Auth requires Node.js runtime (incompatible with Edge).
 
-**Solution:** Added `export const runtime = 'nodejs';` to middleware.ts to force Node.js runtime.
+**Solution:** Uses `proxy.ts` pattern instead of `middleware.ts` - handles route protection at build time, defers full auth checks to API route guards.
 
 **CSS Configuration:** Tailwind CSS v4 uses `@import "tailwindcss"` instead of `@tailwind` directives. PostCSS config: `plugins: ["@tailwindcss/postcss"]`
 
-**For E2E Tests:** The middleware may cause issues with the dev server startup. Tests are written but may require manual testing or additional setup.
+**Security:** CSP headers configured in `next.config.ts`
 
 ### Admin User Management
 

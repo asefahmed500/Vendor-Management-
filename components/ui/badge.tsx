@@ -4,23 +4,27 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-normal transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50",
+  "inline-flex items-center rounded-pill border px-2.5 py-0.5 text-badge transition-colors focus:outline-none focus:ring-2 focus:ring-[#097fe8]",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-[#1c1c1c] text-[#fcfbf8] hover:opacity-90",
+          "border-transparent bg-[#0075de] text-notion-white hover:opacity-90",
         secondary:
-          "border-[#eceae4] bg-[#f7f4ed] text-[#5f5f5d] hover:bg-[#eceae4]",
+          "border-[rgba(0,0,0,0.1)] bg-[#f2f9ff] text-[#097fe8] hover:bg-[#e6f3ff]",
         destructive:
           "border-transparent bg-red-100 text-red-700",
-        outline: "text-[#5f5f5d] border-[#eceae4]",
-        pill: "bg-[#1c1c1c] text-[#fcfbf8] rounded-full px-3 py-1",
+        outline: "text-[#615d59] border-[rgba(0,0,0,0.1)]",
+        pill: "bg-[#0075de] text-notion-white rounded-pill px-3 py-1",
+        success: "border-transparent bg-[#1aae39]/10 text-[#1aae39]",
+        warning: "border-transparent bg-[#dd5b00]/10 text-[#dd5b00]",
+        danger: "border-transparent bg-red-100 text-red-700",
+        info: "border-transparent bg-[#0075de]/10 text-[#0075de]",
       },
       size: {
-        sm: "px-1.5 py-0 text-[10px]",
-        md: "px-2.5 py-0.5 text-[11px]",
-        lg: "px-3 py-1 text-xs",
+        sm: "px-1.5 py-0 text-micro",
+        md: "px-2.5 py-0.5 text-badge",
+        lg: "px-3 py-1 text-caption",
       },
     },
     defaultVariants: {

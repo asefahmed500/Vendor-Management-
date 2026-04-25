@@ -6,14 +6,14 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { 
-  Loader2, 
-  ArrowLeft, 
-  Copy, 
-  CheckCircle, 
-  Mail, 
-  ShieldCheck, 
-  UserPlus, 
+import {
+  Loader2,
+  ArrowLeft,
+  Copy,
+  CheckCircle,
+  Mail,
+  ShieldCheck,
+  UserPlus,
   Info,
   Building2,
   Phone,
@@ -32,7 +32,9 @@ import {
   Lock,
   ExternalLink,
   QrCode,
-  Fingerprint
+  Fingerprint,
+  Activity,
+  ShieldAlert
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';

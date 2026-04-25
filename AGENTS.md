@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
     }
     await connectDB();
     return NextResponse.json<ApiResponse>(
-      { success: true, data: { result } }, { status: 200 }
+      { success: true, data: { result} }, { status: 200 }
     );
   } catch (error) {
     console.error('Operation error:', error);
@@ -166,3 +166,51 @@ e2e/                    # Playwright tests
 - Use proper ellipsis character `…` not three dots `...`
 - Avoid `transition: all` - use specific properties like `transition-colors`
 - Support `prefers-reduced-motion` for accessibility
+
+## Common Issues & Fixes Learned
+
+### Serialization Gotcha
+The `serialize()` utility in `lib/utils/serialization.ts` only converts `_id` to string but doesn't populate the optional `id` field in interfaces like `IVendor`. When updating this utility, ensure both `_id` and `id` fields are set:
+```typescript
+if (key === '_id' && val && typeof val === 'object') {
+  obj[key] = val.toString();
+  obj.id = val.toString(); // Critical for UI compatibility
+}
+```
+
+### TypeScript Interface Extension
+When extending interfaces that contain optional fields (like `IDocument` in `admin/documents/page.tsx`), use `Omit` to avoid conflicts:
+```typescript
+// Correct
+interface DocumentWithVendor extends Omit<IDocument, 'documentType'> {
+  vendorName: string;
+  vendorEmail: string;
+  documentType: { name: string };
+}
+
+// Incorrect - causes "property X is incompatible" errors
+interface DocumentWithVendor extends IDocument {
+  // ... 
+}
+```
+
+### Optional Date Handling
+When accessing potentially undefined dates (like `submission.submittedAt`), always check for null/undefined:
+```typescript
+{submission.submittedAt ? new Date(submission.submittedAt).toLocaleDateString(undefined, { dateStyle: 'medium' }) : 'N/A'}
+```
+
+### Feature Flags
+Check `process.env.NEXT_PUBLIC_ENABLE_REGISTRATION` before showing registration links. Defaults to `true` but can be disabled in production.
+
+### Auth System
+- Uses HTTP-only cookies (Better Auth) - no need to manually handle tokens in API calls
+- Guards (`adminGuard`, `vendorGuard`, `authGuard`) validate sessions from cookies
+- Always await the guard result: `const { authorized, user } = await guard(request, roles);`
+
+### E2E Test Selectors
+The UI uses custom headings per the ElevenLabs design system:
+- Login: "Identity Validation" (not "Sign In")
+- Register: "Entity Enrollment" (not "Create Account")
+- Forgot Password: "Identity Recovery" (not "Check your inbox")
+Use role-based selectors when text varies: `page.getByRole('link', { name: /Create account/i })`

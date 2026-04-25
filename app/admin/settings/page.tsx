@@ -2,13 +2,14 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Settings, 
-  Bell, 
-  Shield, 
-  Database, 
-  Cpu, 
-  Activity, 
+import { Button } from '@/components/ui/button';
+import {
+  Settings,
+  Bell,
+  Shield,
+  Database,
+  Cpu,
+  Activity,
   Lock,
   Zap,
   Globe,
@@ -24,7 +25,8 @@ import {
   Fingerprint,
   Network,
   Binary,
-  Code
+  Code,
+  Clock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';

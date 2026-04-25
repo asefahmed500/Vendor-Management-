@@ -30,16 +30,21 @@ export interface IAddress {
   state?: string;
   country?: string;
   postalCode?: string;
+  zipCode?: string;
+  website?: string;
 }
 
 export interface IVendor {
   _id: string;
   userId: string;
+  id?: string;
   companyName: string;
   contactPerson: string;
+  email?: string;
   phone: string;
   address?: IAddress;
   companyType?: string;
+  businessType?: string;
   taxId?: string;
   status: VendorStatus;
   rejectionReason?: string;
@@ -48,6 +53,7 @@ export interface IVendor {
   registrationDate: Date;
   createdAt: Date;
   updatedAt: Date;
+  website?: string;
 }
 
 export interface IActivityLog {

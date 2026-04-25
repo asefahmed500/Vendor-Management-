@@ -346,7 +346,7 @@ export default function AdminVendorDetailPage() {
           <div className="space-y-6 max-w-3xl">
             <div className="flex items-center gap-4">
               <div className={`h-3 w-3 rounded-full ${
-                vendor.status === 'APPROVED' || vendor.status === 'VERIFIED' ? 'bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)]' :
+                vendor.status === 'APPROVED' ? 'bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)]' :
                 vendor.status === 'REJECTED' ? 'bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]' :
                 'bg-blue-500 animate-pulse shadow-[0_0_20px_rgba(59,130,246,0.4)]'
               }`} />
@@ -718,7 +718,7 @@ export default function AdminVendorDetailPage() {
                                 ${submission.proposedAmount.toLocaleString()}
                               </TableCell>
                               <TableCell className="text-[12px] font-mono font-black text-zinc-500 uppercase tracking-widest italic">
-                                {new Date(submission.submittedAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                                {submission.submittedAt ? new Date(submission.submittedAt).toLocaleDateString(undefined, { dateStyle: 'medium' }) : 'N/A'}
                               </TableCell>
                               <TableCell className="text-right px-12">
                                 <Badge 

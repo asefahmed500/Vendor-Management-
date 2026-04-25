@@ -1,7 +1,7 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
 import { IVendor, VendorStatus } from '@/lib/types/vendor';
 
-export interface IVendorDocument extends Omit<IVendor, '_id' | 'userId'>, Document {
+export interface IVendorDocument extends Omit<IVendor, '_id' | 'userId' | 'id'>, Document {
   userId: mongoose.Types.ObjectId;
 }
 

@@ -83,8 +83,10 @@ export async function GET(request: NextRequest) {
       activitiesByType[type] = (activitiesByType[type] || 0) + 1;
 
       // User-based stats
-      const userId = activity.performedBy?._id?.toString() || 'system';
-      const existing = userCounts.get(userId) || { count: 0, email: activity.performedBy?.email };
+      const performedBy = activity.performedBy as unknown as { _id?: { toString: () => string }; email?: string } | undefined;
+      const userId = performedBy?._id?.toString() || 'system';
+      const userEmail = performedBy?.email || 'Unknown';
+      const existing = userCounts.get(userId) || { count: 0, email: userEmail };
       userCounts.set(userId, { count: existing.count + 1, email: existing.email });
     });
 
@@ -96,11 +98,14 @@ export async function GET(request: NextRequest) {
       }))
       .sort((a, b) => b.count - a.count);
 
-    const recentActivities = allActivities.slice(0, 50).map((activity) => ({
-      ...activity,
-      _id: activity._id.toString(),
-      performedBy: activity.performedBy?.email || 'System',
-    }));
+    const recentActivities = allActivities.slice(0, 50).map((activity) => {
+      const performedByUser = activity.performedBy as unknown as { email?: string } | undefined;
+      return {
+        ...activity,
+        _id: activity._id.toString(),
+        performedBy: performedByUser?.email || 'System',
+      };
+    });
 
     return NextResponse.json<ApiResponse<AggregatedStats>>(
       {

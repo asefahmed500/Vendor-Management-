@@ -10,6 +10,7 @@ import * as z from 'zod';
 import { Loader2, ArrowLeft, ShieldCheck, AlertCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Form,
   FormControl,
@@ -222,7 +223,17 @@ function LoginForm() {
               </Form>
             </CardContent>
             
-            <CardFooter className="p-0 mt-10">
+            <CardFooter className="p-0 mt-10 space-y-6">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                <Link href="/forgot-password" className="hover:text-zinc-950 transition-colors underline underline-offset-4">
+                  Forgot password?
+                </Link>
+                {process.env.NEXT_PUBLIC_ENABLE_REGISTRATION !== 'false' && (
+                  <Link href="/register" className="hover:text-zinc-950 transition-colors underline underline-offset-4">
+                    Create account
+                  </Link>
+                )}
+              </div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 leading-loose text-center w-full">
                 By entering, you acknowledge the <Link href="#" className="text-zinc-950 underline underline-offset-4">Terms</Link> & <Link href="#" className="text-zinc-950 underline underline-offset-4">Protocols</Link>.
               </p>

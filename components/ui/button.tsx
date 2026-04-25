@@ -4,27 +4,27 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-normal transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-body-medium transition-all duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#097fe8] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4",
   {
     variants: {
       variant: {
         default:
-          "bg-[#1c1c1c] text-[#fcfbf8] shadow-lovable-inset hover:opacity-90 active:opacity-80",
+          "bg-[#0075de] text-notion-white shadow-notion-card hover:bg-[#005bab] active:scale-0.9",
         destructive:
-          "bg-red-600 text-white hover:bg-red-700",
+          "bg-red-600 text-notion-white hover:bg-red-700",
         outline:
-          "border border-[rgba(28,28,28,0.4)] bg-transparent text-[#1c1c1c] hover:bg-[rgba(28,28,28,0.04)]",
+          "border border-[rgba(0,0,0,0.1)] bg-transparent text-notion-black hover:bg-[rgba(0,0,0,0.05)] active:scale-0.9",
         secondary:
-          "bg-[#eceae4] text-[#1c1c1c] hover:bg-[#e4e2db]",
-        ghost: "hover:bg-[rgba(28,28,28,0.04)] text-[#1c1c1c]",
-        link: "text-[#1c1c1c] underline-offset-4 hover:underline",
-        pill: "rounded-full bg-[#f7f4ed] border border-[#eceae4] text-[#1c1c1c] hover:bg-[#eceae4] shadow-sm",
+          "bg-[rgba(0,0,0,0.05)] text-notion-black hover:scale-1.05 active:scale-0.9",
+        ghost: "hover:bg-[rgba(0,0,0,0.04)] text-notion-black",
+        link: "text-[#0075de] underline-offset-4 hover:underline",
+        pill: "rounded-pill bg-[#f2f9ff] border border-[rgba(0,0,0,0.1)] text-[#097fe8] hover:bg-[#e6f3ff]",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-8 px-3 text-xs",
-        lg: "h-12 px-8 text-base",
-        icon: "h-10 w-10",
+        default: "h-10 px-4 py-2 rounded-micro",
+        sm: "h-8 px-3 text-xs rounded-micro",
+        lg: "h-12 px-8 text-body rounded-micro",
+        icon: "h-10 w-10 rounded-micro",
       },
     },
     defaultVariants: {
